@@ -4,9 +4,9 @@
 
 ## TL;DR;
 
-```console
-$ git clone https://github.com/jitsi/docker-jitsi-meet
-$ helm install ./docker-jitsi-meet/examples/helm
+```bash
+helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
+helm install jitsi/jitsi-meet
 ```
 
 ## Introduction
@@ -118,3 +118,10 @@ Parameter | Description | Default
 `web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `web.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `tz` | System Time Zone | `Europe/Amsterdam`
+
+## Package
+
+```bash
+helm package . -d docs
+helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
+```
