@@ -86,7 +86,7 @@ spec:
         emptyDir: {}
         {{- end }}
       {{- with .Values.extraVolumes }}
-      {(- toYaml . | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
