@@ -38,7 +38,7 @@ web:
     - host: jitsi.local
       paths: ['/']
     tls: []
-    #  - secretName: jits-web-certificate
+    #  - secretName: jitsi-web-certificate
     #    hosts:
     #      - jitsi.local
 
