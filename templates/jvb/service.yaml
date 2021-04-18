@@ -12,7 +12,6 @@ spec:
   {{- end }}
   ports:
     - port: {{ .Values.jvb.UDPPort }}
-      targetPort: rtp-udp
       {{- if eq .Values.jvb.service.type "NodePort" }}
       nodePort: {{ .Values.jvb.UDPPort }}
       {{- end }}
@@ -20,7 +19,6 @@ spec:
       name: rtp-udp
     {{- if and .Values.jvb.enableTCP }}
     - port: {{ .Values.jvb.TCPPort }}
-      targetPort: rtp-tcp
       {{- if eq .Values.jvb.service.type "NodePort" }}
       nodePort: {{ .Values.jvb.TCPPort }}
       {{- end }}
