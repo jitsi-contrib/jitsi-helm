@@ -80,6 +80,30 @@ spec:
           resources:
             {{- toYaml .Values.jvb.resources | nindent 12 }}
 
+        {{- if .Values.jvb.metrics.enabled }}
+        - name: metrics
+          image: {{ .Values.jvb.metrics.image.repository }}:{{ .Values.jvb.metrics.image.tag }}
+          imagePullPolicy: {{ .Values.jvb.metrics.image.pullPolicy }}
+          securityContext:
+            runAsUser: 10001
+          command:
+            - /prometheus-jitsi-meet-exporter
+            - -videobridge-url
+            - http://localhost:8080/colibri/stats
+          ports:
+            - containerPort: 9888
+              name: metrics
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9888
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+        {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
+      {{- end }}
+
       {{- with .Values.jvb.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

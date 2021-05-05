@@ -157,6 +157,25 @@ jvb:
   affinity: {}
   extraEnvs: {}
 
+  metrics:
+    enabled: false
+    image:
+      repository: docker.io/systemli/prometheus-jitsi-meet-exporter
+      tag: 1.1.6
+      pullPolicy: IfNotPresent
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 20m
+        memory: 32Mi
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

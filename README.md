@@ -112,6 +112,14 @@ Parameter | Description | Default
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
 `jvb.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jvb.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jvb.metrics.enabled` | Boolean that control the metrics exporter for jvb. If true the `ServiceMonitor` will also created | `false`
+`jvb.metrics.image.repository` | Default image repository for metrics exporter | `docker.io/systemli/prometheus-jitsi-meet-exporter`
+`jvb.metrics.image.tag` | Default tag for metrics exporter | `1.1.5`
+`jvb.metrics.image.pullPolicy` | ImagePullPolicy for metrics exporter | `IfNotPresent`
+`jvb.metrics.serviceMonitor.enabled` | `ServiceMonitor` for Prometheus | `true`
+`jvb.metrics.serviceMonitor.selector` | Selector for `ServiceMonitor` | `{ release: prometheus-operator }`
+`jvb.metrics.serviceMonitor.interval` | Interval for `ServiceMonitor` | `10s`
+`jvb.metrics.resources` | Resources for the metrics container | `{ requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 20m, memory: 32Mi } }`
 `web.httpsEnabled` | Boolean that enabled tls-termination on the web pods. Useful if you expose the UI via a `Loadbalancer` IP instead of an ingress | `false`
 `web.httpRedirect` | Boolean that enabled http-to-https redirection. Useful for ingress that don't support this feature (ex: GKE ingress) | `false`
 `web.extraEnvs` | Map containing additional environment variable to web pods | '{}'

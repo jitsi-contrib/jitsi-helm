@@ -1,0 +1,16 @@
+{{- if .Values.jvb.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.jvb.fullname" . }}-metrics
+  labels:
+  {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9888
+      protocol: TCP
+      name: metrics
+  selector:
+  {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
+  {{- end }}
