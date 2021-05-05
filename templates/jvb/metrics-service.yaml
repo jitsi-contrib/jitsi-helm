@@ -1,4 +1,4 @@
-{{- if .Values.jvb.metrics.serviceMonitor.enabled }}
+{{- if .Values.jvb.metrics.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
