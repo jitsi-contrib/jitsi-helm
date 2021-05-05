@@ -94,6 +94,12 @@ spec:
             - containerPort: 9888
               name: metrics
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9888
+            initialDelaySeconds: 3
+            periodSeconds: 5
           resources:
         {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
       {{- end }}
