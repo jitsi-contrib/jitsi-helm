@@ -19,7 +19,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.web.podAnnotations }}
-        {{ $annotation }}: {{ $value }}
+        {{ $annotation }}: {{ $value|quote }}
       {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
