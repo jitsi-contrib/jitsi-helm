@@ -45,6 +45,12 @@ spec:
           {{- range .Values.extraEnvFrom }}
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
+          {{- if .Values.extraEnvs }}
+          env:
+          {{- range .Values.extraEnvs }}
+          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          {{- end }}
           ports:
             - name: xmpp-c2s
               containerPort: {{ index .Values.service.ports "xmpp-c2s" }}
