@@ -11,7 +11,7 @@ spec:
   loadBalancerIP: {{ . }}
   {{- end }}
   ports:
-    - port: {{ .Values.jvb.UDPPort }}
+    - port: {{ default 10000 .Values.jvb.UDPPort }}
       {{- if eq .Values.jvb.service.type "NodePort" }}
       nodePort: {{ .Values.jvb.UDPPort }}
       {{- end }}
