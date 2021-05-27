@@ -137,15 +137,13 @@ jvb:
   breweryMuc: jvbbrewery
 
   livenessProbe:
-    exec:
-      command:
-      - pgrep
-      - java
+    httpGet:
+      path: /about/health
+      port: 8080
   readinessProbe:
-    exec:
-      command:
-      - pgrep
-      - java
+    httpGet:
+      path: /about/health
+      port: 8080
 
   podLabels: {}
   podAnnotations: {}

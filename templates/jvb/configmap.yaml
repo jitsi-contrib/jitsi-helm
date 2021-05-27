@@ -22,4 +22,6 @@ data:
   {{- end }}
   {{- if .Values.jvb.metrics.enabled }}
   JVB_ENABLE_APIS: 'rest,colibri'
+  {{- else }}
+  JVB_ENABLE_APIS: 'rest'
   {{- end }}
