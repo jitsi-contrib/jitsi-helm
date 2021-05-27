@@ -1,7 +1,10 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "prosody.fullname" . -}}
 {{- $svcPort := index .Values.service.ports "bosh-insecure" -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $kubeVersion := .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.19-0" $kubeVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" $kubeVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
 apiVersion: extensions/v1beta1
@@ -33,9 +36,21 @@ spec:
         paths:
         {{- range .paths }}
           - path: {{ . }}
+            pathType: Prefix
             backend:
+            {{ if semverCompare ">=1.19-0" $kubeVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  {{ if kindIs "float64" $svcPort }}
+                  number: {{ $svcPort }}
+                  {{ else }}
+                  name: {{ $svcPort }}
+                  {{ end }}
+            {{ else }}
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
+            {{ end }}
         {{- end }}
   {{- end }}
 {{- end }}
