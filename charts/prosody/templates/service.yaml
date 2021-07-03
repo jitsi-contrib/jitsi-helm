@@ -9,12 +9,18 @@ spec:
   ports:
     - port: {{ index .Values.service.ports "bosh-insecure" }}
       protocol: TCP
-      name: bosh-insecure
+      name: tcp-bosh-insecure
+    - port: {{ index .Values.service.ports "bosh-secure" }}
+      protocol: TCP
+      name: tcp-bosh-secure
     - port: {{ index .Values.service.ports "xmpp-component" }}
       protocol: TCP
-      name: xmpp-component
+      name: tcp-xmpp-component
     - port: {{ index .Values.service.ports "xmpp-c2s" }}
       protocol: TCP
-      name: xmpp-c2
+      name: tcp-xmpp-c2
+    - port: {{ index .Values.service.ports "xmpp-s2s" }}
+      protocol: TCP
+      name: tcp-xmpp-s2
   selector:
     {{- include "prosody.selectorLabels" . | nindent 4 }}
