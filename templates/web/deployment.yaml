@@ -75,6 +75,6 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.web.extraVolumes }}
-    volumes:
-    {{- toYaml . | nindent 4 }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
     {{- end }}

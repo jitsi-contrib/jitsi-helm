@@ -10,7 +10,7 @@ spec:
   ports:
     - port: 9888
       protocol: TCP
-      name: metrics
+      name: tcp-metrics
   selector:
   {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
   {{- end }}
