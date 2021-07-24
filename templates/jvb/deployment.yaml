@@ -92,7 +92,7 @@ spec:
             - http://localhost:8080/colibri/stats
           ports:
             - containerPort: 9888
-              name: metrics
+              name: tcp-metrics
               protocol: TCP
           readinessProbe:
             httpGet:
