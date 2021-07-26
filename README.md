@@ -6,7 +6,7 @@
 
 ```bash
 helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
-helm install jitsi/jitsi-meet
+helm install myjitsi jitsi/jitsi-meet
 ```
 
 ## Introduction
