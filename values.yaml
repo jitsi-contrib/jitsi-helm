@@ -133,6 +133,9 @@ jvb:
     enabled:
     type: ClusterIP
     externalIPs: []
+    ## Annotations to be added to the service (if LoadBalancer is used)
+    ##
+    annotations: {}
 
   breweryMuc: jvbbrewery
 
