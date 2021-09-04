@@ -30,7 +30,7 @@ web:
     externalIPs: []
 
   ingress:
-    enabled: false
+    enabled: true
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
@@ -127,11 +127,11 @@ jvb:
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
   useHostPort: false
   enableTCP: false
-  UDPPort: 10000
-  TCPPort: 4443
+  UDPPort: 30000
+  TCPPort: 30443
   service:
     enabled:
-    type: ClusterIP
+    type: NodePort
     externalIPs: []
     ## Annotations to be added to the service (if LoadBalancer is used)
     ##
