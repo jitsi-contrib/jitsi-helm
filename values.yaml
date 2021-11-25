@@ -127,8 +127,8 @@ jvb:
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
   useHostPort: false
   enableTCP: false
-  UDPPort: 10000
-  TCPPort: 4443
+  # UDPPort: 10000
+  # TCPPort: 4443
   service:
     enabled:
     type: ClusterIP

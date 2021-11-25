@@ -16,7 +16,7 @@ spec:
   {{- end }}
   ports:
     - port: {{ default 10000 .Values.jvb.UDPPort }}
-      {{- if or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer") }}
+      {{- if eq .Values.jvb.service.type "NodePort" }}
       nodePort: {{ .Values.jvb.UDPPort }}
       {{- end }}
       protocol: UDP
