@@ -20,8 +20,4 @@ data:
   {{ $key }}: {{ tpl $value $ | quote }}
   {{- end }}
   {{- end }}
-  {{- if .Values.jvb.metrics.enabled }}
-  JVB_ENABLE_APIS: 'rest,colibri'
-  {{- else }}
-  JVB_ENABLE_APIS: 'rest'
-  {{- end }}
+  COLIBRI_REST_ENABLED: 'true'
