@@ -12,6 +12,7 @@ fullnameOverride: ""
 enableAuth: false
 enableGuests: true
 publicURL: ""
+enableOCTO: false
 
 tz: Europe/Amsterdam
 

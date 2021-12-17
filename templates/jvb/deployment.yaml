@@ -53,6 +53,20 @@ spec:
               fieldRef:
                 fieldPath: status.hostIP
             {{- end }}
+          - name: JVB_WS_SERVER_ID
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          {{- end }}
+          {{- if  .Values.enableOCTO }}
+          - name: JVB_OCTO_BIND_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: JVB_OCTO_PUBLIC_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           {{- end }}
           ports:
             - name: rtp-udp

@@ -12,3 +12,8 @@ data:
   {{ $key }}: {{ tpl $value $ | quote }}
   {{- end }}
   {{- end }}
+
+  {{- if .Values.enableOCTO }}
+  ENABLE_OCTO: "1"
+  OCTO_BRIDGE_SELECTION_STRATEGY: "SplitBridgeSelectionStrategy"
+  {{- end }}

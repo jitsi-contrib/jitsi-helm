@@ -21,3 +21,8 @@ data:
   {{- end }}
   {{- end }}
   COLIBRI_REST_ENABLED: 'true'
+  {{- if .Values.enableOCTO }}
+  ENABLE_OCTO: "1"
+  JVB_OCTO_BIND_PORT: "4096"
+  JVB_OCTO_REGION: "all"
+  {{- end }}
