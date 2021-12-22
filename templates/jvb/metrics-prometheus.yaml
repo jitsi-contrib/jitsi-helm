@@ -7,13 +7,17 @@ metadata:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
     {{- range $key, $value := .Values.jvb.metrics.serviceMonitor.selector }}
     {{ $key }}: {{ $value | quote }}
-  {{- end }}
+    {{- end }}
 spec:
   endpoints:
-    - port: metrics
+    - port: tcp-metrics
+      path: /metrics
+      {{- if .Values.jvb.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ .Values.jvb.metrics.serviceMonitor.honorLabels }}
+      {{- end }}
       {{- if .Values.jvb.metrics.serviceMonitor.interval }}
       interval: {{ .Values.jvb.metrics.serviceMonitor.interval }}
-  {{- end }}
+      {{- end }}
   selector:
     matchLabels:
   {{- include "jitsi-meet.jvb.labels" . | nindent 6 }}

@@ -169,6 +169,7 @@ jvb:
       selector:
         release: prometheus-operator
       interval: 10s
+      # honorLabels: false
     resources:
       requests:
         cpu: 10m
