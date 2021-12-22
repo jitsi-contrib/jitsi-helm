@@ -29,6 +29,11 @@ spec:
       protocol: TCP
       name: rtp-tcp
     {{- end }}
+    {{- if .Values.jvb.websockets.enabled }}
+    - port: 9090
+      protocol: TCP
+      name: colibri-ws-tcp
+    {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
   {{ toYaml . | indent 2 | trim }}
