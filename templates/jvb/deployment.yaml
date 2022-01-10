@@ -59,12 +59,12 @@ spec:
           - name: JVB_WS_SERVER_ID
             {{- if eq $serverID "service" }}
             value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
-            {{- else if not (eq $serverID "podIP") }}
-            value: {{ $serverID | quote }}
-            {{- else }}
+            {{- else if eq $serverID "podIP" }}
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+            {{- else }}
+            value: {{ $serverID | quote }}
             {{- end }}
           {{- end }}
           ports:
