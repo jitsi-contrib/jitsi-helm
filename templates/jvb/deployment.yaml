@@ -55,11 +55,17 @@ spec:
                 fieldPath: status.hostIP
             {{- end }}
           {{- end }}
-          {{- if and .Values.jvb.websockets.enabled (eq $serverID "podIP") }}
+          {{- if .Values.jvb.websockets.enabled }}
           - name: JVB_WS_SERVER_ID
+            {{- if eq $serverID "service" }}
+            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
+            {{- else if not (eq $serverID "podIP") }}
+            value: {{ $serverID | quote }}
+            {{- else }}
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+            {{- end }}
           {{- end }}
           ports:
             - name: rtp-udp

@@ -1,4 +1,3 @@
-{{- $serverID := default "podIP" .Values.jvb.websockets.serverID }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -24,11 +23,6 @@ data:
   COLIBRI_REST_ENABLED: 'true'
   {{- if .Values.jvb.websockets.enabled }}
   ENABLE_COLIBRI_WEBSOCKET: 'true'
-  {{- if eq $serverID "service" }}
-  JVB_WS_SERVER_ID: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
-  {{- else if not (eq $serverID "podIP") }}
-  JVB_WS_SERVER_ID: {{ $serverID | quote }}
-  {{- end }}
   {{- else }}
   ENABLE_COLIBRI_WEBSOCKET: 'false'
   {{- end }}
