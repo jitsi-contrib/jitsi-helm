@@ -21,3 +21,8 @@ data:
   {{- end }}
   {{- end }}
   COLIBRI_REST_ENABLED: 'true'
+  {{- if .Values.jvb.websockets.enabled }}
+  ENABLE_COLIBRI_WEBSOCKET: 'true'
+  {{- else }}
+  ENABLE_COLIBRI_WEBSOCKET: 'false'
+  {{- end }}

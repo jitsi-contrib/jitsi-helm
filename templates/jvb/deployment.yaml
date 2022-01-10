@@ -1,3 +1,4 @@
+{{- $serverID := default "podIP" .Values.jvb.websockets.serverID }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -54,6 +55,18 @@ spec:
                 fieldPath: status.hostIP
             {{- end }}
           {{- end }}
+          {{- if .Values.jvb.websockets.enabled }}
+          - name: JVB_WS_SERVER_ID
+            {{- if eq $serverID "service" }}
+            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
+            {{- else if eq $serverID "podIP" }}
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+            {{- else }}
+            value: {{ $serverID | quote }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: rtp-udp
               containerPort: {{ .Values.jvb.UDPPort }}
@@ -67,6 +80,11 @@ spec:
               {{- if .Values.jvb.useHostPort }}
               hostPort: {{ .Values.jvb.TCPPort }}
               {{- end }}
+              protocol: TCP
+          {{- end }}
+          {{- if .Values.jvb.websockets.enabled }}
+            - name: colibri-ws-tcp
+              containerPort: 9090
               protocol: TCP
           {{- end }}
           {{- with .Values.jvb.livenessProbe }}
