@@ -30,7 +30,7 @@ web:
     externalIPs: []
 
   ingress:
-    enabled: false
+    enabled: true
     # ingressClassName: "nginx-ingress-0"
     annotations: {}
       # kubernetes.io/ingress.class: nginx
@@ -281,3 +281,16 @@ prosody:
   image:
     repository: jitsi/prosody
     tag: 'stable-6865'
+  ingress:
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+    hosts:
+    - host: jitsi.local
+      paths:
+      - /http-bind
+      - /xmpp-websocket
+    tls: []
+    #  - secretName: jitsi-web-certificate
+    #    hosts:
+    #      - jitsi.local
