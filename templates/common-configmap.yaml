@@ -14,6 +14,9 @@ data:
   XMPP_GUEST_DOMAIN: {{ .Values.xmpp.guestDomain | default (printf "guest.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   XMPP_RECORDER_DOMAIN: {{ .Values.xmpp.recorderDomain | default (printf "recorder.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   XMPP_INTERNAL_MUC_DOMAIN: {{ .Values.xmpp.internalMucDomain | default (printf "internal-muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+  {{- if .Values.jibri.enabled }}
+  ENABLE_RECORDING: "true"
+  {{- end }}
   TZ: '{{ .Values.tz }}'
   {{- range $key, $value := .Values.extraCommonEnvs }}
   {{- if not (kindIs "invalid" $value) }}
