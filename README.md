@@ -95,6 +95,24 @@ Parameter | Description | Default
 `imagePullSecrets` | List of names of secrets resources containing private registry credentials | `[]`
 `enableAuth` | Enable authentication | `false`
 `enableGuests` | Enable guest access | `true`
+`jibri.enabled` | Enable Jibri service | `false`
+`jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
+`jibri.persistence.size` | Jibri persistent storage size | `4Gi`
+`jibri.persistence.existingClaim` | Use pre-created PVC for Jibri | `(unset)`
+`jibri.persistence.storageClassName` | StorageClass to use with Jibri | `(unset)`
+`jibri.shm.enabled` | Allocate shared memory to Jibri pod | `false`
+`jibri.shm.useHost` | Pass `/dev/shm` from host to Jibri | `false`
+`jibri.shm.size` | Jibri shared memory size | `256Mi`
+`jibri.replicaCount` | Number of replica of the jibri pods | `1`
+`jibri.image.repository` | Name of the image to use for the jibri pods | `jitsi/jibri`
+`jibri.extraEnvs` | Map containing additional environment variables for jibri | '{}'
+`jibri.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
+`jibri.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jibri.breweryMuc` | Name of the XMPP MUC used by jibri | `jibribrewery`
+`jibri.xmpp.user` | Name of the XMPP user used by jibri to authenticate | `jibri`
+`jibri.xmpp.password` | Password used by jibri to authenticate on the XMPP service | 10 random chars
+`jibri.recorder.user` | Name of the XMPP user used by jibri to record | `recorder`
+`jibri.recorder.password` | Password used by jibri to record on the XMPP service | 10 random chars
 `jicofo.replicaCount` | Number of replica of the jicofo pods | `1`
 `jicofo.image.repository` | Name of the image to use for the jicofo pods | `jitsi/jicofo`
 `jicofo.extraEnvs` | Map containing additional environment variables for jicofo | '{}'
