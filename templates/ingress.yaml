@@ -19,7 +19,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- include "ingress.className" .| nindent 2 }}
+{{- if semverCompare ">=1.19-0" $kubeVersion }}
+{{- include "ingress.className" . | nindent 2 }}
+{{- end }}
 {{- if .Values.web.ingress.tls }}
   tls:
   {{- range .Values.web.ingress.tls }}
