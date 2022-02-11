@@ -102,3 +102,14 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Ingress no longer supports annotations and should use ingressClassName
+*/}}
+{{- define "ingress.className" -}}
+{{- if .Values.web.ingress.ingressClassName }}
+{{- if semverCompare ">=1.19-0" $kubeVersion -}}
+ingressClassName: {{ .web.ingress.ingressClassName }}
+{{- end }}
+{{- end }}
+{{- end }}
