@@ -228,4 +228,4 @@ prosody:
       name: '{{ include "prosody.fullname" . }}-common'
   image:
     repository: jitsi/prosody
-    tag: 'stable-6726'
+    tag: 'stable-6865'
