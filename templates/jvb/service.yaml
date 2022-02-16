@@ -21,14 +21,6 @@ spec:
       {{- end }}
       protocol: UDP
       name: rtp-udp
-    {{- if and .Values.jvb.enableTCP }}
-    - port: {{ .Values.jvb.TCPPort }}
-      {{- if eq .Values.jvb.service.type "NodePort" }}
-      nodePort: {{ .Values.jvb.TCPPort }}
-      {{- end }}
-      protocol: TCP
-      name: rtp-tcp
-    {{- end }}
     {{- if .Values.jvb.websockets.enabled }}
     - port: 9090
       protocol: TCP

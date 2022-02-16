@@ -74,14 +74,6 @@ spec:
               hostPort: {{ .Values.jvb.UDPPort }}
               {{- end }}
               protocol: UDP
-          {{- if .Values.jvb.enableTCP }}
-            - name: rtp-tcp
-              containerPort: {{ .Values.jvb.TCPPort }}
-              {{- if .Values.jvb.useHostPort }}
-              hostPort: {{ .Values.jvb.TCPPort }}
-              {{- end }}
-              protocol: TCP
-          {{- end }}
           {{- if .Values.jvb.websockets.enabled }}
             - name: colibri-ws-tcp
               containerPort: 9090

@@ -45,7 +45,6 @@ jvb:
     type: NodePort
   # It may be required to change the default port to a value allowed by Kubernetes (30000-32768)
   UDPPort: 30000
-  TCPPort: 30443
 
   # Use public IP of one of your node, or the public IP of a loadbalancer in front of the nodes
   publicIP: 1.2.3.4
@@ -106,7 +105,6 @@ Parameter | Description | Default
 `jvb.service.enabled` | Boolean to enable os disable the jvb service creation | `false` if `jvb.useHostPort` is `true` otherwise `true`
 `jvb.service.type` | Type of the jvb service | `ClusterIP`
 `jvb.UDPPort` | UDP port used by jvb, also affects port of service, and hostPort | `10000`
-`jvb.TCPPort` | TCP port used by jvb, also affects port of service, and hostPort | `4443`
 `jvb.extraEnvs` | Map containing additional environment variables to jvb | '{}'
 `jvb.xmpp.user` | Name of the XMPP user used by jvb to authenticate | `jvb`
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
