@@ -281,4 +281,4 @@ prosody:
   #     name: '{{ include "prosody.fullname" . }}-jibri'
   image:
     repository: jitsi/prosody
-    tag: 'stable-6726-2'
+    tag: 'stable-6865'
