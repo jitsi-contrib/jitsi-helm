@@ -102,13 +102,3 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
-{{/*
-Ingress no longer supports annotations and should use ingressClassName.
-Check if its defined in values before settings it
-*/}}
-{{- define "ingress.className" -}}
-{{- if .Values.web.ingress.ingressClassName -}}
-ingressClassName: {{ .Values.web.ingress.ingressClassName }}
-{{- end -}}
-{{- end -}}
