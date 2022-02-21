@@ -1,4 +1,4 @@
-{{- if default false .Values.jibri.enabled }}
+{{- if .Values.jibri.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
