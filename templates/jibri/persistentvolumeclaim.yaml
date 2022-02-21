@@ -12,5 +12,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.jibri.persistence.size | quote }}
-  storageClassName: {{ .Values.jibri.persistence.storageClassName }}
+  {{- with .Values.jibri.persistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
 {{- end -}}
