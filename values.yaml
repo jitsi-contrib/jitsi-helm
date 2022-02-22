@@ -197,6 +197,56 @@ jvb:
         cpu: 20m
         memory: 32Mi
 
+jibri:
+  ## Enabling Jibri will allow users to record
+  ## and/or stream their meetings (e.g. to YouTube).
+  enabled: false
+
+  ## Enable persistent storage for local recordings.
+  ## If disabled, jibri pod will use a transient
+  ## emptyDir-backed storage instead.
+  persistence:
+    enabled: false
+    size: 4Gi
+    ## Set this to existing PVC name if you have one.
+    existingClaim:
+    storageClassName:
+
+  shm:
+    ## Set to true to enable "/dev/shm" mount.
+    ## May be required by built-in Chromium.
+    enabled: false
+    ## If "true", will use host's shared memory dir,
+    ## and if "false" — an emptyDir mount.
+    # useHost: false
+    # size: 256Mi
+
+  image:
+    repository: jitsi/jibri
+
+  breweryMuc: jibribrewery
+  timeout: 90
+
+  ## jibri XMPP user credentials:
+  xmpp:
+    user: jibri
+    password:
+
+  ## recorder XMPP user credentials:
+  recorder:
+    user: recorder
+    password:
+
+  livenessProbe:
+    exec:
+      command: ["pgrep", "java"]
+
+  readinessProbe:
+    exec:
+      command: ["pgrep", "java"]
+
+  extraEnvs: {}
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -225,6 +275,9 @@ prosody:
       name: '{{ include "prosody.fullname" . }}-jvb'
   - configMapRef:
       name: '{{ include "prosody.fullname" . }}-common'
+  ## Uncomment this if you want to use jibri:
+  # - secretRef:
+  #     name: '{{ include "prosody.fullname" . }}-jibri'
   image:
     repository: jitsi/prosody
     tag: 'stable-6865'

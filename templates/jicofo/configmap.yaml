@@ -7,6 +7,10 @@ metadata:
 data:
   JVB_BREWERY_MUC: '{{ .Values.jvb.breweryMuc }}'
   XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
+  {{- if .Values.jibri.enabled }}
+  JIBRI_BREWERY_MUC: '{{ .Values.jibri.breweryMuc }}'
+  JIBRI_PENDING_TIMEOUT: '{{ .Values.jibri.timeout }}'
+  {{- end }}
   {{- range $key, $value := .Values.jicofo.extraEnvs }}
   {{- if not (kindIs "invalid" $value) }}
   {{ $key }}: {{ tpl $value $ | quote }}

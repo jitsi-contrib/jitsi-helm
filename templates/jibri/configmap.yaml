@@ -1,0 +1,21 @@
+{{- if .Values.jibri.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+data:
+  XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
+  JIBRI_BREWERY_MUC: '{{ .Values.jibri.breweryMuc }}'
+  JIBRI_RECORDING_DIR: '{{ .Values.jibri.recordingDir | default "/data/recordings" }}'
+  JIBRI_FINALIZE_RECORDING_SCRIPT_PATH: "/config/finalize.sh"
+  JIBRI_STRIP_DOMAIN_JID: muc
+  JIBRI_LOGS_DIR: "/data/logs"
+  DISPLAY: ":0"
+  {{- range $key, $value := .Values.jibri.extraEnvs }}
+  {{- if not (kindIs "invalid" $value) }}
+  {{ $key }}: {{ tpl $value $ | quote }}
+  {{- end }}
+  {{- end }}
+{{- end }}
