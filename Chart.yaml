@@ -23,4 +23,4 @@ appVersion: stable-6865
 dependencies:
   - name: prosody
     condition: prosody.enabled
-    version: 1.2.0
+    version: 1.2.1

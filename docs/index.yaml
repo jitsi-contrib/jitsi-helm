@@ -3,7 +3,22 @@ entries:
   jitsi-meet:
   - apiVersion: v2
     appVersion: stable-6865
-    created: "2022-02-16T22:22:55.189187+01:00"
+    created: "2022-02-26T16:46:10.351921+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 1.2.1
+    description: A Helm chart for Kubernetes
+    digest: cdd81bdc042771e36060dca0474920df80f7b87c61c09a20b002988bd42eb8a6
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: stable-6865
+    created: "2022-02-26T16:46:10.350857+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -18,7 +33,7 @@ entries:
     version: 1.2.0
   - apiVersion: v2
     appVersion: stable-6726
-    created: "2022-02-16T22:22:55.187745+01:00"
+    created: "2022-02-26T16:46:10.349696+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -33,7 +48,7 @@ entries:
     version: 1.1.0
   - apiVersion: v2
     appVersion: stable-6433
-    created: "2022-02-16T22:22:55.18685+01:00"
+    created: "2022-02-26T16:46:10.348375+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -48,7 +63,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: stable-5963
-    created: "2022-02-16T22:22:55.185791+01:00"
+    created: "2022-02-26T16:46:10.346929+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -63,7 +78,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: stable-5963
-    created: "2022-02-16T22:22:55.183973+01:00"
+    created: "2022-02-26T16:46:10.344497+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -78,7 +93,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: stable-5390-3
-    created: "2022-02-16T22:22:55.182354+01:00"
+    created: "2022-02-26T16:46:10.343289+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -93,7 +108,7 @@ entries:
     version: 0.1.4
   - apiVersion: v2
     appVersion: stable-5390-3
-    created: "2022-02-16T22:22:55.181214+01:00"
+    created: "2022-02-26T16:46:10.342047+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -108,7 +123,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: stable-5390-3
-    created: "2022-02-16T22:22:55.180147+01:00"
+    created: "2022-02-26T16:46:10.340879+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -121,4 +136,4 @@ entries:
     urls:
     - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-0.1.2.tgz
     version: 0.1.2
-generated: "2022-02-16T22:22:55.17863+01:00"
+generated: "2022-02-26T16:46:10.339169+01:00"
