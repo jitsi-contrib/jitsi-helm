@@ -23,3 +23,9 @@ data:
   {{ $key }}: {{ tpl $value $ | quote }}
   {{- end }}
   {{- end }}
+  {{- if .Values.octo.enabled }}
+  ENABLE_OCTO: "1"
+  TESTING_OCTO_PROBABILITY: "1"
+  DEPLOYMENTINFO_REGION: "all"
+  DEPLOYMENTINFO_USERREGION: "all"
+  {{- end }}
