@@ -103,6 +103,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.jvb.resources | nindent 12 }}
+          {{- with .Values.jvb.extraVolumeMounts }}
+          volumeMounts:
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
 
         {{- if .Values.jvb.metrics.enabled }}
         - name: metrics
@@ -150,5 +154,9 @@ spec:
     {{- end }}
     {{- with .Values.jvb.tolerations }}
       tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.jvb.extraVolumes }}
+      volumes:
         {{- toYaml . | nindent 8 }}
     {{- end }}
