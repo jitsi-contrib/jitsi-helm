@@ -5,6 +5,10 @@ metadata:
   name: {{ include "jitsi-meet.jvb.fullname" . }}
   labels:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+  {{- with .Values.jvb.annotations }}
+  annotations:
+    {{ toYaml .Values.jvb.annotations | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.jvb.replicaCount }}
   selector:
