@@ -7,7 +7,7 @@ metadata:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
   {{- with .Values.jibri.annotations }}
   annotations:
-    {{ toYaml .Values.jibri.annotations | nindent 4 }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   replicas: {{ .Values.jibri.replicaCount | default 1 }}
