@@ -1,9 +1,14 @@
+{{- $serverID := default "podIP" .Values.jvb.websockets.serverID }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "jitsi-meet.jvb.fullname" . }}
   labels:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+  {{- with .Values.jvb.annotations }}
+  annotations:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.jvb.replicaCount }}
   selector:
@@ -19,6 +24,10 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jvb/xmpp-secret.yaml") . | sha256sum }}
+        {{- if and .Values.jvb.metrics.enabled  .Values.jvb.metrics.prometheusAnnotations  }}
+        prometheus.io/port: "9888"
+        prometheus.io/scrape: "true"
+        {{- end }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations }}
         {{ $annotation }}: {{ $value|quote }}
       {{- end }}
@@ -54,6 +63,28 @@ spec:
                 fieldPath: status.hostIP
             {{- end }}
           {{- end }}
+          {{- if .Values.jvb.websockets.enabled }}
+          - name: JVB_WS_SERVER_ID
+            {{- if eq $serverID "service" }}
+            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
+            {{- else if eq $serverID "podIP" }}
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+            {{- else }}
+            value: {{ $serverID | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if  .Values.octo.enabled }}
+          - name: JVB_OCTO_BIND_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: JVB_OCTO_PUBLIC_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          {{- end }}
           ports:
             - name: rtp-udp
               containerPort: {{ .Values.jvb.UDPPort }}
@@ -61,12 +92,9 @@ spec:
               hostPort: {{ .Values.jvb.UDPPort }}
               {{- end }}
               protocol: UDP
-          {{- if .Values.jvb.enableTCP }}
-            - name: rtp-tcp
-              containerPort: {{ .Values.jvb.TCPPort }}
-              {{- if .Values.jvb.useHostPort }}
-              hostPort: {{ .Values.jvb.TCPPort }}
-              {{- end }}
+          {{- if .Values.jvb.websockets.enabled }}
+            - name: colibri-ws-tcp
+              containerPort: 9090
               protocol: TCP
           {{- end }}
           {{- with .Values.jvb.livenessProbe }}
@@ -79,6 +107,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.jvb.resources | nindent 12 }}
+          {{- with .Values.jvb.extraVolumeMounts }}
+          volumeMounts:
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
 
         {{- if .Values.jvb.metrics.enabled }}
         - name: metrics
@@ -126,5 +158,9 @@ spec:
     {{- end }}
     {{- with .Values.jvb.tolerations }}
       tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.jvb.extraVolumes }}
+      volumes:
         {{- toYaml . | nindent 8 }}
     {{- end }}

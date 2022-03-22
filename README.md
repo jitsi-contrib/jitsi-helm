@@ -45,7 +45,6 @@ jvb:
     type: NodePort
   # It may be required to change the default port to a value allowed by Kubernetes (30000-32768)
   UDPPort: 30000
-  TCPPort: 30443
 
   # Use public IP of one of your node, or the public IP of a loadbalancer in front of the nodes
   publicIP: 1.2.3.4
@@ -95,6 +94,24 @@ Parameter | Description | Default
 `imagePullSecrets` | List of names of secrets resources containing private registry credentials | `[]`
 `enableAuth` | Enable authentication | `false`
 `enableGuests` | Enable guest access | `true`
+`jibri.enabled` | Enable Jibri service | `false`
+`jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
+`jibri.persistence.size` | Jibri persistent storage size | `4Gi`
+`jibri.persistence.existingClaim` | Use pre-created PVC for Jibri | `(unset)`
+`jibri.persistence.storageClassName` | StorageClass to use with Jibri | `(unset)`
+`jibri.shm.enabled` | Allocate shared memory to Jibri pod | `false`
+`jibri.shm.useHost` | Pass `/dev/shm` from host to Jibri | `false`
+`jibri.shm.size` | Jibri shared memory size | `256Mi`
+`jibri.replicaCount` | Number of replica of the jibri pods | `1`
+`jibri.image.repository` | Name of the image to use for the jibri pods | `jitsi/jibri`
+`jibri.extraEnvs` | Map containing additional environment variables for jibri | '{}'
+`jibri.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
+`jibri.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jibri.breweryMuc` | Name of the XMPP MUC used by jibri | `jibribrewery`
+`jibri.xmpp.user` | Name of the XMPP user used by jibri to authenticate | `jibri`
+`jibri.xmpp.password` | Password used by jibri to authenticate on the XMPP service | 10 random chars
+`jibri.recorder.user` | Name of the XMPP user used by jibri to record | `recorder`
+`jibri.recorder.password` | Password used by jibri to record on the XMPP service | 10 random chars
 `jicofo.replicaCount` | Number of replica of the jicofo pods | `1`
 `jicofo.image.repository` | Name of the image to use for the jicofo pods | `jitsi/jicofo`
 `jicofo.extraEnvs` | Map containing additional environment variables for jicofo | '{}'
@@ -106,22 +123,27 @@ Parameter | Description | Default
 `jvb.service.enabled` | Boolean to enable os disable the jvb service creation | `false` if `jvb.useHostPort` is `true` otherwise `true`
 `jvb.service.type` | Type of the jvb service | `ClusterIP`
 `jvb.UDPPort` | UDP port used by jvb, also affects port of service, and hostPort | `10000`
-`jvb.TCPPort` | TCP port used by jvb, also affects port of service, and hostPort | `4443`
 `jvb.extraEnvs` | Map containing additional environment variables to jvb | '{}'
 `jvb.xmpp.user` | Name of the XMPP user used by jvb to authenticate | `jvb`
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
 `jvb.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jvb.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jvb.websockets.enabled` | Enable WebSocket support for JVB/Colibri | `false`
+`jvb.websockets.serverID` | Set JVB/Colibri WS Server ID | `podIP` (see `values.yaml`)
 `jvb.metrics.enabled` | Boolean that control the metrics exporter for jvb. If true the `ServiceMonitor` will also created | `false`
+`jvb.metrics.prometheusAnnotations` | Boolean that controls the generation of prometheus annotations, to expose metrics for HPA | `false`
 `jvb.metrics.image.repository` | Default image repository for metrics exporter | `docker.io/systemli/prometheus-jitsi-meet-exporter`
 `jvb.metrics.image.tag` | Default tag for metrics exporter | `1.1.5`
 `jvb.metrics.image.pullPolicy` | ImagePullPolicy for metrics exporter | `IfNotPresent`
 `jvb.metrics.serviceMonitor.enabled` | `ServiceMonitor` for Prometheus | `true`
 `jvb.metrics.serviceMonitor.selector` | Selector for `ServiceMonitor` | `{ release: prometheus-operator }`
 `jvb.metrics.serviceMonitor.interval` | Interval for `ServiceMonitor` | `10s`
+`jvb.metrics.serviceMonitor.honorLabels` | Make `ServiceMonitor` honor labels | `false`
 `jvb.metrics.resources` | Resources for the metrics container | `{ requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 20m, memory: 32Mi } }`
+`octo.enabled` | Boolean to enable or disable the OCTO mode, for a single region | `false`
 `web.httpsEnabled` | Boolean that enabled tls-termination on the web pods. Useful if you expose the UI via a `Loadbalancer` IP instead of an ingress | `false`
 `web.httpRedirect` | Boolean that enabled http-to-https redirection. Useful for ingress that don't support this feature (ex: GKE ingress) | `false`
+`web.resolverIP` | DNS service IP for Web container to use | (unset)
 `web.extraEnvs` | Map containing additional environment variable to web pods | '{}'
 `web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `web.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map

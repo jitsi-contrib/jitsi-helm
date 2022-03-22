@@ -8,20 +8,21 @@ data:
   JVB_BREWERY_MUC: '{{ .Values.jvb.breweryMuc }}'
   JVB_PORT: '{{ .Values.jvb.UDPPort }}'
   JVB_STUN_SERVERS: '{{.Values.jvb.stunServers }}'
-  {{- if .Values.jvb.enableTCP }}
-  JVB_TCP_PORT: '{{ .Values.jvb.TCPPort }}'
-  JVB_TCP_HARVESTER_DISABLED: '0'
-  {{- else }}
   JVB_TCP_HARVESTER_DISABLED: '1'
-  {{- end }}
   XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
   {{- range $key, $value := .Values.jvb.extraEnvs }}
   {{- if not (kindIs "invalid" $value) }}
   {{ $key }}: {{ tpl $value $ | quote }}
   {{- end }}
   {{- end }}
-  {{- if .Values.jvb.metrics.enabled }}
-  JVB_ENABLE_APIS: 'rest,colibri'
+  COLIBRI_REST_ENABLED: 'true'
+  {{- if .Values.jvb.websockets.enabled }}
+  ENABLE_COLIBRI_WEBSOCKET: 'true'
   {{- else }}
-  JVB_ENABLE_APIS: 'rest'
+  ENABLE_COLIBRI_WEBSOCKET: 'false'
+  {{- end }}
+  {{- if .Values.octo.enabled }}
+  ENABLE_OCTO: "1"
+  JVB_OCTO_BIND_PORT: "4096"
+  JVB_OCTO_REGION: "all"
   {{- end }}

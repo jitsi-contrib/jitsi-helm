@@ -1,3 +1,4 @@
+{{- $serverID := default "podIP" .Values.jvb.websockets.serverID }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,6 +10,13 @@ data:
   ENABLE_HTTP_REDIRECT: {{ ternary "1" "0" .Values.web.httpRedirect | quote }}
   JICOFO_AUTH_USER: '{{ .Values.jicofo.xmpp.user }}'
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
+  {{- if and .Values.jvb.websockets.enabled (eq $serverID "service") }}
+  NGINX_RESOLVER: {{ required "(web.resolverIP) Please set an IP address of your KubeDNS service!" .Values.web.resolverIP }}
+  {{- end }}
+  {{- if .Values.jibri.enabled }}
+  ENABLE_RECORDING: "true"
+  ENABLE_FILE_RECORDING_SERVICE_SHARING: "true"
+  {{- end }}
   {{- range $key, $value := .Values.web.extraEnvs }}
   {{- if not (kindIs "invalid" $value) }}
   {{ $key }}: {{ tpl $value $ | quote }}

@@ -4,6 +4,10 @@ metadata:
   name: {{ include "jitsi-meet.jicofo.fullname" . }}
   labels:
     {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
+  {{- with .Values.jicofo.annotations }}
+  annotations:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.jicofo.replicaCount }}
   selector:
@@ -13,13 +17,13 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jicofo.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jvb.podLabels }}
+      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jicofo.podLabels }}
         {{ $label }}: {{ $value }}
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations }}
+      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jicofo.podAnnotations }}
         {{ $annotation }}: {{ $value|quote }}
       {{- end }}
     spec:

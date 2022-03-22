@@ -21,13 +21,10 @@ spec:
       {{- end }}
       protocol: UDP
       name: rtp-udp
-    {{- if and .Values.jvb.enableTCP }}
-    - port: {{ .Values.jvb.TCPPort }}
-      {{- if eq .Values.jvb.service.type "NodePort" }}
-      nodePort: {{ .Values.jvb.TCPPort }}
-      {{- end }}
+    {{- if .Values.jvb.websockets.enabled }}
+    - port: 9090
       protocol: TCP
-      name: rtp-tcp
+      name: colibri-ws-tcp
     {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:

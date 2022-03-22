@@ -1,0 +1,93 @@
+{{- if .Values.jibri.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+  {{- with .Values.jibri.annotations }}
+  annotations:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.jibri.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jibri/xmpp-secret.yaml") . | sha256sum }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          privileged: true
+        image: "{{ .Values.jibri.image.repository }}:{{ default .Chart.AppVersion .Values.jibri.image.tag }}"
+        imagePullPolicy: {{ pluck "pullPolicy" .Values.jibri.image .Values.image | first }}
+        ports:
+        - name: http-internal
+          containerPort: 3333
+        - name: http-api
+          containerPort: 2222
+        {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
+        livenessProbe:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with default .Values.jibri.readinessProbe .Values.jibri.readinessProbeOverride }}
+        readinessProbe:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+
+        envFrom:
+        - secretRef:
+            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jibri
+        - configMapRef:
+            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+        - configMapRef:
+            name: {{ include "jitsi-meet.jibri.fullname" . }}
+
+        resources:
+          {{- toYaml .Values.jibri.resources | nindent 12 }}
+
+        volumeMounts:
+        - name: jibri-data
+          mountPath: /data
+        - name: dev-snd
+          mountPath: /dev/snd
+        {{- if .Values.jibri.shm.enabled }}
+        - name: dev-shm
+          mountPath: /dev/shm
+        {{- end }}
+
+      volumes:
+      - name: jibri-data
+        {{- if .Values.jibri.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.jibri.persistence.existingClaim | default (include "jitsi-meet.jibri.fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: dev-snd
+        hostPath:
+          path: /dev/snd
+      {{- if .Values.jibri.shm.enabled }}
+      - name: dev-shm
+      {{-   if .Values.jibri.shm.useHost }}
+        hostPath:
+          path: /dev/shm
+      {{-   else }}
+        emptyDir:
+          medium: Memory
+          sizeLimit: {{ .Values.jibri.shm.size | default "256Mi" | quote }}
+      {{-   end }}
+      {{- end }}
+{{- end }}

@@ -2,8 +2,98 @@ apiVersion: v1
 entries:
   jitsi-meet:
   - apiVersion: v2
+    appVersion: stable-6865
+    created: "2022-03-10T23:26:16.745929+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 1.2.2
+    description: A Helm chart for Kubernetes
+    digest: 18406c945a2086787be543d6036a46f91fb7c1a5aca7b75f2e9eb6d2447858fb
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-1.2.2.tgz
+    version: 1.2.2
+  - apiVersion: v2
+    appVersion: stable-6865
+    created: "2022-03-10T23:26:16.744829+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 1.2.1
+    description: A Helm chart for Kubernetes
+    digest: cdd81bdc042771e36060dca0474920df80f7b87c61c09a20b002988bd42eb8a6
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: stable-6865
+    created: "2022-03-10T23:26:16.743473+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 1.2.0
+    description: A Helm chart for Kubernetes
+    digest: d27498c191d77de8bc53d077e664d2a89ac69224ab31956a80e7eebdeed7d05c
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
+    appVersion: stable-6726
+    created: "2022-03-10T23:26:16.742161+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 1.1.0
+    description: A Helm chart for Kubernetes
+    digest: f6344a12a4964ae731a9048cf5f451a99795268e0dffafb293659b34620ab1f6
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
+    appVersion: stable-6433
+    created: "2022-03-10T23:26:16.740804+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 1.0.0
+    description: A Helm chart for Kubernetes
+    digest: ed6a5a05e23d4d951e1c4e18ce5b08564d63ece5aff3055cc0fbc7345d6c42cb
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: stable-5963
-    created: "2021-07-24T22:26:07.083194+02:00"
+    created: "2022-03-10T23:26:16.738696+01:00"
+    dependencies:
+    - condition: prosody.enabled
+      name: prosody
+      repository: ""
+      version: 0.2.1
+    description: A Helm chart for Kubernetes
+    digest: a0092b31326bf41597fceb664e3fc669340054f4338a64bdc576f5ef8c24d9b8
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
+    appVersion: stable-5963
+    created: "2022-03-10T23:26:16.737151+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -18,7 +108,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: stable-5390-3
-    created: "2021-07-24T22:26:07.074013+02:00"
+    created: "2022-03-10T23:26:16.735313+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -33,7 +123,7 @@ entries:
     version: 0.1.4
   - apiVersion: v2
     appVersion: stable-5390-3
-    created: "2021-07-24T22:26:07.065544+02:00"
+    created: "2022-03-10T23:26:16.734192+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -48,7 +138,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: stable-5390-3
-    created: "2021-07-24T22:26:07.054767+02:00"
+    created: "2022-03-10T23:26:16.733045+01:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
@@ -61,4 +151,4 @@ entries:
     urls:
     - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-0.1.2.tgz
     version: 0.1.2
-generated: "2021-07-24T22:26:07.047619+02:00"
+generated: "2022-03-10T23:26:16.73107+01:00"
