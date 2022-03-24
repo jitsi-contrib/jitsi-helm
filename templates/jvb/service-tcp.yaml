@@ -1,8 +1,8 @@
-{{- if or (and (kindIs "invalid" .Values.jvb.service.enabled) (not .Values.jvb.useHostPort)) .Values.jvb.service.enabled }}
+{{- if and ((or (and (kindIs "invalid" .Values.jvb.service.enabled) (not .Values.jvb.useHostPort)) .Values.jvb.service.enabled)) .Values.jvb.websockets.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "jitsi-meet.jvb.fullname" . }}
+  name: {{ include "jitsi-meet.jvb.fullname" . }}-tcp
   annotations:
   {{- range $key, $value := .Values.jvb.service.annotations }}
     {{ $key }}: {{ $value | quote }}
@@ -15,17 +15,9 @@ spec:
   loadBalancerIP: {{ . }}
   {{- end }}
   ports:
-    - port: {{ default 10000 .Values.jvb.UDPPort }}
-      {{- if or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer") }}
-      nodePort: {{ .Values.jvb.UDPPort }}
-      {{- end }}
-      protocol: UDP
-      name: rtp-udp
-    {{- if .Values.jvb.websockets.enabled }}
     - port: 9090
       protocol: TCP
       name: colibri-ws-tcp
-    {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
   {{ toYaml . | indent 2 | trim }}

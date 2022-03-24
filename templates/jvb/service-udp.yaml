@@ -1,0 +1,30 @@
+{{- if or (and (kindIs "invalid" .Values.jvb.service.enabled) (not .Values.jvb.useHostPort)) .Values.jvb.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.jvb.fullname" . }}-udp
+  annotations:
+  {{- range $key, $value := .Values.jvb.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.jvb.service.type }}
+  {{- with .Values.jvb.service.LoadbalancerIP }}
+  loadBalancerIP: {{ . }}
+  {{- end }}
+  ports:
+    - port: {{ default 10000 .Values.jvb.UDPPort }}
+      {{- if or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer") }}
+      nodePort: {{ .Values.jvb.UDPPort }}
+      {{- end }}
+      protocol: UDP
+      name: rtp-udp
+  {{- with .Values.jvb.service.externalIPs }}
+  externalIPs:
+  {{ toYaml . | indent 2 | trim }}
+  {{- end }}
+  selector:
+    {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
+{{- end }}
