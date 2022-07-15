@@ -134,6 +134,9 @@ jvb:
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
   useHostPort: false
   UDPPort: 10000
+  ## nodePort used if service type is set to 'LoadBalancer' or 'NodePort'. 
+  ## It will be automatically allocated if it is left with default value
+  nodePort: 0
   service:
     enabled:
     type: ClusterIP
