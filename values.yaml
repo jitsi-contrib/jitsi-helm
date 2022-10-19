@@ -233,6 +233,9 @@ jibri:
   image:
     repository: jitsi/jibri
 
+  podLabels: {}
+  podAnnotations: {}
+
   breweryMuc: jibribrewery
   timeout: 90
 
