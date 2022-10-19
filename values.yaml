@@ -261,11 +261,23 @@ jibri:
 
   livenessProbe:
     exec:
-      command: ["pgrep", "java"]
+      command:
+        - /bin/bash
+        - "-c"
+        - >-
+          curl -sq localhost:2222/jibri/api/v1.0/health
+          | jq '.status.health.healthStatus'
+          | grep -qF HEALTHY
 
   readinessProbe:
     exec:
-      command: ["pgrep", "java"]
+      command:
+        - /bin/bash
+        - "-c"
+        - >-
+          curl -sq localhost:2222/jibri/api/v1.0/health
+          | jq '.status.health.healthStatus'
+          | grep -qF HEALTHY
 
   extraEnvs: {}
 
