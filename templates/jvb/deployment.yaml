@@ -32,13 +32,17 @@ spec:
         {{ $annotation }}: {{ $value|quote }}
       {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.jvb.podSecurityContext | nindent 8 }}
+      {{- if .Values.jvb.useHostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

@@ -136,7 +136,12 @@ jvb:
     password:
 
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
+  ## Try to use the hostPort feature:
+  #  (might not be supported by some clouds or CNI engines)
   useHostPort: false
+  ## Use host's network namespace:
+  #  (not recommended, but might help for some cases)
+  useHostNetwork: false
   UDPPort: 10000
   service:
     enabled:
