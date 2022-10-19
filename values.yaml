@@ -211,6 +211,11 @@ jibri:
   ## and/or stream their meetings (e.g. to YouTube).
   enabled: false
 
+  ## Enable multiple Jibri instances.
+  ## If enabled (i.e. set to 2 or more), each Jibri instance
+  ## will get an ID assigned to it, based on pod name.
+  replicaCount: 1
+
   ## Enable persistent storage for local recordings.
   ## If disabled, jibri pod will use a transient
   ## emptyDir-backed storage instead.

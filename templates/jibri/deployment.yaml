@@ -62,6 +62,15 @@ spec:
         - configMapRef:
             name: {{ include "jitsi-meet.jibri.fullname" . }}
 
+        {{- if (gt (int .Values.jibri.replicaCount) 1) }}
+        # Set Jibri Instance ID based on pod name:
+        env:
+        - name: JIBRI_INSTANCE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        {{- end }}
+
         resources:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
 
