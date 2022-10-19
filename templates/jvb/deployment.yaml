@@ -62,11 +62,23 @@ spec:
               fieldRef:
                 fieldPath: status.hostIP
             {{- end }}
+          - name: JVB_ADVERTISE_IPS
+            {{- if .Values.jvb.publicIP }}
+            value: {{ .Values.jvb.publicIP }}
+            {{- else }}
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+            {{- end }}
           {{- end }}
           {{- if .Values.jvb.websockets.enabled }}
           - name: JVB_WS_SERVER_ID
             {{- if eq $serverID "service" }}
+            {{-   if .Values.global.clusterDomain }}
+            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+            {{-   else }}
             value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
+            {{-   end }}
             {{- else if eq $serverID "podIP" }}
             valueFrom:
               fieldRef:
