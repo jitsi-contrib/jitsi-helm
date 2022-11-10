@@ -32,13 +32,17 @@ spec:
         {{ $annotation }}: {{ $value|quote }}
       {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.jvb.podSecurityContext | nindent 8 }}
+      {{- if .Values.jvb.useHostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -62,11 +66,23 @@ spec:
               fieldRef:
                 fieldPath: status.hostIP
             {{- end }}
+          - name: JVB_ADVERTISE_IPS
+            {{- if .Values.jvb.publicIP }}
+            value: {{ .Values.jvb.publicIP }}
+            {{- else }}
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+            {{- end }}
           {{- end }}
           {{- if .Values.jvb.websockets.enabled }}
           - name: JVB_WS_SERVER_ID
             {{- if eq $serverID "service" }}
+            {{-   if .Values.global.clusterDomain }}
+            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+            {{-   else }}
             value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
+            {{-   end }}
             {{- else if eq $serverID "podIP" }}
             valueFrom:
               fieldRef:

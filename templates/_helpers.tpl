@@ -76,7 +76,11 @@ Create the name of the service account to use
 {{- if  .Values.xmpp.domain -}}
   {{ .Values.xmpp.domain }}
 {{- else -}}
+{{-   if .Values.global.clusterDomain -}}
+  {{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{-   else -}}
   {{ .Release.Namespace }}.svc
+{{-   end -}}
 {{- end -}}
 {{- end -}}
 
@@ -84,7 +88,11 @@ Create the name of the service account to use
 {{- if .Values.prosody.server -}}
   {{ .Values.prosody.server }}
 {{- else -}}
+{{-   if .Values.global.clusterDomain -}}
+  {{ include "call-nested" (list . "prosody" "prosody.fullname") }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{-   else -}}
   {{ include "call-nested" (list . "prosody" "prosody.fullname") }}.{{ .Release.Namespace }}.svc
+{{-   end -}}
 {{- end -}}
 {{- end -}}
 
