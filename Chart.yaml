@@ -1,6 +1,6 @@
 apiVersion: v2
 name: jitsi-meet
-description: A Helm chart for Kubernetes
+description: Jitsi Meet packaged for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
