@@ -18,9 +18,15 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 8 }}
+      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jibri.podLabels }}
+        {{ $label }}: {{ $value }}
+      {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jibri/xmpp-secret.yaml") . | sha256sum }}
+      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations }}
+        {{ $annotation }}: {{ $value|quote }}
+      {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -30,7 +36,8 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         securityContext:
-          privileged: true
+          capabilities:
+            add: ["SYS_ADMIN"]
         image: "{{ .Values.jibri.image.repository }}:{{ default .Chart.AppVersion .Values.jibri.image.tag }}"
         imagePullPolicy: {{ pluck "pullPolicy" .Values.jibri.image .Values.image | first }}
         ports:
@@ -55,14 +62,21 @@ spec:
         - configMapRef:
             name: {{ include "jitsi-meet.jibri.fullname" . }}
 
+        {{- if (gt (int .Values.jibri.replicaCount) 1) }}
+        # Set Jibri Instance ID based on pod name:
+        env:
+        - name: JIBRI_INSTANCE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        {{- end }}
+
         resources:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
 
         volumeMounts:
         - name: jibri-data
           mountPath: /data
-        - name: dev-snd
-          mountPath: /dev/snd
         {{- if .Values.jibri.shm.enabled }}
         - name: dev-shm
           mountPath: /dev/shm
@@ -76,9 +90,6 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
-      - name: dev-snd
-        hostPath:
-          path: /dev/snd
       {{- if .Values.jibri.shm.enabled }}
       - name: dev-shm
       {{-   if .Values.jibri.shm.useHost }}
