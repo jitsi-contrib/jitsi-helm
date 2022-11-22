@@ -1,4 +1,3 @@
-{{- $serverID := default "podIP" .Values.jvb.websockets.serverID }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
