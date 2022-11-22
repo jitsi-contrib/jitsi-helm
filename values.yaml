@@ -197,7 +197,7 @@ jvb:
     prometheusAnnotations: false
     image:
       repository: docker.io/systemli/prometheus-jitsi-meet-exporter
-      tag: 1.1.9
+      tag: 1.2.1
       pullPolicy: IfNotPresent
     serviceMonitor:
       enabled: true
@@ -320,4 +320,4 @@ prosody:
   #     name: '{{ include "prosody.fullname" . }}-jibri'
   image:
     repository: jitsi/prosody
-    tag: 'stable-7830'
+    tag: 'stable-8044'
