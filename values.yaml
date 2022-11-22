@@ -135,6 +135,8 @@ jvb:
     user: jvb
     password:
 
+  ## Use a STUN server to help some users punch through some
+  #  especially nasty NAT setups. Usually makes sense for P2P calls.
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
   ## Try to use the hostPort feature:
   #  (might not be supported by some clouds or CNI engines)
@@ -143,6 +145,10 @@ jvb:
   #  (not recommended, but might help for some cases)
   useHostNetwork: false
   UDPPort: 10000
+  ## Use a pre-defined external port for NodePort or LoadBalancer service,
+  #  if needed. Will allocate a random port from allowed range if unset.
+  #  (Default NodePort range for K8s is 30000-32767)
+  # nodePort: 10000
   service:
     enabled:
     type: ClusterIP
