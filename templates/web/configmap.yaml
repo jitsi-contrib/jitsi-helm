@@ -9,10 +9,10 @@ data:
   ENABLE_HTTP_REDIRECT: {{ ternary "1" "0" .Values.web.httpRedirect | quote }}
   JICOFO_AUTH_USER: '{{ .Values.jicofo.xmpp.user }}'
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
-  NGINX_RESOLVER: {{ required "(web.resolverIP) Please set an IP address of your KubeDNS service!" .Values.web.resolverIP }}
   {{- if .Values.jibri.enabled }}
   ENABLE_RECORDING: "true"
   ENABLE_FILE_RECORDING_SERVICE_SHARING: "true"
+  NGINX_RESOLVER: {{ .Values.web.resolverIP }}
   {{- end }}
   {{- range $key, $value := .Values.web.extraEnvs }}
   {{- if not (kindIs "invalid" $value) }}

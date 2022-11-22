@@ -143,7 +143,7 @@ Parameter | Description | Default
 `octo.enabled` | Boolean to enable or disable the OCTO mode, for a single region | `false`
 `web.httpsEnabled` | Boolean that enabled tls-termination on the web pods. Useful if you expose the UI via a `Loadbalancer` IP instead of an ingress | `false`
 `web.httpRedirect` | Boolean that enabled http-to-https redirection. Useful for ingress that don't support this feature (ex: GKE ingress) | `false`
-`web.resolverIP` | DNS service IP for Web container to use | (unset)
+`web.resolverIP` | Override nameserver IP for Web container | (*unset*, use auto-detected nameserver IP)
 `web.extraEnvs` | Map containing additional environment variable to web pods | '{}'
 `web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `web.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map

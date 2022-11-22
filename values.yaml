@@ -54,8 +54,10 @@ web:
   httpsEnabled: false
 
   ## Resolver IP for nginx.
-  #  Make sure to set this to ClusterIP of your
-  #  `kube-dns` or `coredns` service or Jitsi won't work!
+  #
+  #  Starting with version `stable-8044`, the web container can
+  #  auto-detect the nameserver from /etc/resolv.conf.
+  #  Use this option if you want to override the nameserver IP.
   #
   # resolverIP: 10.43.0.10
 
