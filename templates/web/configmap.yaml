@@ -9,9 +9,7 @@ data:
   ENABLE_HTTP_REDIRECT: {{ ternary "1" "0" .Values.web.httpRedirect | quote }}
   JICOFO_AUTH_USER: '{{ .Values.jicofo.xmpp.user }}'
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
-  {{- if .Values.jibri.enabled }}
-  ENABLE_RECORDING: "true"
-  ENABLE_FILE_RECORDING_SERVICE_SHARING: "true"
+  {{- if .Values.web.resolverIP }}
   NGINX_RESOLVER: {{ .Values.web.resolverIP }}
   {{- end }}
   {{- range $key, $value := .Values.web.extraEnvs }}

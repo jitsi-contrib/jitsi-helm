@@ -94,6 +94,9 @@ Parameter | Description | Default
 `imagePullSecrets` | List of names of secrets resources containing private registry credentials | `[]`
 `enableAuth` | Enable authentication | `false`
 `enableGuests` | Enable guest access | `true`
+`websockets.colibri.enabled` | Enable WebSocket support for JVB/Colibri | `false`
+`websockets.colibri.serverID` | Set JVB/Colibri WS Server ID | `podIP` (see `values.yaml`)
+`websockets.xmpp.enabled` | Enable WebSocket support for Prosody/XMPP | `false`
 `jibri.enabled` | Enable Jibri service | `false`
 `jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
 `jibri.persistence.size` | Jibri persistent storage size | `4Gi`
@@ -128,8 +131,6 @@ Parameter | Description | Default
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
 `jvb.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jvb.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jvb.websockets.enabled` | Enable WebSocket support for JVB/Colibri | `false`
-`jvb.websockets.serverID` | Set JVB/Colibri WS Server ID | `podIP` (see `values.yaml`)
 `jvb.metrics.enabled` | Boolean that control the metrics exporter for jvb. If true the `ServiceMonitor` will also created | `false`
 `jvb.metrics.prometheusAnnotations` | Boolean that controls the generation of prometheus annotations, to expose metrics for HPA | `false`
 `jvb.metrics.image.repository` | Default image repository for metrics exporter | `docker.io/systemli/prometheus-jitsi-meet-exporter`

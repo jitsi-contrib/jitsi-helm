@@ -1,4 +1,4 @@
-{{- $serverID := default "podIP" .Values.jvb.websockets.serverID }}
+{{- $serverID := default "podIP" .Values.websockets.colibri.serverID }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -75,7 +75,7 @@ spec:
                 fieldPath: status.hostIP
             {{- end }}
           {{- end }}
-          {{- if .Values.jvb.websockets.enabled }}
+          {{- if or .Values.websockets.colibri.enabled }}
           - name: JVB_WS_SERVER_ID
             {{- if eq $serverID "service" }}
             {{-   if .Values.global.clusterDomain }}
@@ -108,7 +108,7 @@ spec:
               hostPort: {{ .Values.jvb.UDPPort }}
               {{- end }}
               protocol: UDP
-          {{- if .Values.jvb.websockets.enabled }}
+          {{- if or .Values.websockets.colibri.enabled }}
             - name: colibri-ws-tcp
               containerPort: 9090
               protocol: TCP

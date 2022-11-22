@@ -21,7 +21,7 @@ spec:
       {{- end }}
       protocol: UDP
       name: rtp-udp
-    {{- if .Values.jvb.websockets.enabled }}
+    {{- if or .Values.websockets.colibri.enabled }}
     - port: 9090
       protocol: TCP
       name: colibri-ws-tcp
