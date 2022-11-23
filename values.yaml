@@ -62,7 +62,6 @@ web:
     enabled: false
     # ingressClassName: "nginx-ingress-0"
     annotations: {}
-      # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
     hosts:
     - host: jitsi.local
