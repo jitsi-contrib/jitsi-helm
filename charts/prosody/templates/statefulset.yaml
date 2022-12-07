@@ -21,8 +21,8 @@ spec:
       {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.podLabels }}
         {{ $label }}: {{ $value }}
       {{- end }}
-      {{- with mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations }}
         si.jit.meet/secret-timestamp: {{ now | date "20060102T150405" }}
+      {{- with mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations }}
       annotations:
       {{- range $annotation, $value := . }}
         {{ $annotation }}: {{ $value }}
