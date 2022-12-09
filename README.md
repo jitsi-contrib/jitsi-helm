@@ -30,9 +30,13 @@ jvb:
   service:
     type: LoadBalancer
 
-  # Depending on the cloud, publicIP cannot be know in advance, so deploy first, without the next option.
+  # Depending on the cloud, LB's public IP cannot be known in advance, so deploy first, without the next option.
   # Next: redeploy with the following option set to the public IP you retrieved from the API.
-  publicIP: 1.2.3.4
+  # Additionally, you can add your cluster's public IPs if you want to use direct connection as a fallback.
+  publicIPs:
+    - 1.2.3.4
+    # - 30.10.10.1
+    # - 30.10.10.2
 ```
 
 In this case you're not allowed to change the `jvb.replicaCount` to more than `1`, UDP packets will be routed to random `jvb`, which would not allow for a working video setup.
@@ -43,11 +47,14 @@ In this case you're not allowed to change the `jvb.replicaCount` to more than `1
 jvb:
   service:
     type: NodePort
-  # It may be required to change the default port to a value allowed by Kubernetes (30000-32768)
-  UDPPort: 30000
+  # Set the following variable if you want to use a specific external port for the service.
+  # The default is to select a random port from Kubelet's allowed NodePort range (30000-32767).
 
-  # Use public IP of one of your node, or the public IP of a loadbalancer in front of the nodes
-  publicIP: 1.2.3.4
+  # nodePort: 10000
+
+  # Use public IP of one of your nodes, or the public IP of an external LB:
+  publicIPs:
+    - 30.10.10.1
 ```
 
 In this case you're not allowed to change the `jvb.replicaCount` to more than `1`, UDP packets will be routed to random `jvb`, which would not allow for a working video setup.
@@ -123,9 +130,13 @@ Parameter | Description | Default
 `jicofo.xmpp.user` | Name of the XMPP user used by jicofo to authenticate | `focus`
 `jicofo.xmpp.password` | Password used by jicofo to authenticate on the XMPP service | 10 random chars
 `jicofo.xmpp.componentSecret` | Values of the secret used by jicofo for the xmpp-component | 10 random chars
+`jvb.publicIPs` | List of IP addresses for JVB to announce to clients | `(unset)`
 `jvb.service.enabled` | Boolean to enable os disable the jvb service creation | `false` if `jvb.useHostPort` is `true` otherwise `true`
 `jvb.service.type` | Type of the jvb service | `ClusterIP`
 `jvb.UDPPort` | UDP port used by jvb, also affects port of service, and hostPort | `10000`
+`jvb.nodePort` | UDP port used by NodePort service | `(unset)`
+`jvb.useHostPort` | Enable HostPort feature (may not work on some CNI plugins) | `false`
+`jvb.useHostNetwork` | Connect JVB pod to host network namespace | `false`
 `jvb.extraEnvs` | Map containing additional environment variables to jvb | '{}'
 `jvb.xmpp.user` | Name of the XMPP user used by jvb to authenticate | `jvb`
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars

@@ -161,6 +161,17 @@ jvb:
     user: jvb
     password:
 
+  ## Set public IP addresses to be advertised by JVB.
+  #  You can specify your nodes' IP addresses,
+  #  or IP addresses of proxies/LoadBalancers used for your
+  #  Jitsi Meet installation. Or both!
+  #
+  #  Note that only the first IP address will be used for legacy
+  #  `DOCKER_HOST_ADDRESS` environment variable.
+  #
+  # publicIPs:
+  #   - 1.2.3.4
+  #   - 5.6.7.8
   ## Use a STUN server to help some users punch through some
   #  especially nasty NAT setups. Usually makes sense for P2P calls.
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
@@ -170,6 +181,7 @@ jvb:
   ## Use host's network namespace:
   #  (not recommended, but might help for some cases)
   useHostNetwork: false
+  ## UDP transport port:
   UDPPort: 10000
   ## Use a pre-defined external port for NodePort or LoadBalancer service,
   #  if needed. Will allocate a random port from allowed range if unset.

@@ -13,4 +13,4 @@ spec:
       name: tcp-metrics
   selector:
   {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
-  {{- end }}
+{{- end }}

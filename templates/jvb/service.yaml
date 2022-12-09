@@ -1,4 +1,4 @@
-{{- if or (and (kindIs "invalid" .Values.jvb.service.enabled) (not .Values.jvb.useHostPort)) .Values.jvb.service.enabled }}
+{{- if or (and (kindIs "invalid" .Values.jvb.service.enabled) (not (or .Values.jvb.useHostPort .Values.jvb.useHostNetwork))) .Values.jvb.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
