@@ -1,4 +1,3 @@
-{{- $serverID := default "podIP" .Values.websockets.colibri.serverID }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -75,21 +74,11 @@ spec:
                 fieldPath: status.hostIP
             {{- end }}
           {{- end }}
-          {{- if or .Values.websockets.colibri.enabled }}
+          {{- if .Values.websockets.colibri.enabled }}
           - name: JVB_WS_SERVER_ID
-            {{- if eq $serverID "service" }}
-            {{-   if .Values.global.clusterDomain }}
-            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
-            {{-   else }}
-            value: {{ include "jitsi-meet.jvb.fullname" . }}.{{ .Release.Namespace }}.svc
-            {{-   end }}
-            {{- else if eq $serverID "podIP" }}
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-            {{- else }}
-            value: {{ $serverID | quote }}
-            {{- end }}
           {{- end }}
           {{- if  .Values.octo.enabled }}
           - name: JVB_OCTO_BIND_ADDRESS

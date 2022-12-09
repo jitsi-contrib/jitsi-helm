@@ -102,7 +102,6 @@ Parameter | Description | Default
 `enableAuth` | Enable authentication | `false`
 `enableGuests` | Enable guest access | `true`
 `websockets.colibri.enabled` | Enable WebSocket support for JVB/Colibri | `false`
-`websockets.colibri.serverID` | Set JVB/Colibri WS Server ID | `podIP` (see `values.yaml`)
 `websockets.xmpp.enabled` | Enable WebSocket support for Prosody/XMPP | `false`
 `jibri.enabled` | Enable Jibri service | `false`
 `jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
