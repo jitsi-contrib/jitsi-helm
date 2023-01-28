@@ -104,6 +104,7 @@ Parameter | Description | Default
 `websockets.colibri.enabled` | Enable WebSocket support for JVB/Colibri | `false`
 `websockets.xmpp.enabled` | Enable WebSocket support for Prosody/XMPP | `false`
 `jibri.enabled` | Enable Jibri service | `false`
+`jibri.singleUseMode` | Enable Jibri single-use mode | `false`
 `jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
 `jibri.persistence.size` | Jibri persistent storage size | `4Gi`
 `jibri.persistence.existingClaim` | Use pre-created PVC for Jibri | `(unset)`
