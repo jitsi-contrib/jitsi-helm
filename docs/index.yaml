@@ -3,14 +3,14 @@ entries:
   jitsi-meet:
   - apiVersion: v2
     appVersion: stable-8218
-    created: "2023-01-29T00:32:44.741615+07:00"
+    created: "2023-01-29T00:55:01.440345+07:00"
     dependencies:
     - condition: prosody.enabled
       name: prosody
       repository: ""
       version: 1.3.2
     description: Jitsi Meet packaged for Kubernetes
-    digest: 830bd9f59f31d7729c9defeedc34a9114a8e905604a6ab86ab7710516457b464
+    digest: a69af808655bd8c5ffbcd4a80ec07d1638c84e80189c6fdeb2a68c7c4f49e423
     name: jitsi-meet
     type: application
     urls:
@@ -211,4 +211,4 @@ entries:
     urls:
     - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-0.1.2.tgz
     version: 0.1.2
-generated: "2023-01-29T00:32:44.725783+07:00"
+generated: "2023-01-29T00:55:01.426893+07:00"
