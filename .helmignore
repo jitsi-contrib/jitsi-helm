@@ -23,3 +23,5 @@
 .vscode/
 # GitHub Pages
 docs/
+# Built Helm charts
+*.tgz
