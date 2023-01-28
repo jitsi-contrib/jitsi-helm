@@ -238,9 +238,21 @@ jibri:
   ## and/or stream their meetings (e.g. to YouTube).
   enabled: false
 
+  ## Enable single-use mode for Jibri.
+  ## With this setting enabled, every Jibri instance
+  ## will become "expired" after being used once (successfully or not)
+  ## and cleaned up (restarted) by Kubernetes.
+  ##
+  ## Note that detecting expired Jibri, restarting and registering it
+  ## takes some time, so you'll have to make sure you have enough
+  ## instances at your disposal.
+  ## You might also want to make LivenessProbe fail faster.
+  singleUseMode: false
+
   ## Enable multiple Jibri instances.
   ## If enabled (i.e. set to 2 or more), each Jibri instance
   ## will get an ID assigned to it, based on pod name.
+  ## Multiple replicas are recommended for single-use mode.
   replicaCount: 1
 
   ## Enable persistent storage for local recordings.
@@ -288,8 +300,8 @@ jibri:
         - "-c"
         - >-
           curl -sq localhost:2222/jibri/api/v1.0/health
-          | jq '.status.health.healthStatus'
-          | grep -qF HEALTHY
+          | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
+          | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   readinessProbe:
     exec:
@@ -298,8 +310,8 @@ jibri:
         - "-c"
         - >-
           curl -sq localhost:2222/jibri/api/v1.0/health
-          | jq '.status.health.healthStatus'
-          | grep -qF HEALTHY
+          | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
+          | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   extraEnvs: {}
 
