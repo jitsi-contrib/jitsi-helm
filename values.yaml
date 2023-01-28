@@ -294,6 +294,9 @@ jibri:
     password:
 
   livenessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 2
     exec:
       command:
         - /bin/bash
@@ -304,6 +307,9 @@ jibri:
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 2
     exec:
       command:
         - /bin/bash
