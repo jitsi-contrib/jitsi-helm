@@ -126,7 +126,6 @@ Parameter | Description | Default
 `jicofo.extraEnvs` | Map containing additional environment variables for jicofo | '{}'
 `jicofo.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jicofo.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jicofo.xmpp.user` | Name of the XMPP user used by jicofo to authenticate | `focus`
 `jicofo.xmpp.password` | Password used by jicofo to authenticate on the XMPP service | 10 random chars
 `jicofo.xmpp.componentSecret` | Values of the secret used by jicofo for the xmpp-component | 10 random chars
 `jvb.publicIPs` | List of IP addresses for JVB to announce to clients | `(unset)`

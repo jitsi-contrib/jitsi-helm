@@ -124,7 +124,6 @@ jicofo:
     repository: jitsi/jicofo
 
   xmpp:
-    user: focus
     password:
     componentSecret:
 
