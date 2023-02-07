@@ -25,6 +25,7 @@ spec:
   externalIPs:
   {{ toYaml . | indent 2 | trim }}
   {{- end }}
+  externalTrafficPolicy: {{ .Values.jvb.service.externalTrafficPolicy }}
   selector:
     {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
 {{- end }}

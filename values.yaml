@@ -182,6 +182,7 @@ jvb:
   service:
     enabled:
     type: ClusterIP
+    externalTrafficPolicy: Cluster
     externalIPs: []
     ## Annotations to be added to the service (if LoadBalancer is used)
     ##
