@@ -239,6 +239,13 @@ jibri:
   ## and/or stream their meetings (e.g. to YouTube).
   enabled: false
 
+  ## Use external Jibri installation.
+  ## This setting skips the creation of Jibri Deployment altogether,
+  ## instead creating just the config secret
+  ## and enabling recording/streaming services.
+  ## Defaults to disabled (use bundled Jibri).
+  useExternalJibri: false
+
   ## Enable single-use mode for Jibri.
   ## With this setting enabled, every Jibri instance
   ## will become "expired" after being used once (successfully or not)
