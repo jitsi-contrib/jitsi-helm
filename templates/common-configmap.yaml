@@ -25,8 +25,13 @@ data:
   ENABLE_XMPP_WEBSOCKET: 'false'
   {{- end }}
   {{- if .Values.jibri.enabled }}
+  {{-   if .Values.jibri.recording }}
   ENABLE_RECORDING: "true"
   ENABLE_FILE_RECORDING_SERVICE_SHARING: "true"
+  {{-   end }}
+  {{-   if .Values.jibri.livestreaming }}
+  ENABLE_LIVESTREAMING: "true"
+  {{-   end }}
   {{- end }}
   TZ: '{{ .Values.tz }}'
   {{- range $key, $value := .Values.extraCommonEnvs }}

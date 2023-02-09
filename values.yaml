@@ -257,6 +257,16 @@ jibri:
   ## You might also want to make LivenessProbe fail faster.
   singleUseMode: false
 
+  ## Enable recording service.
+  ## Set this to true/false to enable/disable local recordings.
+  ## Defaults to enabled (allow local recordings).
+  recording: true
+
+  ## Enable livestreaming service.
+  ## Set this to true/false to enable/disable live streams.
+  ## Defaults to disabled (livestreaming is forbidden).
+  livestreaming: false
+
   ## Enable multiple Jibri instances.
   ## If enabled (i.e. set to 2 or more), each Jibri instance
   ## will get an ID assigned to it, based on pod name.

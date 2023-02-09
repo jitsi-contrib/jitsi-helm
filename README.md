@@ -106,6 +106,8 @@ Parameter | Description | Default
 `jibri.enabled` | Enable Jibri service | `false`
 `jibri.useExternalJibri` | Use external Jibri service, instead of chart-provided one | `false`
 `jibri.singleUseMode` | Enable Jibri single-use mode | `false`
+`jibri.recording` | Enable local recording service | `true`
+`jibri.livestreaming` | Enable livestreaming service | `false`
 `jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
 `jibri.persistence.size` | Jibri persistent storage size | `4Gi`
 `jibri.persistence.existingClaim` | Use pre-created PVC for Jibri | `(unset)`
