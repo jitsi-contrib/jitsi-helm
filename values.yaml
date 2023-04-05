@@ -292,6 +292,15 @@ jibri:
     # useHost: false
     # size: 256Mi
 
+  ## Configure the update strategy for this deployment
+  ## The node "strategy" will be imported literally into
+  ## the Jibri deployment.
+  ## This will be important depending on your persistence
+  ## settings.
+  ## Default strategy is "rolling update".
+  #strategy:
+  #  type: Recreate
+
   image:
     repository: jitsi/jibri
 

@@ -101,4 +101,8 @@ spec:
           sizeLimit: {{ .Values.jibri.shm.size | default "256Mi" | quote }}
       {{-   end }}
       {{- end }}
+
+  {{- if .Values.jibri.strategy }}
+  {{ .Values.jibri.strategy }}
+  {{- end }}
 {{- end }}
