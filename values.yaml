@@ -297,9 +297,9 @@ jibri:
   ## the Jibri deployment.
   ## This will be important depending on your persistence
   ## settings.
-  ## Default strategy is "rolling update".
+  ## Default strategy is "RollingUpdate".
   #strategy:
-  #  type: Recreate
+  #  type: RollingUpdate
 
   image:
     repository: jitsi/jibri
