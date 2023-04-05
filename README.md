@@ -177,6 +177,7 @@ Parameter | Description | Default
 `jibri.xmpp.password` | Password used by jibri to authenticate on the XMPP service | 10 random chars
 `jibri.recorder.user` | Name of the XMPP user used by jibri to record | `recorder`
 `jibri.recorder.password` | Password used by jibri to record on the XMPP service | 10 random chars
+`jibri.strategy` | Depolyment update strategy and parameters | `(unset)`
 `jicofo.replicaCount` | Number of replica of the jicofo pods | `1`
 `jicofo.image.repository` | Name of the image to use for the jicofo pods | `jitsi/jicofo`
 `jicofo.extraEnvs` | Map containing additional environment variables for jicofo | '{}'
