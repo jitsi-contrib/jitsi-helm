@@ -103,6 +103,7 @@ spec:
       {{- end }}
 
   {{- if .Values.jibri.strategy }}
-  {{ .Values.jibri.strategy }}
+  strategy:
+    {{ toYaml .Values.jibri.strategy | nindent 4 }}
   {{- end }}
 {{- end }}
