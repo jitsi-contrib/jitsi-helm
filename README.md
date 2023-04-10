@@ -52,25 +52,40 @@ jvb:
 
   # nodePort: 10000
 
-  # Use public IP of one of your nodes, or the public IP of an external LB:
+  # Use public IP of one (or more) of your nodes,
+  # or the public IP of an external LB:
   publicIPs:
     - 30.10.10.1
 ```
 
-In this case you're not allowed to change the `jvb.replicaCount` to more than `1`, UDP packets will be routed to random `jvb`, which would not allow for a working video setup.
+In this case you're not allowed to change the `jvb.replicaCount` to more than
+`1`, UDP packets will be routed to random `jvb`, which would not allow for a
+working video setup.
 
 ### Option 3: hostPort and node with Public IP
-
-Assuming that the node knows the PublicIP it holds, you can enable this setup:
 
 ```yaml
 jvb:
   useHostPort: true
-  # This option requires kubernetes >= 1.17
-  useNodeIP: true
+  # Use public IP of one (or more) of your nodes,
+  # or the public IP of an external LB:
+  publicIPs:
+    - 30.10.10.1
 ```
 
-In this case you can have more the one `jvb` but you're putting you cluster at risk by having it directly exposed on the Internet.
+In this case you can have more the one `jvb` but you're putting you cluster at
+risk by having it directly exposed on the Internet.
+
+### Option 4: hostNetwork
+
+```yaml
+jvb:
+  useHostNetwork: true
+```
+
+Similar to Option 3, this way you expose JVB "as is" on the node, without any
+additional protection. This is not recommended, but might be useful in some rare
+cases.
 
 ### Option 4: Use ingress TCP/UDP forward capabilities
 
@@ -80,7 +95,8 @@ In case of an ingress capable of doing tcp/udp forwarding (like nginx-ingress), 
 # Don't forget to configure the ingress properly (separate configuration)
 jvb:
   # 1.2.3.4 being one of the IP of the ingress controller
-  publicIP: 1.2.3.4
+  publicIPs:
+    - 1.2.3.4
 
 ```
 
