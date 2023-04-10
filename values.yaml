@@ -292,14 +292,13 @@ jibri:
     # useHost: false
     # size: 256Mi
 
-  ## Configure the update strategy for this deployment
-  ## The node "strategy" will be imported literally into
-  ## the Jibri deployment.
-  ## This will be important depending on your persistence
-  ## settings.
-  ## Default strategy is "RollingUpdate".
-  #strategy:
-  #  type: RollingUpdate
+  ## Configure the update strategy for Jibri deployment.
+  ## This may be useful depending on your persistence settings,
+  ## e.g. when you use ReadWriteOnce PVCs.
+  ## Default strategy is "RollingUpdate", which keeps
+  ## the old instances up until the new ones are ready.
+  # strategy:
+  #   type: RollingUpdate
 
   image:
     repository: jitsi/jibri
