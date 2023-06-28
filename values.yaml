@@ -380,4 +380,4 @@ prosody:
   #     name: '{{ include "prosody.fullname" . }}-jibri'
   image:
     repository: jitsi/prosody
-    tag: 'stable-8319'
+    tag: 'stable-8719'
