@@ -1,0 +1,28 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+apiVersion: v2
+appVersion: stable-8719
+dependencies:
+- - condition: prosody.enabled
+  name: prosody
+  repository: ""
+  version: 1.3.6
+description: Jitsi Meet packaged for Kubernetes
+name: jitsi-meet
+type: application
+version: 1.3.6
+
+...
+files:
+  jitsi-meet-1.3.6.tgz: sha256:82c2e9bdf140e8ff3c9ab02597972c14f01e8ad2040ca5121e0df1c0f0236ed8
+-----BEGIN PGP SIGNATURE-----
+
+wsBcBAEBCgAQBQJknKtuCRBQgmc+jUqS8AAAu2MIABYIpi0+UeQqxdvPFajHoKk1
+drGwe0qbfgyoI8Avzpmlq6xDxlp3sNXnfMrp1TuFcyXOznMOXHiQK5eoYJXXgDin
+xvzRC0I1IdlPwz+Vn02NJNB5HUunH3YN9pPNSj3L37Olz/Py6pH9S29fHQ8n06N7
+5IfqL4yhhvB+9qKn0HK8vndN5XMVDWSnd1wS8T4vjxz4Q5kYvAJKm3R6U5A9ds1F
+tyw6/xgnWzTouH3gHIQ3/gwrNIWLXj8F4Y9eCllxwkBnlsWyXU29fgE2ShkACX50
+SJyldDNTbopxvUKGuY0QmuXaz7WNElv+439yg5N2Wd8q66guoe/TsveoGnV/X7A=
+=Wdmv
+-----END PGP SIGNATURE-----
