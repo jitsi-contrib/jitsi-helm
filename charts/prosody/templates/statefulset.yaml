@@ -21,12 +21,11 @@ spec:
       {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.podLabels }}
         {{ $label }}: {{ $value }}
       {{- end }}
-        si.jit.meet/secret-timestamp: {{ now | date "20060102T150405" }}
-      {{- with mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations }}
       annotations:
-      {{- range $annotation, $value := . }}
+        hash-secret: "{{ toYaml .Values.secretEnvs | sha256sum | trunc 32 }}"
+        hash-configmap: "{{ toYaml .Values.env | sha256sum | trunc 32 }}"
+      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations }}
         {{ $annotation }}: {{ $value }}
-      {{- end }}
       {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
