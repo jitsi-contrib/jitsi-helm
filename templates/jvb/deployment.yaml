@@ -21,9 +21,9 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jvb.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.jvb.podLabels) }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jvb/xmpp-secret.yaml") . | sha256sum }}
@@ -31,9 +31,9 @@ spec:
         prometheus.io/port: "9888"
         prometheus.io/scrape: "true"
         {{- end }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations }}
-        {{ $annotation }}: {{ $value|quote }}
-      {{- end }}
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -53,47 +53,47 @@ spec:
           image: "{{ .Values.jvb.image.repository }}:{{ default .Chart.AppVersion .Values.jvb.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jvb.image .Values.image | first }}
           envFrom:
-          - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jvb
-          - configMapRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
-          - configMapRef:
-              name: {{ include "jitsi-meet.jvb.fullname" . }}
+            - secretRef:
+                name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jvb
+            - configMapRef:
+                name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+            - configMapRef:
+                name: {{ include "jitsi-meet.jvb.fullname" . }}
           env:
-          {{- if or .Values.jvb.useNodeIP .Values.jvb.publicIPs }}
-          - name: DOCKER_HOST_ADDRESS
-            {{- if .Values.jvb.publicIPs }}
-            value: {{ first .Values.jvb.publicIPs }}
-            {{- else }}
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
+            {{- if or .Values.jvb.useNodeIP .Values.jvb.publicIPs }}
+            - name: DOCKER_HOST_ADDRESS
+              {{- if .Values.jvb.publicIPs }}
+              value: {{ first .Values.jvb.publicIPs }}
+              {{- else }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+              {{- end }}
+            - name: JVB_ADVERTISE_IPS
+              {{- if .Values.jvb.publicIPs }}
+              value: {{ .Values.jvb.publicIPs | join "," }}
+              {{- else }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+              {{- end }}
             {{- end }}
-          - name: JVB_ADVERTISE_IPS
-            {{- if .Values.jvb.publicIPs }}
-            value: {{ .Values.jvb.publicIPs | join "," }}
-            {{- else }}
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
+            {{- if .Values.websockets.colibri.enabled }}
+            - name: JVB_WS_SERVER_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             {{- end }}
-          {{- end }}
-          {{- if .Values.websockets.colibri.enabled }}
-          - name: JVB_WS_SERVER_ID
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          {{- end }}
-          {{- if  .Values.octo.enabled }}
-          - name: JVB_OCTO_BIND_ADDRESS
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
-          - name: JVB_OCTO_PUBLIC_ADDRESS
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          {{- end }}
+            {{- if  .Values.octo.enabled }}
+            - name: JVB_OCTO_BIND_ADDRESS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: JVB_OCTO_PUBLIC_ADDRESS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- end }}
           ports:
             - name: rtp-udp
               containerPort: {{ .Values.jvb.UDPPort }}
@@ -101,24 +101,24 @@ spec:
               hostPort: {{ .Values.jvb.UDPPort }}
               {{- end }}
               protocol: UDP
-          {{- if or .Values.websockets.colibri.enabled }}
+            {{- if or .Values.websockets.colibri.enabled }}
             - name: colibri-ws-tcp
               containerPort: 9090
               protocol: TCP
-          {{- end }}
+            {{- end }}
           {{- with .Values.jvb.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.jvb.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.jvb.resources | nindent 12 }}
           {{- with .Values.jvb.extraVolumeMounts }}
           volumeMounts:
-          {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 10 }}
           {{- end }}
 
         {{- if .Values.jvb.metrics.enabled }}
@@ -142,18 +142,18 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 5
           resources:
-        {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
-      {{- end }}
+            {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
+        {{- end }}
 
       {{- with .Values.jvb.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if or .Values.jvb.useHostPort .Values.jvb.affinity }}
+      {{- if or .Values.jvb.useHostPort .Values.jvb.affinity }}
       affinity:
-      {{- if .Values.jvb.affinity }}
-        {{- toYaml .Values.jvb.affinity | nindent 8 }}
-      {{- else }}
+        {{- with .Values.jvb.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- else }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -163,13 +163,13 @@ spec:
                 values:
                 - jvb
             topologyKey: "kubernetes.io/hostname"
+        {{- end }}
       {{- end }}
-    {{- end }}
-    {{- with .Values.jvb.tolerations }}
+      {{- with .Values.jvb.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.jvb.extraVolumes }}
+      {{- end }}
+      {{- with .Values.jvb.extraVolumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}

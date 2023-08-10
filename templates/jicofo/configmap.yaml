@@ -11,12 +11,10 @@ data:
   JIBRI_BREWERY_MUC: '{{ .Values.jibri.breweryMuc }}'
   JIBRI_PENDING_TIMEOUT: '{{ .Values.jibri.timeout }}'
   {{- end }}
-  {{- range $key, $value := .Values.jicofo.extraEnvs }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
-  {{- end }}
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
   OCTO_BRIDGE_SELECTION_STRATEGY: "SplitBridgeSelectionStrategy"
+  {{- end }}
+  {{- with .Values.jicofo.extraEnvs }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}

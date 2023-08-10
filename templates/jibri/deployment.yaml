@@ -21,20 +21,20 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jibri.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.jibri.podLabels) }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jibri/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations }}
-        {{ $annotation }}: {{ $value|quote }}
-      {{- end }}
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations) }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -50,20 +50,20 @@ spec:
           containerPort: 2222
         {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
         livenessProbe:
-        {{- toYaml . | nindent 10 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with default .Values.jibri.readinessProbe .Values.jibri.readinessProbeOverride }}
         readinessProbe:
-        {{- toYaml . | nindent 10 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
 
         envFrom:
-        - secretRef:
-            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jibri
-        - configMapRef:
-            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
-        - configMapRef:
-            name: {{ include "jitsi-meet.jibri.fullname" . }}
+          - secretRef:
+              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jibri
+          - configMapRef:
+              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+          - configMapRef:
+              name: {{ include "jitsi-meet.jibri.fullname" . }}
 
         {{- if (gt (int .Values.jibri.replicaCount) 1) }}
         # Set Jibri Instance ID based on pod name:
@@ -78,30 +78,30 @@ spec:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
 
         volumeMounts:
-        - name: jibri-data
-          mountPath: /data
-        {{- if .Values.jibri.shm.enabled }}
-        - name: dev-shm
-          mountPath: /dev/shm
-        {{- end }}
+          - name: jibri-data
+            mountPath: /data
+          {{- if .Values.jibri.shm.enabled }}
+          - name: dev-shm
+            mountPath: /dev/shm
+          {{- end }}
 
       volumes:
-      - name: jibri-data
-        {{- if .Values.jibri.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.jibri.persistence.existingClaim | default (include "jitsi-meet.jibri.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
+        - name: jibri-data
+          {{- if .Values.jibri.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.jibri.persistence.existingClaim | default (include "jitsi-meet.jibri.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.jibri.shm.enabled }}
+        - name: dev-shm
+          {{- if .Values.jibri.shm.useHost }}
+          hostPath:
+            path: /dev/shm
+          {{- else }}
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.jibri.shm.size | default "256Mi" | quote }}
+          {{- end }}
         {{- end }}
-      {{- if .Values.jibri.shm.enabled }}
-      - name: dev-shm
-      {{-   if .Values.jibri.shm.useHost }}
-        hostPath:
-          path: /dev/shm
-      {{-   else }}
-        emptyDir:
-          medium: Memory
-          sizeLimit: {{ .Values.jibri.shm.size | default "256Mi" | quote }}
-      {{-   end }}
-      {{- end }}
 {{- end }}

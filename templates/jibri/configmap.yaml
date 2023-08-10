@@ -13,9 +13,7 @@ data:
   JIBRI_STRIP_DOMAIN_JID: muc
   DISPLAY: ":0"
   JIBRI_SINGLE_USE_MODE: {{ .Values.jibri.singleUseMode | default false | quote }}
-  {{- range $key, $value := .Values.jibri.extraEnvs }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
+  {{- with .Values.jibri.extraEnvs }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}
 {{- end }}

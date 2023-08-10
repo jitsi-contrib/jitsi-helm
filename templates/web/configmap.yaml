@@ -5,15 +5,13 @@ metadata:
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
 data:
-  DISABLE_HTTPS: {{ ternary "0" "1" .Values.web.httpsEnabled | quote }}
-  ENABLE_HTTP_REDIRECT: {{ ternary "1" "0" .Values.web.httpRedirect | quote }}
-  JICOFO_AUTH_USER: focus
+  DISABLE_HTTPS: {{ .Values.web.httpsEnabled | ternary "0" "1" | quote }}
+  ENABLE_HTTP_REDIRECT: {{ .Values.web.httpRedirect | ternary "1" "0" | quote }}
+  JICOFO_AUTH_USER: "focus"
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
   {{- if .Values.web.resolverIP }}
   NGINX_RESOLVER: {{ .Values.web.resolverIP }}
   {{- end }}
-  {{- range $key, $value := .Values.web.extraEnvs }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
+  {{- with .Values.web.extraEnvs }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}

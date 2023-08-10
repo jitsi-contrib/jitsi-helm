@@ -5,8 +5,4 @@ metadata:
   labels:
     {{- include "prosody.labels" . | nindent 4 }}
 data:
-  {{- range $key, $value := .Values.env }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
-  {{- end }}
+  {{- toYaml .Values.env | nindent 2 }}

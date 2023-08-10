@@ -3,8 +3,10 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: nginx
+  repository: jitsi/prosody
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""

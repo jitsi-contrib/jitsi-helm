@@ -18,20 +18,20 @@ spec:
     metadata:
       labels:
         {{- include "prosody.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.podLabels) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
       annotations:
         hash-secret: "{{ toYaml .Values.secretEnvs | sha256sum | trunc 32 }}"
         hash-configmap: "{{ toYaml .Values.env | sha256sum | trunc 32 }}"
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations }}
-        {{ $annotation }}: {{ $value }}
-      {{- end }}
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "prosody.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -39,21 +39,19 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ tpl (default .Chart.AppVersion .Values.image.tag ) . }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion  }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
-          - configMapRef:
-              name: {{ include "prosody.fullname" . }}
-          - secretRef:
-              name: {{ include "prosody.fullname" . }}
-          {{- range .Values.extraEnvFrom }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
-          {{- end }}
-          {{- if .Values.extraEnvs }}
+            - configMapRef:
+                name: {{ include "prosody.fullname" . }}
+            - secretRef:
+                name: {{ include "prosody.fullname" . }}
+            {{- with .Values.extraEnvFrom }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.extraEnvs }}
           env:
-          {{- range .Values.extraEnvs }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
-          {{- end }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: xmpp-c2s
@@ -73,58 +71,58 @@ spec:
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          - name: prosody-data
-            mountPath: {{ .Values.dataDir }}
-          {{- with .Values.extraVolumeMounts }}
-          {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: prosody-data
+              mountPath: {{ .Values.dataDir }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       volumes:
-      - name: prosody-data
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: prosody-data
-        {{- else }}
-        emptyDir: {}
+        - name: prosody-data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: prosody-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.extraVolumes }}
-      {{- toYaml . | nindent 6 }}
-      {{- end }}
-    {{- with .Values.nodeSelector }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.persistence.enabled .Values.extraVolumeClaimTemplates }}
-  volumeClaimTemplates:
-  - metadata:
-      name: prosody-data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      volumeMode: Filesystem
-      resources:
-        requests:
-          storage: {{ .Values.persistence.size }}
-      {{- with .Values.persistence.storageClassName }}
-      storageClassName: {{ . | quote }}
       {{- end }}
-  {{- with .Values.extraVolumeClaimTemplates }}
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
+  {{- if or .Values.persistence.enabled .Values.extraVolumeClaimTemplates }}
+  volumeClaimTemplates:
+    - metadata:
+        name: prosody-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+        {{- with .Values.persistence.storageClassName }}
+        storageClassName: {{ . | quote }}
+        {{- end }}
+    {{- with .Values.extraVolumeClaimTemplates }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}

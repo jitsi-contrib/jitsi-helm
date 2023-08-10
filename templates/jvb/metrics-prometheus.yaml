@@ -1,26 +1,26 @@
-{{- if and (.Values.jvb.metrics.enabled) (.Values.jvb.metrics.serviceMonitor.enabled) }}
+{{- if and .Values.jvb.metrics.enabled .Values.jvb.metrics.serviceMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "jitsi-meet.jvb.fullname" . }}
   labels:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
-    {{- range $key, $value := .Values.jvb.metrics.serviceMonitor.selector }}
-    {{ $key }}: {{ $value | quote }}
+    {{- with .Values.jvb.metrics.serviceMonitor.selector }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   endpoints:
     - port: tcp-metrics
       path: /metrics
-      {{- if .Values.jvb.metrics.serviceMonitor.honorLabels }}
-      honorLabels: {{ .Values.jvb.metrics.serviceMonitor.honorLabels }}
+      {{- with .Values.jvb.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ . }}
       {{- end }}
-      {{- if .Values.jvb.metrics.serviceMonitor.interval }}
-      interval: {{ .Values.jvb.metrics.serviceMonitor.interval }}
+      {{- with .Values.jvb.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
       {{- end }}
   selector:
     matchLabels:
-  {{- include "jitsi-meet.jvb.labels" . | nindent 6 }}
+      {{- include "jitsi-meet.jvb.labels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}

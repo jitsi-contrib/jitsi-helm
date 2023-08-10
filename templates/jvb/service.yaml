@@ -1,12 +1,12 @@
-{{- if or (and (kindIs "invalid" .Values.jvb.service.enabled) (not (or .Values.jvb.useHostPort .Values.jvb.useHostNetwork))) .Values.jvb.service.enabled }}
+{{- if and .Values.jvb.service.enabled (not (or .Values.jvb.useHostPort .Values.jvb.useHostNetwork)) }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "jitsi-meet.jvb.fullname" . }}
   annotations:
-  {{- range $key, $value := .Values.jvb.service.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+    {{- with .Values.jvb.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
 spec:
@@ -15,15 +15,15 @@ spec:
   loadBalancerIP: {{ . }}
   {{- end }}
   ports:
-    - port: {{ default 10000 .Values.jvb.UDPPort }}
+    - port: {{ .Values.jvb.UDPPort | default 10000 }}
+      protocol: UDP
+      name: rtp-udp
       {{- if and .Values.jvb.nodePort (or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer")) }}
       nodePort: {{ .Values.jvb.nodePort }}
       {{- end }}
-      protocol: UDP
-      name: rtp-udp
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
-  {{ toYaml . | indent 2 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
   externalTrafficPolicy: {{ .Values.jvb.service.externalTrafficPolicy }}
   selector:

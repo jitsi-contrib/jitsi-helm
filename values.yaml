@@ -369,15 +369,12 @@ prosody:
   enabled: true
   server:
   extraEnvFrom:
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jicofo'
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jvb'
-  - configMapRef:
-      name: '{{ include "prosody.fullname" . }}-common'
-  ## Uncomment this if you want to use jibri:
-  # - secretRef:
-  #     name: '{{ include "prosody.fullname" . }}-jibri'
-  image:
-    repository: jitsi/prosody
-    tag: 'stable-8719'
+    - secretRef:
+        name: '{{ include "prosody.fullname" . }}-jicofo'
+    - secretRef:
+        name: '{{ include "prosody.fullname" . }}-jvb'
+    - configMapRef:
+        name: '{{ include "prosody.fullname" . }}-common'
+    ## Uncomment this if you want to use jibri:
+    # - secretRef:
+    #     name: '{{ include "prosody.fullname" . }}-jibri'

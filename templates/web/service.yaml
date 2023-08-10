@@ -12,7 +12,7 @@ spec:
       name: http
   {{- with .Values.web.service.externalIPs }}
   externalIPs:
-  {{ toYaml . | indent 2 | trim }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
   selector:
     {{- include "jitsi-meet.web.selectorLabels" . | nindent 4 }}

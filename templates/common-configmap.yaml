@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "jitsi-meet.labels" . | nindent 4 }}
 data:
-  ENABLE_AUTH: {{ ternary "1" "0" .Values.enableAuth | quote }}
-  ENABLE_GUESTS: {{ ternary "1" "0" .Values.enableGuests | quote }}
+  ENABLE_AUTH: {{ .Values.enableAuth | ternary "1" "0" | quote }}
+  ENABLE_GUESTS: {{ .Values.enableGuests | ternary "1" "0" | quote }}
   PUBLIC_URL: {{ include "jitsi-meet.publicURL" . }}
   XMPP_DOMAIN: {{ include "jitsi-meet.xmpp.domain" . }}
   XMPP_MUC_DOMAIN: {{ .Values.xmpp.mucDomain | default (printf "muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
@@ -33,15 +33,13 @@ data:
   ENABLE_LIVESTREAMING: "true"
   {{-   end }}
   {{- end }}
-  TZ: '{{ .Values.tz }}'
-  {{- range $key, $value := .Values.extraCommonEnvs }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
-  {{- end }}
+  TZ: {{ .Values.tz | quote }}
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
   TESTING_OCTO_PROBABILITY: "1"
   DEPLOYMENTINFO_REGION: "all"
   DEPLOYMENTINFO_USERREGION: "all"
+  {{- end }}
+  {{- with .Values.extraCommonEnvs }}
+  {{- toYaml . | nindent 2 }}
   {{- end }}
