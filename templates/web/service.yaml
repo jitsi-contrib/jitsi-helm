@@ -10,6 +10,9 @@ spec:
     - port: {{ .Values.web.service.port }}
       protocol: TCP
       name: http
+      {{- if .Values.web.service.nodePort }}
+      nodePort: {{ index .Values.web.service.nodePort }}
+      {{- end }}
   {{- with .Values.web.service.externalIPs }}
   externalIPs:
   {{ toYaml . | indent 2 | trim }}

@@ -34,6 +34,23 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.jicofo.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: config
+        emptyDir: {}
+      - name: custom-cont-inits
+        configMap:
+          name: {{ include "jitsi-meet.jicofo.fullname" . }}-cont-inits
+          items:
+            - key: 10-config
+              path: 10-config
+      - name: custom-defaults
+        configMap:
+          name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
+          items:
+            - key: jicofo.conf
+              path: jicofo.conf
+            - key: logging.properties
+              path: logging.properties
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -61,7 +78,25 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.jicofo.resources | nindent 12 }}
-
+          volumeMounts:
+          # to support readOnlyRootFilesystem
+          - name: config
+            mountPath: /config
+          {{- if .Values.jicofo.custom.contInit._10_config }}
+          - name: custom-cont-inits
+            mountPath: /etc/cont-init.d/10-config
+            subPath: 10-config
+          {{- end }}
+          {{- if .Values.jicofo.custom.defaults._jicofo_conf }}
+          - name: custom-defaults
+            mountPath: /defaults/jicofo.conf
+            subPath: jicofo.conf
+          {{- end }}
+          {{- if .Values.jicofo.custom.defaults._logging_properties }}
+          - name: custom-defaults
+            mountPath: /defaults/logging.properties
+            subPath: logging.properties
+          {{- end }}
       {{- with .Values.jicofo.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

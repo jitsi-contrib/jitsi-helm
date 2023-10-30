@@ -61,8 +61,55 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
-          {{- with .Values.web.extraVolumeMounts }}
           volumeMounts:
+          - name: config
+            mountPath: /config
+          {{- if .Values.web.custom.contInit._10_config }}
+          - name: custom-cont-inits
+            mountPath: /etc/cont-init.d/10-config
+            subPath: 10-config
+          {{- end }}
+          {{- if .Values.web.custom.defaults._default }}
+          - name: custom-defaults
+            mountPath: /defaults/default
+            subPath: default
+          {{- end }}
+          {{- if .Values.web.custom.defaults._ffdhe2048_txt }}
+          - name: custom-defaults
+            mountPath: /defaults/ffdhe2048.txt
+            subPath: ffdhe2048.txt
+          {{- end }}
+          {{- if .Values.web.custom.defaults._interface_config_js }}
+          - name: custom-defaults
+            mountPath: /defaults/interface_config.js
+            subPath: interface_config.js
+          {{- end }}
+          {{- if .Values.web.custom.defaults._meet_conf }}
+          - name: custom-defaults
+            mountPath: /defaults/meet.conf
+            subPath: meet.conf
+          {{- end }}
+          {{- if .Values.web.custom.defaults._nginx_conf }}
+          - name: custom-defaults
+            mountPath: /defaults/nginx.conf
+            subPath: nginx.conf
+          {{- end }}
+          {{- if .Values.web.custom.defaults._settings_config_js }}
+          - name: custom-defaults
+            mountPath: /defaults/settings-config.js
+            subPath: settings-config.js
+          {{- end }}
+          {{- if .Values.web.custom.defaults._ssl_conf }}
+          - name: custom-defaults
+            mountPath: /defaults/ssl.conf
+            subPath: ssl.conf
+          {{- end }}
+          {{- if .Values.web.custom.defaults._system_config_js }}
+          - name: custom-defaults
+            mountPath: /defaults/system-config.js
+            subPath: system-config.js
+          {{- end }}
+          {{- with .Values.web.extraVolumeMounts }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
 
@@ -78,7 +125,35 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.web.extraVolumes }}
       volumes:
+      - name: config
+        emptyDir: {}
+      - name: custom-cont-inits
+        configMap:
+          name: {{ include "jitsi-meet.web.fullname" . }}-cont-inits
+          items:
+            - key: 10-config
+              path: 10-config
+      - name: custom-defaults
+        configMap:
+          name: {{ include "jitsi-meet.web.fullname" . }}-defaults
+          items:
+            - key: default
+              path: default
+            - key: ffdhe2048.txt
+              path: ffdhe2048.txt
+            - key: interface_config.js
+              path: interface_config.js
+            - key: meet.conf
+              path: meet.conf
+            - key: nginx.conf
+              path: nginx.conf
+            - key: settings-config.js
+              path: settings-config.js
+            - key: ssl.conf
+              path: ssl.conf
+            - key: system-config.js
+              path: system-config.js
+    {{- with .Values.web.extraVolumes }}
         {{- toYaml . | nindent 8 }}
     {{- end }}

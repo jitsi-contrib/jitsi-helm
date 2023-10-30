@@ -19,6 +19,9 @@ spec:
     - port: {{ index .Values.service.ports "xmpp-c2s" }}
       protocol: TCP
       name: tcp-xmpp-c2
+      {{- if .Values.service.ports.xmppc2snodePort }}
+      nodePort: {{ index .Values.service.ports "xmppc2snodePort" }}
+      {{- end }}
     - port: {{ index .Values.service.ports "xmpp-s2s" }}
       protocol: TCP
       name: tcp-xmpp-s2
