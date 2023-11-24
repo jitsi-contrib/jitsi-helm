@@ -406,7 +406,6 @@ prosody:
   #     name: '{{ include "prosody.fullname" . }}-jibri'
   image:
     repository: jitsi/prosody
-    tag: 'stable-8960-1'
   # service:
   #   ports:
   # If Prososy c2s in needed on private net outside the cluster
@@ -418,3 +417,4 @@ prosody:
       _prosody_cfg_lua: ""
       _saslauthd_conf: ""
       _jitsi_meet_cfg_lua: ""
+    tag: 'stable-9111'

@@ -16,6 +16,8 @@ data:
   XMPP_INTERNAL_MUC_DOMAIN: {{ .Values.xmpp.internalMucDomain | default (printf "internal-muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   {{- if or .Values.websockets.colibri.enabled }}
   ENABLE_COLIBRI_WEBSOCKET: 'true'
+  # TODO: rework into a proper regex or dynamic name list
+  ENABLE_COLIBRI_WEBSOCKET_UNSAFE_REGEX: '1'
   {{- else }}
   ENABLE_COLIBRI_WEBSOCKET: 'false'
   {{- end }}
