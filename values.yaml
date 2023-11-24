@@ -392,7 +392,8 @@ extraCommonEnvs: {}
 
 prosody:
   enabled: true
-  replicas: 1     # this should be always 1, or 0 if we want prosody to be scaled down for replica setup
+  # scaleUp: false, if need to generate the configs but keep prosody down
+  scaleUp: true
   server:
   extraEnvFrom:
   - secretRef:

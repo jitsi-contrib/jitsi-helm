@@ -1,4 +1,5 @@
 prosody:
+  scaleUp: false
   custom:
     contInit:
       _10_config: |
