@@ -1,3 +1,4 @@
+publicURL: "jitsi.example.com"
 prosody:
   scaleUp: false
   custom:

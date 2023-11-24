@@ -17,7 +17,7 @@ enableAuth: false
 enableGuests: true
 # Where Jitsi Web UI is made available
 # such as jitsi.example.com
-publicURL: "jitsi.example.com"
+publicURL: ""
 
 tz: Europe/Amsterdam
 
@@ -64,8 +64,12 @@ web:
   service:
     type: ClusterIP
     port: 80
-    # If Jitsi web needs to be fronted by external LB, following can be used.
+    ## If you want to expose the Jitsi Web service directly
+    #  (bypassing the Ingress Controller), use this:
+    #
+    # type: NodePort
     # nodePort: 30580
+    # port: 80
     externalIPs: []
 
   ingress:
@@ -409,7 +413,7 @@ prosody:
     repository: jitsi/prosody
   # service:
   #   ports:
-  # If Prososy c2s in needed on private net outside the cluster
+  # If Prosody c2s in needed on private net outside the cluster
   #     xmppc2snodePort: 30522
   custom:
     contInit:
