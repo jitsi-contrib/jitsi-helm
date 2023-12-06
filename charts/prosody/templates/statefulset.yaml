@@ -49,6 +49,11 @@ spec:
           {{- range .Values.extraEnvFrom }}
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
+          {{- if .Values.global.releaseSecretsOverride.enabled }}
+          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.extraEnvs }}
           env:
           {{- range .Values.extraEnvs }}

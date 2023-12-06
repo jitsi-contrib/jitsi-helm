@@ -64,6 +64,11 @@ spec:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:
               name: {{ include "jitsi-meet.jicofo.fullname" . }}
+          {{- if .Values.global.releaseSecretsOverride.enabled }}
+          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 80

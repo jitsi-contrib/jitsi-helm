@@ -9,6 +9,14 @@ global:
   clusterDomain: cluster.local
   podLabels: {}
   podAnnotations: {}
+  releaseSecretsOverride:
+    enabled: false
+    #Support environment variables from pre-created secrets, such as 1Password operator
+    #extraEnvFrom:
+    #  - secretRef:
+    #      name: '{{ include "prosody.fullname" . }}-overrides'
+    #      optional: true
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
