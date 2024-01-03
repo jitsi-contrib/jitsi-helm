@@ -119,6 +119,7 @@ spec:
         emptyDir: {}
       - name: custom-cont-inits
         configMap:
+          defaultMode: 511
           name: {{ include "prosody.fullname" . }}-cont-inits
           items:
             - key: 10-config
