@@ -234,6 +234,45 @@ octo:
   enabled: false
 
 
+jigasi:
+  ## Enabling Jigasi will allow regular SIP clients to join Jitsi meetings
+  ## or nearly real-time transcription.
+  enabled: false
+
+  ## Use external Jigasi installation.
+  ## This setting skips the creation of Jigasi Deployment altogether,
+  ## instead creating just the config secret and enabling services.
+  ## Defaults to disabled (use bundled Jigasi).
+  useExternalJigasi: true
+
+  replicaCount: 1
+  image:
+    repository: jitsi/jigasi
+
+  breweryMuc: jigasibrewery
+
+  ## jigasi XMPP user credentials:
+  xmpp:
+    password:
+
+  livenessProbe:
+    tcpSocket:
+      port: 8788
+  readinessProbe:
+    tcpSocket:
+      port: 8788
+
+  podLabels: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraEnvs: {}
+
+
 jibri:
   ## Enabling Jibri will allow users to record
   ## and/or stream their meetings (e.g. to YouTube).
@@ -369,6 +408,8 @@ prosody:
   enabled: true
   server:
   extraEnvFrom:
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jigasi'
   - secretRef:
       name: '{{ include "prosody.fullname" . }}-jicofo'
   - secretRef:
