@@ -11,6 +11,10 @@ data:
   JIBRI_BREWERY_MUC: '{{ .Values.jibri.breweryMuc }}'
   JIBRI_PENDING_TIMEOUT: '{{ .Values.jibri.timeout }}'
   {{- end }}
+  {{- if .Values.jigasi.enabled }}
+  JIGASI_BREWERY_MUC: '{{ .Values.jigasi.breweryMuc }}'
+  JIGASI_SIP_URI: "available"
+  {{- end }}
   {{- range $key, $value := .Values.jicofo.extraEnvs }}
   {{- if not (kindIs "invalid" $value) }}
   {{ $key }}: {{ tpl $value $ | quote }}
