@@ -253,6 +253,7 @@ jigasi:
 
   ## jigasi XMPP user credentials:
   xmpp:
+    user: jigasi
     password:
 
   livenessProbe:
