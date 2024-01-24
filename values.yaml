@@ -248,17 +248,11 @@ jvb:
 
   metrics:
     enabled: false
-    prometheusAnnotations: false
     image:
       repository: docker.io/systemli/prometheus-jitsi-meet-exporter
       tag: 1.2.3
       pullPolicy: IfNotPresent
-    serviceMonitor:
-      enabled: true
-      selector:
-        release: prometheus-operator
-      interval: 10s
-      # honorLabels: false
+
     resources:
       requests:
         cpu: 10m
@@ -267,8 +261,61 @@ jvb:
         cpu: 20m
         memory: 32Mi
 
+    prometheusAnnotations: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false
+
+    grafanaDashboards:
+      enabled: false
+      labels:
+        grafana_dashboard: "1"
+      annotations: {}
 octo:
   enabled: false
+
+
+jigasi:
+  ## Enabling Jigasi will allow regular SIP clients to join Jitsi meetings
+  ## or nearly real-time transcription.
+  enabled: false
+
+  ## Use external Jigasi installation.
+  ## This setting skips the creation of Jigasi Deployment altogether,
+  ## instead creating just the config secret and enabling services.
+  ## Defaults to disabled (use bundled Jigasi).
+  useExternalJigasi: true
+
+  replicaCount: 1
+  image:
+    repository: jitsi/jigasi
+
+  breweryMuc: jigasibrewery
+
+  ## jigasi XMPP user credentials:
+  xmpp:
+    user: jigasi
+    password:
+
+  livenessProbe:
+    tcpSocket:
+      port: 8788
+  readinessProbe:
+    tcpSocket:
+      port: 8788
+
+  podLabels: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraEnvs: {}
 
 
 jibri:
@@ -409,14 +456,15 @@ prosody:
   server:
   extraEnvFrom:
   - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jibri'
+  - secretRef:
       name: '{{ include "prosody.fullname" . }}-jicofo'
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jigasi'
   - secretRef:
       name: '{{ include "prosody.fullname" . }}-jvb'
   - configMapRef:
       name: '{{ include "prosody.fullname" . }}-common'
-  ## Uncomment this if you want to use jibri:
-  # - secretRef:
-  #     name: '{{ include "prosody.fullname" . }}-jibri'
   image:
     repository: jitsi/prosody
   # service:

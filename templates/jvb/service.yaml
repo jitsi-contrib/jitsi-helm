@@ -11,7 +11,7 @@ metadata:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.jvb.service.type }}
-  {{- with .Values.jvb.service.LoadbalancerIP }}
+  {{- with .Values.jvb.service.loadBalancerIP }}
   loadBalancerIP: {{ . }}
   {{- end }}
   ports:

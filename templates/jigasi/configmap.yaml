@@ -1,0 +1,16 @@
+{{- if .Values.jigasi.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jigasi.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.jigasi.labels" . | nindent 4 }}
+data:
+  JIGASI_BREWERY_MUC: '{{ .Values.jigasi.breweryMuc }}'
+  XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
+  {{- range $key, $value := .Values.jigasi.extraEnvs }}
+  {{- if not (kindIs "invalid" $value) }}
+  {{ $key }}: {{ tpl $value $ | quote }}
+  {{- end }}
+  {{- end }}
+{{- end }}

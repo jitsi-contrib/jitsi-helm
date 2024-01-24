@@ -1,0 +1,16 @@
+{{- if and (.Values.jvb.metrics.enabled) .Values.jvb.metrics.grafanaDashboards.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.fullname" . }}-grafana-dashboards
+  labels:
+    {{- include "jitsi-meet.labels" . | nindent 4 }}
+    {{- with .Values.jvb.metrics.grafanaDashboards.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- toYaml .Values.jvb.metrics.grafanaDashboards.annotations | nindent 4 }}
+data:
+  {{- (.Files.Glob "files/grafana_dashboards/*.json").AsConfig | nindent 2 }}
+{{- end }}
