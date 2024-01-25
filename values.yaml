@@ -459,6 +459,7 @@ extraCommonEnvs: {}
 
 prosody:
   enabled: true
+  useExternalProsody: false
   server:
   extraEnvFrom:
   - secretRef:

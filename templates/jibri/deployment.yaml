@@ -117,7 +117,7 @@ spec:
         emptyDir: {}
       - name: custom-cont-inits
         configMap:
-          defaultMode: 511
+          defaultMode: 493
           name: {{ include "jitsi-meet.jibri.fullname" . }}-cont-inits
           items:
             - key: 10-config
