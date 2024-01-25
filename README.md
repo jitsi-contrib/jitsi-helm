@@ -195,7 +195,7 @@ Parameter | Description | Default
 `jibri.recorder.password` | Password used by jibri to record on the XMPP service | 10 random chars
 `jibri.strategy` | Depolyment update strategy and parameters | `(unset)`
 `jigasi.enabled` | Enable Jigasi service | `false`
-`jigasi.useExternalJibri` | Use external Jigasi service, instead of chart-provided one | `true`
+`jigasi.useExternalJigasi` | Use external Jigasi service, instead of chart-provided one | `false`
 `jigasi.replicaCount` | Number of replica of the Jigasi pods | `1`
 `jigasi.image.repository` | Name of the image to use for the Jigasi pods | `jitsi/jigasi`
 `jigasi.breweryMuc` | Name of the XMPP MUC used by Jigasi | `jigasibrewery`
