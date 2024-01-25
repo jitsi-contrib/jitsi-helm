@@ -250,7 +250,7 @@ jigasi:
   ## This setting skips the creation of Jigasi Deployment altogether,
   ## instead creating just the config secret and enabling services.
   ## Defaults to disabled (use bundled Jigasi).
-  useExternalJigasi: true
+  useExternalJigasi: false
 
   replicaCount: 1
   image:

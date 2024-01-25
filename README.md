@@ -187,18 +187,28 @@ Parameter | Description | Default
 `jibri.image.repository` | Name of the image to use for the jibri pods | `jitsi/jibri`
 `jibri.extraEnvs` | Map containing additional environment variables for jibri | '{}'
 `jibri.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jibri.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jibri.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `jibri.breweryMuc` | Name of the XMPP MUC used by jibri | `jibribrewery`
 `jibri.xmpp.user` | Name of the XMPP user used by jibri to authenticate | `jibri`
 `jibri.xmpp.password` | Password used by jibri to authenticate on the XMPP service | 10 random chars
 `jibri.recorder.user` | Name of the XMPP user used by jibri to record | `recorder`
 `jibri.recorder.password` | Password used by jibri to record on the XMPP service | 10 random chars
 `jibri.strategy` | Depolyment update strategy and parameters | `(unset)`
+`jigasi.enabled` | Enable Jigasi service | `false`
+`jigasi.useExternalJigasi` | Use external Jigasi service, instead of chart-provided one | `false`
+`jigasi.replicaCount` | Number of replica of the Jigasi pods | `1`
+`jigasi.image.repository` | Name of the image to use for the Jigasi pods | `jitsi/jigasi`
+`jigasi.breweryMuc` | Name of the XMPP MUC used by Jigasi | `jigasibrewery`
+`jigasi.xmpp.user` | Name of the XMPP user used by Jigasi to authenticate | `jigasi`
+`jigasi.xmpp.password` | Password used by Jigasi to authenticate on the XMPP service | 10 random chars
+`jigasi.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
+`jigasi.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jigasi.extraEnvs` | Map containing additional environment variables for Jigasi | '{}'
 `jicofo.replicaCount` | Number of replica of the jicofo pods | `1`
 `jicofo.image.repository` | Name of the image to use for the jicofo pods | `jitsi/jicofo`
 `jicofo.extraEnvs` | Map containing additional environment variables for jicofo | '{}'
 `jicofo.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jicofo.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jicofo.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `jicofo.xmpp.password` | Password used by jicofo to authenticate on the XMPP service | 10 random chars
 `jicofo.xmpp.componentSecret` | Values of the secret used by jicofo for the xmpp-component | 10 random chars
 `jvb.publicIPs` | List of IP addresses for JVB to announce to clients | `(unset)`
@@ -212,7 +222,7 @@ Parameter | Description | Default
 `jvb.xmpp.user` | Name of the XMPP user used by jvb to authenticate | `jvb`
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
 `jvb.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jvb.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`jvb.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `jvb.metrics.enabled` | Boolean that control the metrics exporter for jvb. If true the `ServiceMonitor` will also created | `false`
 `jvb.metrics.prometheusAnnotations` | Boolean that controls the generation of prometheus annotations, to expose metrics for HPA | `false`
 `jvb.metrics.image.repository` | Default image repository for metrics exporter | `docker.io/systemli/prometheus-jitsi-meet-exporter`
@@ -229,7 +239,7 @@ Parameter | Description | Default
 `web.resolverIP` | Override nameserver IP for Web container | (*unset*, use auto-detected nameserver IP)
 `web.extraEnvs` | Map containing additional environment variable to web pods | '{}'
 `web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`web.readinessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
+`web.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `tz` | System Time Zone | `Europe/Amsterdam`
 
 ## Package
