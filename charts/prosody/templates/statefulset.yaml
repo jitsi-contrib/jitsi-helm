@@ -10,7 +10,7 @@ metadata:
   {{- end }}
 spec:
   serviceName: "{{ include "prosody.fullname" . }}"
-  replicas: 1
+  replicas: {{ if .Values.useExternalProsody }}0{{ else }}1{{end}}
   selector:
     matchLabels:
       {{- include "prosody.selectorLabels" . | nindent 6 }}
@@ -49,6 +49,11 @@ spec:
           {{- range .Values.extraEnvFrom }}
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
+          {{- if .Values.global.releaseSecretsOverride.enabled }}
+          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.extraEnvs }}
           env:
           {{- range .Values.extraEnvs }}
@@ -82,12 +87,53 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+          - name: config
+            mountPath: /config
           - name: prosody-data
             mountPath: {{ .Values.dataDir }}
+          {{- if .Values.custom.contInit._10_config }}
+          - name: custom-cont-inits
+            mountPath: /etc/cont-init.d/10-config
+            subPath: 10-config
+          {{- end }}
+          {{- if .Values.custom.defaults._prosody_cfg_lua }}
+          - name: custom-defaults
+            mountPath: /defaults/prosody.cfg.lua
+            subPath: prosody.cfg.lua
+          {{- end }}
+          {{- if .Values.custom.defaults._saslauthd_conf }}
+          - name: custom-defaults
+            mountPath: /defaults/saslauthd.conf
+            subPath: saslauthd.conf
+          {{- end }}
+          {{- if .Values.custom.defaults._jitsi_meet_cfg_lua }}
+          - name: custom-defaults
+            mountPath: /defaults/conf.d/jitsi-meet.cfg.lua
+            subPath: jitsi-meet.cfg.lua
+          {{- end }}
           {{- with .Values.extraVolumeMounts }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
       volumes:
+      - name: config
+        emptyDir: {}
+      - name: custom-cont-inits
+        configMap:
+          defaultMode: 493
+          name: {{ include "prosody.fullname" . }}-cont-inits
+          items:
+            - key: 10-config
+              path: 10-config
+      - name: custom-defaults
+        configMap:
+          name: {{ include "prosody.fullname" . }}-defaults
+          items:
+            - key: prosody.cfg.lua
+              path: prosody.cfg.lua
+            - key: saslauthd.conf
+              path: saslauthd.conf
+            - key: jitsi-meet.cfg.lua
+              path: jitsi-meet.cfg.lua
       - name: prosody-data
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

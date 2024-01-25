@@ -78,6 +78,33 @@ spec:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
 
         volumeMounts:
+        - name: config
+            mountPath: /config
+        {{- if .Values.jibri.custom.contInit._10_config }}
+        - name: custom-cont-inits
+          mountPath: /etc/cont-init.d/10-config
+          subPath: 10-config
+        {{- end }}
+        {{- if .Values.jibri.custom.defaults._jibri_conf }}
+        - name: custom-defaults
+          mountPath: /defaults/jibri.conf
+          subPath: jibri.conf
+        {{- end }}
+        {{- if .Values.jibri.custom.defaults._logging_properties }}
+        - name: custom-defaults
+          mountPath: /defaults/logging.properties
+          subPath: logging.properties
+        {{- end }}
+        {{- if .Values.jibri.custom.defaults._autoscaler_sidecar_config }}
+        - name: custom-defaults
+          mountPath: /defaults/autoscaler-sidecar.config
+          subPath: autoscaler-sidecar.config
+        {{- end }}
+        {{- if .Values.jibri.custom.defaults._xorg_video_dummy_conf }}
+        - name: custom-defaults
+          mountPath: /defaults/xorg-video-dummy.conf
+          subPath: xorg-video-dummy.conf
+        {{- end }}
         - name: jibri-data
           mountPath: /data
         {{- if .Values.jibri.shm.enabled }}
@@ -86,6 +113,27 @@ spec:
         {{- end }}
 
       volumes:
+      - name: config
+        emptyDir: {}
+      - name: custom-cont-inits
+        configMap:
+          defaultMode: 493
+          name: {{ include "jitsi-meet.jibri.fullname" . }}-cont-inits
+          items:
+            - key: 10-config
+              path: 10-config
+      - name: custom-defaults
+        configMap:
+          name: {{ include "jitsi-meet.jibri.fullname" . }}-defaults
+          items:
+            - key: jibri.conf
+              path: jibri.conf
+            - key: logging.properties
+              path: logging.properties
+            - key: autoscaler-sidecar.config
+              path: autoscaler-sidecar.config
+            - key: xorg-video-dummy.conf
+              path: xorg-video-dummy.conf
       - name: jibri-data
         {{- if .Values.jibri.persistence.enabled }}
         persistentVolumeClaim:

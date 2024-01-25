@@ -25,3 +25,6 @@
 docs/
 # Built Helm charts
 *.tgz
+#
+example-configurations/
+Makefile

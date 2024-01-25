@@ -9,12 +9,22 @@ global:
   clusterDomain: cluster.local
   podLabels: {}
   podAnnotations: {}
+  releaseSecretsOverride:
+    enabled: false
+    #Support environment variables from pre-created secrets, such as 1Password operator
+    #extraEnvFrom:
+    #  - secretRef:
+    #      name: '{{ include "prosody.fullname" . }}-overrides'
+    #      optional: true
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 enableAuth: false
 enableGuests: true
+# Where Jitsi Web UI is made available
+# such as jitsi.example.com
 publicURL: ""
 
 tz: Europe/Amsterdam
@@ -45,10 +55,29 @@ web:
   image:
     repository: jitsi/web
 
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _default: ""
+      _ffdhe2048_txt: ""
+      _interface_config_js: ""
+      _meet_conf: ""
+      _nginx_conf: ""
+      _settings_config_js: ""
+      _ssl_conf: ""
+      _system_config_js: ""
+
   extraEnvs: {}
   service:
     type: ClusterIP
     port: 80
+    ## If you want to expose the Jitsi Web service directly
+    #  (bypassing the Ingress Controller), use this:
+    #
+    # type: NodePort
+    # nodePort: 30580
+    # port: 80
     externalIPs: []
 
   ingress:
@@ -123,6 +152,13 @@ jicofo:
   image:
     repository: jitsi/jicofo
 
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _jicofo_conf: ""
+      _logging_properties: ""
+
   xmpp:
     password:
     componentSecret:
@@ -130,6 +166,7 @@ jicofo:
   livenessProbe:
     tcpSocket:
       port: 8888
+
   readinessProbe:
     tcpSocket:
       port: 8888
@@ -393,6 +430,14 @@ jibri:
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   extraEnvs: {}
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _jibri_conf: ""
+      _logging_properties: ""
+      _xorg_video_dummy_conf: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -414,6 +459,7 @@ extraCommonEnvs: {}
 
 prosody:
   enabled: true
+  useExternalProsody: false
   server:
   extraEnvFrom:
   - secretRef:
@@ -428,4 +474,15 @@ prosody:
       name: '{{ include "prosody.fullname" . }}-common'
   image:
     repository: jitsi/prosody
+  # service:
+  #   ports:
+  # If Prosody c2s in needed on private net outside the cluster
+  #     xmppc2snodePort: 30522
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _prosody_cfg_lua: ""
+      _saslauthd_conf: ""
+      _jitsi_meet_cfg_lua: ""
     tag: 'stable-9111'
