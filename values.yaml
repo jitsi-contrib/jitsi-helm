@@ -430,6 +430,14 @@ jibri:
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   extraEnvs: {}
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _jibri_conf: ""
+      _logging_properties: ""
+      _xorg_video_dummy_conf: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -451,8 +459,6 @@ extraCommonEnvs: {}
 
 prosody:
   enabled: true
-  # scaleUp: false, if need to generate the configs but keep prosody down
-  scaleUp: true
   server:
   extraEnvFrom:
   - secretRef:

@@ -10,7 +10,7 @@ metadata:
   {{- end }}
 spec:
   serviceName: "{{ include "prosody.fullname" . }}"
-  replicas: {{ if .Values.scaleUp }}1{{ else }}0{{end}}
+  replicas: {{ if .Values.enabled }}1{{ else }}0{{end}}
   selector:
     matchLabels:
       {{- include "prosody.selectorLabels" . | nindent 6 }}

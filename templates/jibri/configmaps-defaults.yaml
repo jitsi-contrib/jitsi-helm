@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}-defaults
+  labels:
+    {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+data:
+  jibri.conf: |
+    {{- if .Values.jibri.custom.defaults._jibri_conf }}
+      {{- .Values.jibri.custom.defaults._jibri_conf | nindent 4 }}
+    {{- else }}
+    # Using jibri /default/jibri.conf from container image
+    {{ end }}
+  logging.properties: |
+    {{- if .Values.jibri.custom.defaults._logging_properties }}
+      {{- .Values.jibri.custom.defaults._logging_properties | nindent 4 }}
+    {{- else }}
+    # Using jibri /default/logging.properties from container image
+    {{ end }}
+  autoscaler-sidecar.config: |
+    {{- if .Values.jibri.custom.defaults._jibri_autoscaler_sidecar_config }}
+      {{- .Values.jibri.custom.defaults._jibri_autoscaler_sidecar_config | nindent 4 }}
+    {{- else }}
+    # Using jibri /default/autoscaler-sidecar.config from container image
+    {{ end }}
+  xorg-video-dummy.conf: |
+    {{- if .Values.jibri.custom.defaults._xorg_video_dummy_conf }}
+      {{- .Values.jibri.custom.defaults._xorg_video_dummy_conf | nindent 4 }}
+    {{- else }}
+    # Using jibri /default/xorg-video-dummy.conf from container image
+    {{ end }}
+
