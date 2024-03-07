@@ -389,6 +389,7 @@ jibri:
 
   podLabels: {}
   podAnnotations: {}
+  resources: {}
 
   breweryMuc: jibribrewery
   timeout: 90
