@@ -16,6 +16,5 @@ type: application
 # to the chart and its templates, including the app version.
 version: 1.4.0
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-appVersion: stable-9111
+# This is the version number of the application being deployed.
+appVersion: stable-9364
