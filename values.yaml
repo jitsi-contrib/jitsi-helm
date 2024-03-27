@@ -67,6 +67,8 @@ web:
       _settings_config_js: ""
       _ssl_conf: ""
       _system_config_js: ""
+    configs:
+      _custom_config_js: ""
 
   extraEnvs: {}
   service:

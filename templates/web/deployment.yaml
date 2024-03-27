@@ -70,47 +70,52 @@ spec:
           - name: config
             mountPath: /config
           {{- if .Values.web.custom.contInit._10_config }}
-          - name: custom-cont-inits
+          - name: custom-init
             mountPath: /etc/cont-init.d/10-config
             subPath: 10-config
           {{- end }}
+          {{- if .Values.web.custom.configs._custom_config_js }}
+          - name: custom-conffiles
+            mountPath: /config/custom-config.js
+            subPath: custom-config.js
+          {{- end }}
           {{- if .Values.web.custom.defaults._default }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/default
             subPath: default
           {{- end }}
           {{- if .Values.web.custom.defaults._ffdhe2048_txt }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/ffdhe2048.txt
             subPath: ffdhe2048.txt
           {{- end }}
           {{- if .Values.web.custom.defaults._interface_config_js }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/interface_config.js
             subPath: interface_config.js
           {{- end }}
           {{- if .Values.web.custom.defaults._meet_conf }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/meet.conf
             subPath: meet.conf
           {{- end }}
           {{- if .Values.web.custom.defaults._nginx_conf }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/nginx.conf
             subPath: nginx.conf
           {{- end }}
           {{- if .Values.web.custom.defaults._settings_config_js }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/settings-config.js
             subPath: settings-config.js
           {{- end }}
           {{- if .Values.web.custom.defaults._ssl_conf }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/ssl.conf
             subPath: ssl.conf
           {{- end }}
           {{- if .Values.web.custom.defaults._system_config_js }}
-          - name: custom-defaults
+          - name: custom-conffiles
             mountPath: /defaults/system-config.js
             subPath: system-config.js
           {{- end }}
@@ -133,17 +138,19 @@ spec:
       volumes:
       - name: config
         emptyDir: {}
-      - name: custom-cont-inits
+      - name: custom-init
         configMap:
           defaultMode: 493
-          name: {{ include "jitsi-meet.web.fullname" . }}-cont-inits
+          name: {{ include "jitsi-meet.web.fullname" . }}-init
           items:
             - key: 10-config
               path: 10-config
-      - name: custom-defaults
+      - name: custom-conffiles
         configMap:
-          name: {{ include "jitsi-meet.web.fullname" . }}-defaults
+          name: {{ include "jitsi-meet.web.fullname" . }}-conffiles
           items:
+            - key: custom-config.js
+              path: custom-config.js
             - key: default
               path: default
             - key: ffdhe2048.txt

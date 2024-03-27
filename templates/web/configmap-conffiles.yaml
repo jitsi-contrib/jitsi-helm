@@ -1,10 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "jitsi-meet.web.fullname" . }}-defaults
+  name: {{ include "jitsi-meet.web.fullname" . }}-conffiles
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
 data:
+  custom-config.js: |
+  {{- if .Values.web.custom.configs._custom_config_js }}
+    {{- .Values.web.custom.configs._custom_config_js | nindent 4 }}
+  {{- else }}
+  # Not providing /config/custom-config.js
+  {{ end }}
   default: |
   {{- if .Values.web.custom.defaults._default }}
     {{- .Values.web.custom.defaults._default | nindent 4 }}
