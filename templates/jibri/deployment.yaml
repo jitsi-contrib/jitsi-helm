@@ -79,7 +79,7 @@ spec:
 
         volumeMounts:
         - name: config
-            mountPath: /config
+          mountPath: /config
         {{- if .Values.jibri.custom.contInit._10_config }}
         - name: custom-cont-inits
           mountPath: /etc/cont-init.d/10-config
