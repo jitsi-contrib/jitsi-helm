@@ -19,7 +19,9 @@ data:
   # TODO: rework into a proper regex or dynamic name list
   ENABLE_COLIBRI_WEBSOCKET_UNSAFE_REGEX: '1'
   {{- else }}
+  ENABLE_SCTP: 'true'
   ENABLE_COLIBRI_WEBSOCKET: 'false'
+  JVB_PREFER_SCTP: 'true'
   {{- end }}
   {{- if .Values.websockets.xmpp.enabled }}
   ENABLE_XMPP_WEBSOCKET: 'true'
