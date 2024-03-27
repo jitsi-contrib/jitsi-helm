@@ -55,6 +55,8 @@ web:
   image:
     repository: jitsi/web
 
+  ## Override the image-provided configuration files:
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/web/rootfs
   custom:
     contInit:
       _10_config: ""
@@ -154,6 +156,8 @@ jicofo:
   image:
     repository: jitsi/jicofo
 
+  ## Override the image-provided configuration files:
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jicofo/rootfs
   custom:
     contInit:
       _10_config: ""
@@ -432,6 +436,9 @@ jibri:
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   extraEnvs: {}
+
+  ## Override the image-provided configuration files:
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs
   custom:
     contInit:
       _10_config: ""
@@ -480,6 +487,9 @@ prosody:
   #   ports:
   # If Prosody c2s in needed on private net outside the cluster
   #     xmppc2snodePort: 30522
+
+  ## Override the image-provided configuration files:
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/prosody/rootfs
   custom:
     contInit:
       _10_config: ""
