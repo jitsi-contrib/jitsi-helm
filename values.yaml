@@ -498,4 +498,4 @@ prosody:
       _prosody_cfg_lua: ""
       _saslauthd_conf: ""
       _jitsi_meet_cfg_lua: ""
-    tag: stable-9364
+    tag: stable-9364-1
