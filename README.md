@@ -152,15 +152,6 @@ jibri:
     ## Set to true to enable "/dev/shm" mount.
     ## May be required by built-in Chromium.
     enabled: true
-
-
-## Required to allow Jibri to connect to Jitsi Meet service:
-prosody:
-  extraEnvFrom:
-    <...>
-  ## Uncomment this if you want to use jibri:
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jibri'
 ```
 
 The above example will allow your Jitsi users to make local recordings, as well
