@@ -170,6 +170,47 @@ The above example will allow your Jitsi users to make local recordings, as well
 as live streams of their meetings.
 
 
+## Scaling your installation
+
+At the moment you can freely scale Jitsi Web and Jibri pods, as they're
+stateless and require zero special configuration to work in multi-instance
+setup:
+
+```yaml
+web:
+  replicaCount: 3
+
+jibri:
+  replicaCount: 3
+```
+
+Also, this chart supports JVB scaling based on OCTO Relay feature, which allows
+different users to connect to different bridges and still see and hear each
+other. This feature requires some additional configuration. Here's an example
+based on the Option 3.1 mentioned above:
+
+```yaml
+jvb:
+  ## Set JVB instance count:
+  replicaCount: 3
+  ## Expose JVB interface port to the outside world
+  #  only on nodes that actually have it:
+  useHostPort: true
+  ## Make every JVB pod announce its Node's external
+  #  IP address and nothing more:
+  useNodeIP: true
+
+
+octo:
+  ## Enable OCTO support for both JVB and Jicofo:
+  enabled: true
+```
+
+Please note that the JVB scaling feature is currently under-tested and thus
+considered *experimental*. Also note that this chart doesn't allow to scale JVB
+into multiple zones/regions yet: all JVB pods will be part of the single OCTO
+region named `all`.
+
 ## Configuration
 
 The following table lists the configurable parameters of the jisti-meet chart and their default values.
