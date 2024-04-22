@@ -263,6 +263,8 @@ Parameter | Description | Default
 `jicofo.xmpp.password` | Password used by jicofo to authenticate on the XMPP service | 10 random chars
 `jicofo.xmpp.componentSecret` | Values of the secret used by jicofo for the xmpp-component | 10 random chars
 `jvb.publicIPs` | List of IP addresses for JVB to announce to clients | `(unset)`
+`jvb.useNodeIP` | Auto-detect external IP address based on the Node IP | `false`
+`jvb.stunServers` | List of STUN/TURN servers to announce to the users | `meet-jit-si-turnrelay.jitsi.net:443`
 `jvb.service.enabled` | Boolean to enable os disable the jvb service creation | `false` if `jvb.useHostPort` is `true` otherwise `true`
 `jvb.service.type` | Type of the jvb service | `ClusterIP`
 `jvb.UDPPort` | UDP port used by jvb, also affects port of service, and hostPort | `10000`
