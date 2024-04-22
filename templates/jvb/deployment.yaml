@@ -106,7 +106,7 @@ spec:
               hostPort: {{ .Values.jvb.UDPPort }}
               {{- end }}
               protocol: UDP
-          {{- if or .Values.websockets.colibri.enabled }}
+          {{- if .Values.websockets.colibri.enabled }}
             - name: colibri-ws-tcp
               containerPort: 9090
               protocol: TCP
