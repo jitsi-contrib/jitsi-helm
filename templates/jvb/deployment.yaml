@@ -93,8 +93,8 @@ spec:
           - name: JVB_OCTO_BIND_ADDRESS
             valueFrom:
               fieldRef:
-                fieldPath: status.hostIP
-          - name: JVB_OCTO_PUBLIC_ADDRESS
+                fieldPath: status.podIP
+          - name: JVB_OCTO_RELAY_ID
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
