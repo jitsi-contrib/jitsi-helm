@@ -1,6 +1,7 @@
 # Helm Chart for Jitsi Meet
 
-[jitsi-meet](https://jitsi.org/jitsi-meet/) Secure, Simple and Scalable Video Conferences that you use as a standalone app or embed in your web application.
+[jitsi-meet](https://jitsi.org/jitsi-meet/) Secure, Simple and Scalable Video
+Conferences that you use as a standalone app or embed in your web application.
 
 ## TL;DR;
 
@@ -11,14 +12,17 @@ helm install myjitsi jitsi/jitsi-meet
 
 ## Introduction
 
-This chart bootstraps a jitsi-meet deployment, like the official [one](https://meet.jit.si).
+This chart bootstraps a jitsi-meet deployment, like the official
+[one](https://meet.jit.si).
 
-## Different topology
+## Exposing your Jitsi Meet installation
 
-To be able to do video conferencing with other people, the jvb component should be reachable by all participants (eg: a public IP).
-Thus the default behaviour of advertised the internal IP of jvb, is not really suitable in many cases.
-Kubernetes offers multiple possibilities to work around the problem. Not all options are available depending on the Kubernetes cluster setup.
-The chart tries to make all options available without enforcing one.
+To be able to do video conferencing with other people, the JVB component should
+be reachable by all participants (e.g. on a public IP). Thus the default
+behaviour of advertised the internal IP of JVB, is not really suitable in many
+cases. Kubernetes offers multiple possibilities to work around the problem. Not
+all options are available depending on the Kubernetes cluster setup. The chart
+tries to make all options available without enforcing one.
 
 ### Option 1: service of type `LoadBalancer`
 
@@ -39,7 +43,9 @@ jvb:
     # - 30.10.10.2
 ```
 
-In this case you're not allowed to change the `jvb.replicaCount` to more than `1`, UDP packets will be routed to random `jvb`, which would not allow for a working video setup.
+In this case you're not allowed to change the `jvb.replicaCount` to more than
+`1`, UDP packets will be routed to random `jvb`, which would not allow for a
+working video setup.
 
 ### Option 2: NodePort and node with Public IP or external loadbalancer
 
@@ -74,7 +80,7 @@ jvb:
 ```
 
 In this case you can have more the one `jvb` but you're putting you cluster at
-risk by having it directly exposed on the Internet.
+risk by having the nodes IPs and JVB ports directly exposed on the Internet.
 
 ### Option 4: hostNetwork
 
@@ -89,7 +95,8 @@ cases.
 
 ### Option 4: Use ingress TCP/UDP forward capabilities
 
-In case of an ingress capable of doing tcp/udp forwarding (like nginx-ingress), it can be setup to forward the video streams.
+In case of an ingress capable of doing tcp/udp forwarding (like nginx-ingress),
+it can be setup to forward the video streams.
 
 ```yaml
 # Don't forget to configure the ingress properly (separate configuration)
