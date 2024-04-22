@@ -23,3 +23,14 @@ dependencies:
   - name: prosody
     condition: prosody.enabled
     version: 1.4.0
+
+## Chart annotations (for ArtifactHub):
+annotations:
+  artifacthub.io/category: streaming-messaging
+  artifacthub.io/links: |
+    - name: Jitsi Meet
+      url: https://jitsi.org/jitsi-meet/
+    - name: Jitsi Meet Documentation
+      url: https://jitsi.github.io/handbook/docs/intro/
+    - name: Jitsi-Helm GitHub
+      url: https://github.com/jitsi-contrib/jitsi-helm
