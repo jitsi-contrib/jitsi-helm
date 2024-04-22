@@ -207,6 +207,11 @@ jvb:
   # publicIPs:
   #   - 1.2.3.4
   #   - 5.6.7.8
+  ## Alternative option: auto-detect Node's external IP address.
+  #  Recommended for OCTO setups (with either NodePort service
+  #  or hostPort enabled) where every JVB pod should announce it's
+  #  own IP address only.
+  useNodeIP: false
   ## Use a STUN server to help some users punch through some
   #  especially nasty NAT setups. Usually makes sense for P2P calls.
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
