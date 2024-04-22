@@ -82,6 +82,8 @@ spec:
               fieldRef:
                 fieldPath: status.hostIP
             {{- end }}
+          {{- else }}
+          {{- fail "(jvb.publicIPs | jvb.useNodeIP) Please set an external IP addresses for JVB(s) or enable the Node IP autodetection!" }}
           {{- end }}
           {{- if .Values.websockets.colibri.enabled }}
           - name: JVB_WS_SERVER_ID
