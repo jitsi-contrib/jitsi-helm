@@ -82,6 +82,18 @@ jvb:
 In this case you can have more the one `jvb` but you're putting you cluster at
 risk by having the nodes IPs and JVB ports directly exposed on the Internet.
 
+#### Option 3.1: hostPort and auto-detected Node IP
+
+```yaml
+jvb:
+  useHostPort: true
+  useNodeIP: true
+```
+
+This is similar to option 3, but every JVB pod will auto-detect it's own
+external IP address based on the node it's running on. This option might be
+better suited for installations that use OCTO.
+
 ### Option 4: hostNetwork
 
 ```yaml
