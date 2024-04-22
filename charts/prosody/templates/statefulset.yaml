@@ -23,7 +23,7 @@ spec:
       {{- end }}
       annotations:
         si.jit.meet/hash-secret: "{{ toYaml .Values.secretEnvs | sha256sum | trunc 32 }}"
-        si.jit.meet/hash-configmap: "{{ toYaml .Values.env | sha256sum | trunc 32 }}"
+        si.jit.meet/hash-configmap: "{{ toYaml (concat .Values.extraEnvs .Values.extraEnvFrom) | sha256sum | trunc 32 }}"
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.podAnnotations }}
         {{ $annotation }}: {{ $value }}
       {{- end }}
