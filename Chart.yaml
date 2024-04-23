@@ -4,6 +4,7 @@ apiVersion: v2
 name: jitsi-meet
 description: Jitsi Meet packaged for Kubernetes
 type: application
+icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
 
 
 ## This is the *chart* version.
