@@ -92,3 +92,13 @@ affinity: {}
 extraEnvs: []
 extraEnvFrom: []
 secretEnvs: {}
+
+extraVolumes: []
+  # - name: prosody-modules
+  #   configMap:
+  #     name: prosody-modules
+
+extraVolumeMounts: []
+  # - name: prosody-modules
+  #   subPath: mod_measure_client_presence.lua
+  #   mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua

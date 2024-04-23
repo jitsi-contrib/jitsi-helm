@@ -215,6 +215,24 @@ considered *experimental*. Also note that this chart doesn't allow to scale JVB
 into multiple zones/regions yet: all JVB pods will be part of the single OCTO
 region named `all`.
 
+## Adding custom Prosody plugins
+
+In case you want to extend your Jitsi Meet installation with additional Prosody
+features, you can add custom plugins using additional ConfigMap mounts like
+this:
+
+```yaml
+prosody:
+  extraVolumes:
+    - name: prosody-modules
+      configMap:
+        name: prosody-modules
+  extraVolumeMounts:
+    - name: prosody-modules
+      subPath: mod_measure_client_presence.lua
+      mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
+```
+
 ## Configuration
 
 The following table lists the configurable parameters of the jisti-meet chart and their default values.
