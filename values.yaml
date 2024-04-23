@@ -233,8 +233,18 @@ jvb:
     externalTrafficPolicy: Cluster
     externalIPs: []
     ## Annotations to be added to the service (if LoadBalancer is used)
-    ##
+    #  An example below is needed for DigitalOcean managed k8s setups
+    #  with a LoadBalancer service, so that DO's external LB can perform
+    #  health checks on JVB.
     annotations: {}
+      # service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "8080"
+      # service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
+    ## Add extra ports to the service.
+    #  An example below is needed for DigitalOcean managed k8s setups.
+    extraPorts: []
+      # - name: http-healthcheck
+      #   port: 8080
+      #   protocol: TCP
 
   breweryMuc: jvbbrewery
 

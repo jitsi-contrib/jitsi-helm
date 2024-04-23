@@ -21,6 +21,9 @@ spec:
       {{- end }}
       protocol: UDP
       name: rtp-udp
+    {{- with .Values.jvb.service.extraPorts }}
+    {{ toYaml . | indent 4 | trim }}
+    {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
   {{ toYaml . | indent 2 | trim }}
