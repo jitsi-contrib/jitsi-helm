@@ -258,7 +258,7 @@ Parameter | Description | Default
 `jibri.shm.size` | Jibri shared memory size | `256Mi`
 `jibri.replicaCount` | Number of replica of the jibri pods | `1`
 `jibri.image.repository` | Name of the image to use for the jibri pods | `jitsi/jibri`
-`jibri.extraEnvs` | Map containing additional environment variables for jibri | '{}'
+`jibri.extraEnvs` | Map containing additional environment variables for jibri | `{}`
 `jibri.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jibri.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `jibri.breweryMuc` | Name of the XMPP MUC used by jibri | `jibribrewery`
@@ -276,10 +276,10 @@ Parameter | Description | Default
 `jigasi.xmpp.password` | Password used by Jigasi to authenticate on the XMPP service | 10 random chars
 `jigasi.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jigasi.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jigasi.extraEnvs` | Map containing additional environment variables for Jigasi | '{}'
+`jigasi.extraEnvs` | Map containing additional environment variables for Jigasi | `{}`
 `jicofo.replicaCount` | Number of replica of the jicofo pods | `1`
 `jicofo.image.repository` | Name of the image to use for the jicofo pods | `jitsi/jicofo`
-`jicofo.extraEnvs` | Map containing additional environment variables for jicofo | '{}'
+`jicofo.extraEnvs` | Map containing additional environment variables for jicofo | `{}`
 `jicofo.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `jicofo.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `jicofo.xmpp.password` | Password used by jicofo to authenticate on the XMPP service | 10 random chars
@@ -295,7 +295,7 @@ Parameter | Description | Default
 `jvb.nodePort` | UDP port used by NodePort service | `(unset)`
 `jvb.useHostPort` | Enable HostPort feature (may not work on some CNI plugins) | `false`
 `jvb.useHostNetwork` | Connect JVB pod to host network namespace | `false`
-`jvb.extraEnvs` | Map containing additional environment variables to jvb | '{}'
+`jvb.extraEnvs` | Map containing additional environment variables to jvb | `{}`
 `jvb.xmpp.user` | Name of the XMPP user used by jvb to authenticate | `jvb`
 `jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
 `jvb.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
@@ -314,7 +314,7 @@ Parameter | Description | Default
 `web.httpsEnabled` | Boolean that enabled tls-termination on the web pods. Useful if you expose the UI via a `Loadbalancer` IP instead of an ingress | `false`
 `web.httpRedirect` | Boolean that enabled http-to-https redirection. Useful for ingress that don't support this feature (ex: GKE ingress) | `false`
 `web.resolverIP` | Override nameserver IP for Web container | (*unset*, use auto-detected nameserver IP)
-`web.extraEnvs` | Map containing additional environment variable to web pods | '{}'
+`web.extraEnvs` | Map containing additional environment variable to web pods | `{}`
 `web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
 `web.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
 `tz` | System Time Zone | `Europe/Amsterdam`
