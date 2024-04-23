@@ -1,5 +1,9 @@
 # Helm Chart for Jitsi Meet
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jitsi-meet)](https://artifacthub.io/packages/search?repo=jitsi-meet) ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
+ ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
+
+
 [jitsi-meet](https://jitsi.org/jitsi-meet/) Secure, Simple and Scalable Video
 Conferences that you use as a standalone app or embed in your web application.
 
