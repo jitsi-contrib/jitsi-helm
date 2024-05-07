@@ -48,6 +48,11 @@ spec:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:
               name: {{ include "jitsi-meet.jigasi.fullname" . }}
+          {{- if .Values.global.releaseSecretsOverride.enabled }}
+          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          {{- end }}
           {{- with .Values.jigasi.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
