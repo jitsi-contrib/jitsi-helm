@@ -11,6 +11,12 @@ data:
   {{- else }}
   # Not providing /config/custom-config.js
   {{ end }}
+  custom-interface_config.js: |
+  {{- if .Values.web.custom.configs._custom_interface_config_js }}
+    {{- .Values.web.custom.configs._custom_interface_config_js | nindent 4 }}
+  {{- else }}
+  # Not providing /config/custom-interface_config.js
+  {{ end }}
   default: |
   {{- if .Values.web.custom.defaults._default }}
     {{- .Values.web.custom.defaults._default | nindent 4 }}

@@ -70,6 +70,7 @@ web:
       _ssl_conf: ""
       _system_config_js: ""
     configs:
+      _custom_interface_config_js: ""
       _custom_config_js: ""
 
   extraEnvs: {}

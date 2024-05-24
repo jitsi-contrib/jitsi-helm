@@ -79,6 +79,11 @@ spec:
             mountPath: /config/custom-config.js
             subPath: custom-config.js
           {{- end }}
+          {{- if .Values.web.custom.configs._custom_interface_config_js }}
+          - name: custom-conffiles
+            mountPath: /config/custom-interface_config.js
+            subPath: custom-interface_config.js
+          {{- end }}
           {{- if .Values.web.custom.defaults._default }}
           - name: custom-conffiles
             mountPath: /defaults/default
@@ -151,6 +156,8 @@ spec:
           items:
             - key: custom-config.js
               path: custom-config.js
+            - key: custom-interface_config.js
+              path: custom-interface_config.js
             - key: default
               path: default
             - key: ffdhe2048.txt
