@@ -19,7 +19,7 @@ version: 1.4.0
 #  * Here;
 #  * charts/prosody/Chart.yaml;
 #  * values.yaml.
-appVersion: stable-9457-2
+appVersion: stable-9646
 
 ## Chart dependencies:
 #  Make sure to keep the Prosody chart version in sync with this one.
