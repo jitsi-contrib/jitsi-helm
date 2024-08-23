@@ -175,5 +175,5 @@ spec:
             - key: system-config.js
               path: system-config.js
     {{- with .Values.web.extraVolumes }}
-        {{- toYaml . | nindent 8 }}
+      {{- toYaml . | nindent 6 }}
     {{- end }}
