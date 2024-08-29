@@ -149,7 +149,7 @@ spec:
       {{-   else }}
         emptyDir:
           medium: Memory
-          sizeLimit: {{ .Values.jibri.shm.size | default "256Mi" | quote }}
+          sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
       {{-   end }}
       {{- end }}
 {{- end }}

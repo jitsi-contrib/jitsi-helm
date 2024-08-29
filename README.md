@@ -255,7 +255,7 @@ Parameter | Description | Default
 `jibri.persistence.storageClassName` | StorageClass to use with Jibri | `(unset)`
 `jibri.shm.enabled` | Allocate shared memory to Jibri pod | `false`
 `jibri.shm.useHost` | Pass `/dev/shm` from host to Jibri | `false`
-`jibri.shm.size` | Jibri shared memory size | `256Mi`
+`jibri.shm.size` | Jibri shared memory size | `2Gi`
 `jibri.replicaCount` | Number of replica of the jibri pods | `1`
 `jibri.image.repository` | Name of the image to use for the jibri pods | `jitsi/jibri`
 `jibri.extraEnvs` | Map containing additional environment variables for jibri | `{}`
