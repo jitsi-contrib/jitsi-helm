@@ -10,7 +10,7 @@ icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
 ## This is the *chart* version.
 #  This version number should be incremented each time you make
 #  changes to the chart and its templates, including the app version.
-version: 1.4.0
+version: 1.4.1
 
 ## This is the *application* version.
 #  Due to the way the chart is split into the "main" one
@@ -26,7 +26,7 @@ appVersion: stable-9646
 dependencies:
   - name: prosody
     condition: prosody.enabled
-    version: 1.4.0
+    version: 1.4.1
 
 ## Chart annotations (for ArtifactHub):
 annotations:
