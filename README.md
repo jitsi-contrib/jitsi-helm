@@ -340,3 +340,19 @@ Parameter | Description | Default
 helm package . -d docs
 helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
 ```
+
+
+## OpenShift
+
+```bash
+helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=true,publicURL=myjitsi-jitsi.apps.cluster-zrltk.sandbox1236.opentlc.com,web.service.port=80,jvb.service.type=ClusterIP,jvb.UDPPort=8082
+```
+
+```bash
+oc adm policy add-scc-to-user anyuid system:serviceaccount:jitsi:myjitsi-jitsi-meet
+oc adm policy add-scc-to-user anyuid system:serviceaccount:jitsi:myjitsi-prosody
+```
+
+```bash
+helm uninstall myjitsi
+```
