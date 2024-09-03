@@ -14,6 +14,21 @@ helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
 helm install myjitsi jitsi/jitsi-meet
 ```
 
+## Try in Google Cloud Shell
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/maximilianoPizarro/jitsi-helm&cloudshell_tutorial=README.md&show=terminal&cloudshell_workspace=/)
+
+Run in Cloud Shell terminal and Open in preview with 8080 port
+
+```bash
+minikube start
+helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
+helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=true,publicURL=$PORT-$WEB_HOST,web.service.port=8080,jvb.service.type=NodePort
+sleep 1m
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=myjitsi" -o jsonpath="{.items[0].metadata.name}")
+echo "Visit http://127.0.0.1:8080 to use your application"
+kubectl --namespace default port-forward $POD_NAME 8080:80
+```
+
 ## Introduction
 
 This chart bootstraps a jitsi-meet deployment, like the official
