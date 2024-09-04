@@ -289,6 +289,7 @@ Parameter | Description | Default
 `jvb.stunServers` | List of STUN/TURN servers to announce to the users | `meet-jit-si-turnrelay.jitsi.net:443`
 `jvb.service.enabled` | Boolean to enable os disable the jvb service creation | `false` if `jvb.useHostPort` is `true` otherwise `true`
 `jvb.service.type` | Type of the jvb service | `ClusterIP`
+`jvb.service.ipFamilyPolicy` | `ipFamilyPolicy` for the service ([docs](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)) | `(unset)`
 `jvb.service.annotations` | Additional annotations for JVB service (might be useful for managed k8s) | `{}`
 `jvb.service.extraPorts` | Additional ports to expose from your JVB pod(s) | `[]`
 `jvb.UDPPort` | UDP port used by jvb, also affects port of service, and hostPort | `10000`
