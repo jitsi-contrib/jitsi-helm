@@ -28,7 +28,7 @@ Run in Cloud Shell terminal and Open in preview with 8080 port
 ```bash
 minikube start
 helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
-helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=true,publicURL=$PORT-$WEB_HOST,web.service.port=8080,jvb.service.type=NodePort
+helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=false,publicURL=$PORT-$WEB_HOST,web.service.port=8080,jvb.service.type=NodePort
 sleep 1m
 export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=myjitsi" -o jsonpath="{.items[0].metadata.name}")
 echo "Visit http://127.0.0.1:8080 to use your application"
@@ -355,7 +355,7 @@ oc new-project jitsi
 ```
 
 ```bash
-helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=true,publicURL=myjitsi-jitsi.apps.cluster-zrltk.sandbox1236.opentlc.com,web.service.port=80,jvb.service.type=ClusterIP,jvb.UDPPort=8082
+helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=false,publicURL=myjitsi-jitsi.apps-crc.testing,web.service.port=80,jvb.service.type=ClusterIP,jvb.UDPPort=8082
 ```
 
 ```bash
