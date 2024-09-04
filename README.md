@@ -350,6 +350,11 @@ helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
 
 ## OpenShift
 
+<p align="left">
+  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/openshift.gif?raw=true" width="900" title="OpenShift">
+</p>
+
+
 ```bash
 oc new-project jitsi
 ```
