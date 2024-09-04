@@ -14,25 +14,6 @@ helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
 helm install myjitsi jitsi/jitsi-meet
 ```
 
-## Try in Google Cloud Shell
-
-<p align="left">
-  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell.png?raw=true" width="840" title="CloudShell">
-  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell-test.png?raw=true" width="840" title="CloudShell">
-</p>
-
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jitsi-contrib/jitsi-helm&cloudshell_tutorial=README.md&show=terminal&cloudshell_workspace=/)
-
-Run in Cloud Shell terminal and Open in preview with 8080 port
-
-```bash
-minikube start
-helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
-helm install myjitsi jitsi/jitsi-meet --atomic --set jvb.useNodeIP=true,jvb.useHostPort=false,publicURL=8080-$WEB_HOST,web.service.port=8080,jvb.service.type=NodePort
-export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=myjitsi" -o jsonpath="{.items[0].metadata.name}")
-echo "Visit http://127.0.0.1:8080 to use your application"
-kubectl --namespace default port-forward $POD_NAME 8080:80
-```
 
 ## Introduction
 
@@ -347,25 +328,38 @@ helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
 ```
 
 
-## OpenShift
+## Try in Google Cloud Shell
 
-<p align="left">
-  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/openshift.gif?raw=true" width="840" title="OpenShift">
-</p>
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jitsi-contrib/jitsi-helm&cloudshell_tutorial=README.md&show=terminal&cloudshell_workspace=/)
 
+Run in Cloud Shell terminal and Open in preview with 8080 port
+
+```bash
+minikube start
+helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
+helm install myjitsi jitsi/jitsi-meet --atomic --set jvb.useNodeIP=true,jvb.useHostPort=false,publicURL=8080-$WEB_HOST,web.service.port=8080,jvb.service.type=NodePort
+export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=myjitsi" -o jsonpath="{.items[0].metadata.name}")
+echo "Visit http://127.0.0.1:8080 to use your application"
+kubectl --namespace default port-forward $POD_NAME 8080:80
+```
+
+## OpenShift (cluster-admin only)
 
 ```bash
 oc new-project jitsi
 ```
 
 ```bash
-helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=false,publicURL=myjitsi-jitsi.apps-crc.testing,web.service.port=80,jvb.service.type=ClusterIP,jvb.UDPPort=8082
-```
-
-```bash
 oc adm policy add-scc-to-user anyuid system:serviceaccount:jitsi:myjitsi-jitsi-meet
 oc adm policy add-scc-to-user anyuid system:serviceaccount:jitsi:myjitsi-prosody
 ```
+
+```bash
+helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=false,publicURL=myjitsi-jitsi.apps-crc.testing,web.service.port=80,jvb.service.type=ClusterIP,jvb.UDPPort=8082
+```
+
+
+## Uninstall
 
 ```bash
 helm uninstall myjitsi
