@@ -233,6 +233,9 @@ jvb:
     type: ClusterIP
     externalTrafficPolicy: Cluster
     externalIPs: []
+    ## If type is set to LoadBalancer and the cluster is dual stack, ipFamilyPolicy can be set to enable dual stack
+    # addressing for the service.
+    # ipFamilyPolicy: PreferDualStack
     ## Annotations to be added to the service (if LoadBalancer is used)
     #  An example below is needed for DigitalOcean managed k8s setups
     #  with a LoadBalancer service, so that DO's external LB can perform

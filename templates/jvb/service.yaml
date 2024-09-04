@@ -14,6 +14,9 @@ spec:
   {{- with .Values.jvb.service.loadBalancerIP }}
   loadBalancerIP: {{ . }}
   {{- end }}
+  {{- with .Values.jvb.service.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ . }}
+  {{- end }}
   ports:
     - port: {{ default 10000 .Values.jvb.UDPPort }}
       {{- if and .Values.jvb.nodePort (or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer")) }}
