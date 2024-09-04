@@ -17,8 +17,8 @@ helm install myjitsi jitsi/jitsi-meet
 ## Try in Google Cloud Shell
 
 <p align="left">
-  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell.PNG?raw=true" width="900" title="CloudShell">
-  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell-test.PNG?raw=true" width="900" title="CloudShell">
+  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell.png?raw=true" width="900" title="CloudShell">
+  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell-test.png?raw=true" width="900" title="CloudShell">
 </p>
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jitsi-contrib/jitsi-helm&cloudshell_tutorial=README.md&show=terminal&cloudshell_workspace=/)
