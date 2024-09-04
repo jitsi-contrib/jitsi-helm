@@ -15,7 +15,11 @@ helm install myjitsi jitsi/jitsi-meet
 ```
 
 ## Try in Google Cloud Shell
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/maximilianoPizarro/jitsi-helm&cloudshell_tutorial=README.md&show=terminal&cloudshell_workspace=/)
+<p align="left">
+  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell.PNG?raw=true" width="900" title="Run On Openshift">
+  <img src="https://github.com/jitsi-contrib/jitsi-helm/blob/main/img/cloud-shell-test.PNG?raw=true" width="900" title="Run On Openshift">
+</p> 
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/jitsi-contrib/jitsi-helm&cloudshell_tutorial=README.md&show=terminal&cloudshell_workspace=/)
 
 Run in Cloud Shell terminal and Open in preview with 8080 port
 
@@ -343,6 +347,10 @@ helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
 
 
 ## OpenShift
+
+```bash
+oc new-project jitsi
+```
 
 ```bash
 helm install myjitsi jitsi/jitsi-meet --set jvb.useNodeIP=true,jvb.useHostPort=true,publicURL=myjitsi-jitsi.apps.cluster-zrltk.sandbox1236.opentlc.com,web.service.port=80,jvb.service.type=ClusterIP,jvb.UDPPort=8082
