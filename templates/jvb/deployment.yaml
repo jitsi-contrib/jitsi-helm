@@ -68,7 +68,7 @@ spec:
           {{- if or .Values.jvb.useNodeIP .Values.jvb.publicIPs }}
           - name: DOCKER_HOST_ADDRESS
             {{- if .Values.jvb.publicIPs }}
-            value: {{ first .Values.jvb.publicIPs }}
+            value: {{ first .Values.jvb.publicIPs | quote }}
             {{- else }}
             valueFrom:
               fieldRef:
@@ -76,7 +76,7 @@ spec:
             {{- end }}
           - name: JVB_ADVERTISE_IPS
             {{- if .Values.jvb.publicIPs }}
-            value: {{ .Values.jvb.publicIPs | join "," }}
+            value: {{ .Values.jvb.publicIPs | join "," | quote }}
             {{- else }}
             valueFrom:
               fieldRef:
