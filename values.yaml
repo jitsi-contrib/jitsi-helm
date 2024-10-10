@@ -467,6 +467,8 @@ jibri:
       _jibri_conf: ""
       _logging_properties: ""
       _xorg_video_dummy_conf: ""
+    other:
+      _finalize_sh: ""
 
 serviceAccount:
   # Specifies whether a service account should be created

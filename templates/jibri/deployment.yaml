@@ -105,6 +105,11 @@ spec:
           mountPath: /defaults/xorg-video-dummy.conf
           subPath: xorg-video-dummy.conf
         {{- end }}
+        {{- if .Values.jibri.custom.other._finalize_sh }}
+        - name: custom-other
+          mountPath: /config/finalize.sh
+          subPath: finalize.sh
+        {{- end }}
         - name: jibri-data
           mountPath: /data
         {{- if .Values.jibri.shm.enabled }}
@@ -134,6 +139,10 @@ spec:
               path: autoscaler-sidecar.config
             - key: xorg-video-dummy.conf
               path: xorg-video-dummy.conf
+      - name: custom-other
+        configMap:
+          defaultMode: 493
+          name: {{ include "jitsi-meet.jibri.fullname" . }}-other
       - name: jibri-data
         {{- if .Values.jibri.persistence.enabled }}
         persistentVolumeClaim:
