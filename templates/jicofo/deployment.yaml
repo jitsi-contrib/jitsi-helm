@@ -103,6 +103,23 @@ spec:
             mountPath: /defaults/logging.properties
             subPath: logging.properties
           {{- end }}
+        {{- if .Values.jicofo.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.jicofo.metrics.image.repository }}:{{ .Values.jicofo.metrics.image.tag }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.metrics.image .Values.image | first }}
+          ports:
+            - name: metrics
+              containerPort: 9996
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9996
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.jicofo.metrics.resources | nindent 12 }}
+        {{- end }}
       {{- with .Values.jicofo.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
