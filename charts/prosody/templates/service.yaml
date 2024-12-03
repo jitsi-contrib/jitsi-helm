@@ -25,5 +25,10 @@ spec:
     - port: {{ index .Values.service.ports "xmpp-s2s" }}
       protocol: TCP
       name: tcp-xmpp-s2
+    {{- if .Values.metrics.enabled }}
+    - port: 8889
+      protocol: TCP
+      name: metrics
+    {{- end }}
   selector:
     {{- include "prosody.selectorLabels" . | nindent 4 }}
