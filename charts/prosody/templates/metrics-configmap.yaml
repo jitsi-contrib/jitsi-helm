@@ -1,0 +1,28 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "prosody.fullname" . }}-metrics
+  labels:
+    {{- include "prosody.labels" . | nindent 4 }}
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      prometheus_simple:
+        collection_interval: 10s
+        endpoint: "localhost:5280"
+        metrics_path: "/metrics"
+        use_service_account: false
+
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+        metric_expiration: 180m
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus_simple]
+          exporters: [prometheus]
+          
+{{- end }}
