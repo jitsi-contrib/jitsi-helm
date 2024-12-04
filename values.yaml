@@ -326,11 +326,19 @@ jigasi:
     password:
 
   livenessProbe:
-    tcpSocket:
+    httpGet:
+      path: /about/health
       port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
   readinessProbe:
-    tcpSocket:
+    httpGet:
+      path: /about/health
       port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
 
   podLabels: {}
   podAnnotations: {}
