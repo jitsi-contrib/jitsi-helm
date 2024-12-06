@@ -462,6 +462,9 @@ jibri:
           | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
   extraEnvs: {}
 
   ## Override the image-provided configuration files:
