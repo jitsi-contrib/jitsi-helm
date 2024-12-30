@@ -503,6 +503,7 @@ xmpp:
   mucDomain:
   internalMucDomain:
   guestDomain:
+  hiddenDomain:
 
 extraCommonEnvs: {}
 

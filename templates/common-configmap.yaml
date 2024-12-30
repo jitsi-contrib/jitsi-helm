@@ -12,7 +12,7 @@ data:
   XMPP_MUC_DOMAIN: {{ .Values.xmpp.mucDomain | default (printf "muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   XMPP_AUTH_DOMAIN: {{ .Values.xmpp.authDomain | default (printf "auth.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   XMPP_GUEST_DOMAIN: {{ .Values.xmpp.guestDomain | default (printf "guest.%s" (include "jitsi-meet.xmpp.domain" .)) }}
-  XMPP_RECORDER_DOMAIN: {{ .Values.xmpp.recorderDomain | default (printf "recorder.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+  XMPP_HIDDEN_DOMAIN: {{ .Values.xmpp.hiddenDomain | default (printf "hidden.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   XMPP_INTERNAL_MUC_DOMAIN: {{ .Values.xmpp.internalMucDomain | default (printf "internal-muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
   {{- if or .Values.websockets.colibri.enabled }}
   ENABLE_COLIBRI_WEBSOCKET: 'true'
