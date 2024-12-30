@@ -6,8 +6,8 @@ metadata:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
 data:
   finalize.sh: |
-    {{- if .Values.jibri.custom.contInit._finalize_sh }}
-      {{- .Values.jibri.custom.contInit._finalize_sh | nindent 4 }}
+    {{- if .Values.jibri.custom.other._finalize_sh }}
+      {{- .Values.jibri.custom.other._finalize_sh | nindent 4 }}
     {{- else }}
     # Not using a custom finalize.sh
     {{ end }}
