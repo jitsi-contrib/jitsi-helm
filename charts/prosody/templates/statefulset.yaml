@@ -54,8 +54,14 @@ spec:
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
           {{- end }}
-          {{- if .Values.extraEnvs }}
+          {{- if or (.Values.extraEnvs) (.Values.metrics.enabled) }}
           env:
+          {{- if .Values.metrics.enabled }}
+          - name: PROSODY_ENABLE_METRICS
+            value: "true"
+          - name: PROSODY_METRICS_ALLOWED_CIDR
+            value: "{{ .Values.metrics.allowed_cidr }}"
+          {{- end }}
           {{- range .Values.extraEnvs }}
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
@@ -114,6 +120,21 @@ spec:
           {{- with .Values.extraVolumeMounts }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
+        {{- if .Values.metrics.enabled }}
+        - name: metrics
+          image: "{{ .Values.metrics.image.repository }}:{{ .Values.metrics.image.tag }}"
+          imagePullPolicy: "{{ .Values.metrics.image.pullPolicy }}"
+          args: [--config=/etc/otel-collector-config.yaml]
+          ports:
+            - name: metrics
+              containerPort: 8889
+              protocol: TCP
+          volumeMounts:
+            - name: metrics-config
+              mountPath: /etc/otel-collector-config.yaml
+              subPath: otel-collector-config.yaml
+              readOnly: true
+        {{- end }}
       volumes:
       - name: config
         emptyDir: {}
@@ -141,6 +162,12 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
+      {{- if .Values.metrics.enabled }}
+      - name: metrics-config
+        configMap:
+          name: "{{ include "prosody.fullname" . }}-metrics"
+          defaultMode: 420
+      {{- end }}
       {{- with .Values.extraVolumes }}
       {{- toYaml . | nindent 6 }}
       {{- end }}

@@ -188,6 +188,13 @@ jicofo:
   affinity: {}
   extraEnvs: {}
 
+  metrics:
+    enabled: false
+    image:
+      repository: prayagsingh/prometheus-jicofo-exporter
+      tag: "1.3.2"
+    resources: {}
+
 jvb:
   replicaCount: 1
   image:
