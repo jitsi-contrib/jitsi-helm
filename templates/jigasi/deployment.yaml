@@ -57,6 +57,10 @@ spec:
           securityContext:
             {{- toYaml .Values.jigasi.securityContext | nindent 12 }}
           envFrom:
+          {{- if .Values.global.jigasi.xmpp.secret }}
+          - secretRef:
+              name: {{ .Values.jigasi.secret }}
+          {{- else }}
           - secretRef:
               name: {{ include "jitsi-meet.jigasi.secretName" . }}
           - configMapRef:

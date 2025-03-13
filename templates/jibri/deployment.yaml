@@ -86,6 +86,15 @@ spec:
         - name: http-api
           containerPort: 2222
         envFrom:
+        {{ if .Values.global.jibri.xmpp.secret }}
+        - secretRef:
+            name: {{ .Values.global.jibri.xmpp.secret }}
+        {{ end }}
+        {{ if .Values.global.jibri.recorder.secret }}
+        - secretRef:
+            name: {{ .Values.global.jibri.recorder.secret }}
+        {{ end }}
+        {{ if not (or .Values.global.jibri.xmpp.secret .Values.jibri.recorder.secret) }}
         - secretRef:
             name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
         - secretRef:
