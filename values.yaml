@@ -17,6 +17,41 @@ global:
     #      name: '{{ include "prosody.fullname" . }}-overrides'
     #      optional: true
 
+  jibri:
+    ## jibri XMPP user credentials:
+    xmpp:
+      user: jibri
+      password:
+      ## Alternatively provide a name for an externally managed secret containing the values for JIBRI_XMPP_USER and JIBRI_XMPP_PASSWORD
+      secret:
+    ## recorder XMPP user credentials:
+    recorder:
+      user: recorder
+      password:
+      ## Alternatively provide a name for an externally managed secret containing the values for JIBRI_RECORDER_USER and JIBRI_RECORDER_PASSWORD
+      secret:
+  jicofo:
+    ## jicofo XMPP user credentials:
+    xmpp:
+      password:
+      componentSecret:
+      ## Alternatively provide a name for an externally managed secret containing the values for JICOFO_XMPP_USER, JICOFO_AUTH_PASSWORD, JICOFO_COMPONENT_SECRET
+      secret:
+  jigasi:
+    ## jigasi XMPP user credentials:
+    xmpp:
+      user: jigasi
+      password:
+      ## Alternatively provide a name for an externally managed secret containing the values for JIGASI_XMPP_USER and JIGASI_AUTH_PASSWORD
+      secret:
+  jvb:
+    ## jvb XMPP user credentials:
+    xmpp:
+      user: jvb
+      password:
+      ## Alternatively provide a name for an externally managed secret containing the values for JVB_AUTH_USER, JVB_AUTH_PASSWORD, JICOFO_COMPONENT_SECRET
+      secret:
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -166,10 +201,6 @@ jicofo:
       _jicofo_conf: ""
       _logging_properties: ""
 
-  xmpp:
-    password:
-    componentSecret:
-
   livenessProbe:
     tcpSocket:
       port: 8888
@@ -199,10 +230,6 @@ jvb:
   replicaCount: 1
   image:
     repository: jitsi/jvb
-
-  xmpp:
-    user: jvb
-    password:
 
   ## Set public IP addresses to be advertised by JVB.
   #  You can specify your nodes' IP addresses,
@@ -327,11 +354,6 @@ jigasi:
 
   breweryMuc: jigasibrewery
 
-  ## jigasi XMPP user credentials:
-  xmpp:
-    user: jigasi
-    password:
-
   livenessProbe:
     httpGet:
       path: /about/health
@@ -434,15 +456,6 @@ jibri:
   breweryMuc: jibribrewery
   timeout: 90
 
-  ## jibri XMPP user credentials:
-  xmpp:
-    user: jibri
-    password:
-
-  ## recorder XMPP user credentials:
-  recorder:
-    user: recorder
-    password:
 
   livenessProbe:
     initialDelaySeconds: 5
@@ -513,13 +526,15 @@ prosody:
   server:
   extraEnvFrom:
   - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jibri'
+      name: '{{ .Values.global.jibri.xmpp.secret | default (printf "%s-%s" (include "prosody.fullname" .) "jibri") }}'
   - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jicofo'
+      name: '{{ .Values.global.jibri.recorder.secret | default (printf "%s-%s" (include "prosody.fullname" .) "recorder") }}'
   - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jigasi'
+      name: '{{ .Values.global.jicofo.xmpp.secret | default (printf "%s-%s" (include "prosody.fullname" .) "jicofo") }}'
   - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jvb'
+      name: '{{ .Values.global.jigasi.xmpp.secret | default (printf "%s-%s" (include "prosody.fullname" .) "jigasi") }}'
+  - secretRef:
+      name: '{{ .Values.global.jvb.xmpp.secret | default (printf "%s-%s" (include "prosody.fullname" .) "jvb") }}'
   - configMapRef:
       name: '{{ include "prosody.fullname" . }}-common'
   image:

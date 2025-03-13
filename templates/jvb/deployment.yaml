@@ -54,7 +54,7 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jvb.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jvb
+              name: {{ coalesce .Values.global.jvb.xmpp.secret (printf "%s-%s" (include "call-nested" (list . "prosody" "prosody.fullname")) "jvb") }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:
