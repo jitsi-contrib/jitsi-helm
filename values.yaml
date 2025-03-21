@@ -447,7 +447,7 @@ jibri:
   livenessProbe:
     initialDelaySeconds: 5
     periodSeconds: 5
-    failureThreshold: 2
+    failureThreshold: 3
     exec:
       command:
         - /bin/bash
@@ -460,7 +460,7 @@ jibri:
   readinessProbe:
     initialDelaySeconds: 5
     periodSeconds: 5
-    failureThreshold: 2
+    failureThreshold: 3
     exec:
       command:
         - /bin/bash
@@ -524,7 +524,7 @@ prosody:
       name: '{{ include "prosody.fullname" . }}-common'
   image:
     repository: jitsi/prosody
-    tag: stable-9909
+    tag: stable-10133
 
   # service:
   #   ports:
