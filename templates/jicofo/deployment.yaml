@@ -59,8 +59,13 @@ spec:
           image: "{{ .Values.jicofo.image.repository }}:{{ default .Chart.AppVersion .Values.jicofo.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.image .Values.image | first }}
           envFrom:
+          {{ if .Values.global.jicofo.xmpp.secret }}
+          - secretRef:
+              name: {{ .Values.global.jicofo.xmpp.secret }}
+          {{ else }}
           - secretRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jicofo
+          {{ end }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:

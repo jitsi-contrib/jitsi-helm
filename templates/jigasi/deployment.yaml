@@ -42,8 +42,13 @@ spec:
           image: "{{ .Values.jigasi.image.repository }}:{{ default .Chart.AppVersion .Values.jigasi.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jigasi.image .Values.image | first }}
           envFrom:
+          {{- if .Values.global.jigasi.xmpp.secret }}
+          - secretRef:
+              name: {{ .Values.jigasi.secret }}
+          {{- else }}
           - secretRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
+          {{- end }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:
