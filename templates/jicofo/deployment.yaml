@@ -53,6 +53,20 @@ spec:
             - key: logging.properties
               path: logging.properties
       containers:
+      {{- if .Values.jicofo.metrics.enabled }}
+        - name: metrics
+          image: {{ .Values.jicofo.metrics.image.repository }}:{{ .Values.jicofo.metrics.image.tag }}
+          imagePullPolicy: {{ .Values.jicofo.metrics.image.pullPolicy }}
+          securityContext:
+            runAsUser: 10001
+          args:
+            - "--jicofo.scrape-uri=http://localhost:8888/stats"
+          ports:
+            - containerPort: 9996
+              name: tcp-metrics
+          resources:
+        {{- toYaml .Values.jicofo.metrics.resources | nindent 12 }}      
+      {{- end }}       
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.jicofo.securityContext | nindent 12 }}
