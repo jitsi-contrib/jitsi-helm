@@ -178,6 +178,29 @@ jicofo:
     tcpSocket:
       port: 8888
 
+  metrics:
+    enabled: true
+    image:
+      repository: prayagsingh/prometheus-jicofo-exporter
+      tag: latest
+      pullPolicy: IfNotPresent
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 20Mi
+      limits:
+        cpu: 20m
+        memory: 40Mi
+
+    prometheusAnnotations: true
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false 
+
   podLabels: {}
   podAnnotations: {}
   podSecurityContext: {}
@@ -469,6 +492,29 @@ jibri:
           curl -sq localhost:2222/jibri/api/v1.0/health
           | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
           | grep -qP 'HEALTHY (IDLE|BUSY)'
+
+  metrics:
+    enabled: true
+    image:
+      repository: prayagsingh/prometheus-jibri-exporter
+      tag: latest
+      pullPolicy: IfNotPresent
+
+    resources:
+      requests:
+        cpu: 60m
+        memory: 100Mi
+      limits:
+        cpu: 90m
+        memory: 120Mi
+
+    prometheusAnnotations: true
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false
 
   nodeSelector: {}
   tolerations: []
