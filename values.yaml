@@ -84,6 +84,10 @@ web:
     # nodePort: 30580
     # port: 80
     externalIPs: []
+    ## Annotations to be added to the service (if LoadBalancer is used)
+    #  An example below is needed for GKE IAP enablement
+    annotations: {}
+      # beta.cloud.google.com/backend-config: backend-config-iap
 
   ingress:
     enabled: false
