@@ -179,7 +179,7 @@ jicofo:
       port: 8888
 
   metrics:
-    enabled: true
+    enabled: false
     image:
       repository: prayagsingh/prometheus-jicofo-exporter
       tag: latest
@@ -195,7 +195,7 @@ jicofo:
 
     prometheusAnnotations: true
     serviceMonitor:
-      enabled: true
+      enabled: false
       selector:
         release: prometheus-operator
       interval: 10s
@@ -210,13 +210,6 @@ jicofo:
   tolerations: []
   affinity: {}
   extraEnvs: {}
-
-  metrics:
-    enabled: false
-    image:
-      repository: prayagsingh/prometheus-jicofo-exporter
-      tag: "1.3.2"
-    resources: {}
 
 jvb:
   replicaCount: 1
@@ -242,7 +235,7 @@ jvb:
   #  Recommended for OCTO setups (with either NodePort service
   #  or hostPort enabled) where every JVB pod should announce it's
   #  own IP address only.
-  useNodeIP: false
+  useNodeIP: true
   ## Use a STUN server to help some users punch through some
   #  especially nasty NAT setups. Usually makes sense for P2P calls.
   stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
@@ -259,7 +252,7 @@ jvb:
   #  (Default NodePort range for K8s is 30000-32767)
   # nodePort: 10000
   service:
-    enabled:
+    enabled: false
     type: ClusterIP
     externalTrafficPolicy: Cluster
     externalIPs: []
@@ -384,7 +377,7 @@ jigasi:
 jibri:
   ## Enabling Jibri will allow users to record
   ## and/or stream their meetings (e.g. to YouTube).
-  enabled: false
+  enabled: true
 
   ## Use external Jibri installation.
   ## This setting skips the creation of Jibri Deployment altogether,
@@ -418,14 +411,14 @@ jibri:
   ## If enabled (i.e. set to 2 or more), each Jibri instance
   ## will get an ID assigned to it, based on pod name.
   ## Multiple replicas are recommended for single-use mode.
-  replicaCount: 1
+  replicaCount: 2
 
   ## Enable persistent storage for local recordings.
   ## If disabled, jibri pod will use a transient
   ## emptyDir-backed storage instead.
   persistence:
     enabled: false
-    size: 4Gi
+    size: 500Mi
     ## Set this to existing PVC name if you have one.
     existingClaim:
     storageClassName:
@@ -433,11 +426,11 @@ jibri:
   shm:
     ## Set to true to enable "/dev/shm" mount.
     ## May be required by built-in Chromium.
-    enabled: false
+    enabled: true
     ## If "true", will use host's shared memory dir,
     ## and if "false" — an emptyDir mount.
     # useHost: false
-    # size: 2Gi
+    size: 2Gi
 
   ## Configure the update strategy for Jibri deployment.
   ## This may be useful depending on your persistence settings,
@@ -494,7 +487,7 @@ jibri:
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   metrics:
-    enabled: true
+    enabled: false
     image:
       repository: prayagsingh/prometheus-jibri-exporter
       tag: latest
@@ -521,8 +514,19 @@ jibri:
   affinity: {}
   extraEnvs: {}
 
+  s3:
+    # if enable, jibri records will upload to your s3
+    # NOTE, just apply with helm install command
+    enabled: true
+    # full below envs with your proper s3 environments
+    extraEnvs:
+      AWS_ACCESS_KEY_ID: 'accessKey'
+      AWS_SECRET_ACCESS_KEY: 'SecretKey'
+      AWS_S3_ENDPOINT: 'https://mys3.com'
+      BUCKET_NAME: 'bucket/subDir'
+      
   ## Override the image-provided configuration files:
-  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs      
   custom:
     contInit:
       _10_config: ""

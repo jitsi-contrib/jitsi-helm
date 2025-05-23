@@ -87,13 +87,17 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         {{- end }}
-
         resources:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
-
         volumeMounts:
         - name: config
           mountPath: /config
+        # S3 compatible
+        {{- if .Values.jibri.s3.enabled }}            
+        - mountPath: /aws
+          name: aws-bin
+          readOnly: true
+        {{- end }}
         {{- if .Values.jibri.custom.contInit._10_config }}
         - name: custom-cont-inits
           mountPath: /etc/cont-init.d/10-config
@@ -132,6 +136,11 @@ spec:
         {{- end }}
 
       volumes:
+      {{- if .Values.jibri.s3.enabled }}      
+      - name: aws-bin
+        persistentVolumeClaim:
+          claimName: {{ include "jitsi-meet.jibri.fullname" . }}-aws
+      {{- end }}
       - name: config
         emptyDir: {}
       - name: custom-cont-inits

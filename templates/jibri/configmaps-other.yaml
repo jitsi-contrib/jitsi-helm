@@ -5,9 +5,48 @@ metadata:
   labels:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
 data:
+  {{- if .Values.jibri.custom.other._finalize_sh }}
   finalize.sh: |
-    {{- if .Values.jibri.custom.other._finalize_sh }}
-      {{- .Values.jibri.custom.other._finalize_sh | nindent 4 }}
-    {{- else }}
-    # Not using a custom finalize.sh
-    {{ end }}
+    {{ .Values.jibri.custom.other._finalize_sh | nindent 4 }}
+  {{- else if .Values.jibri.s3.enabled }}
+  finalize.sh: |
+    #!/bin/bash
+    # Directory containing the recordings passed by Jibri
+    RECORDINGS_DIR=$1
+    UPLOAD_FLAG=".uploaded_to_s3"
+
+    # Check if required environment variables are set
+    if [[ -z "$AWS_ACCESS_KEY_ID" || -z "$AWS_SECRET_ACCESS_KEY" || -z "$AWS_S3_ENDPOINT" ]]; then
+        echo "AWS environment variables are not properly set. Please ensure AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, and AWS_S3_ENDPOINT are defined."
+        exit 1
+    fi
+
+    if [ ! -d "$RECORDINGS_DIR" ]; then
+        echo "Recording directory does not exist: $RECORDINGS_DIR"
+        exit 1
+    fi
+
+    MP4_FILE=$(find "$RECORDINGS_DIR" -type f -name "*.mp4" | head -n 1)
+    if [ -z "$MP4_FILE" ]; then
+        echo "No .mp4 file found in directory: $RECORDINGS_DIR"
+        exit 1
+    fi
+
+    DEST_DIR_NAME=$(basename "$MP4_FILE" | sed -E 's/.*_([0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2})\.mp4/\1/')
+
+    if [ -f "$RECORDINGS_DIR/$UPLOAD_FLAG" ]; then
+        echo "Directory already uploaded: $RECORDINGS_DIR"
+        exit 0
+    fi
+
+    echo "Uploading directory to S3: $RECORDINGS_DIR"
+    /aws/aws-cli-bin/aws s3 cp "$RECORDINGS_DIR" "s3://$BUCKET_NAME/$DEST_DIR_NAME" --recursive --endpoint-url "$AWS_S3_ENDPOINT"
+
+    if [ $? -eq 0 ]; then
+        touch "$RECORDINGS_DIR/$UPLOAD_FLAG"
+        echo "Upload completed and marked as uploaded: $RECORDINGS_DIR"
+    else
+        echo "Upload failed for directory: $RECORDINGS_DIR"
+        exit 1
+    fi
+  {{- end }}
