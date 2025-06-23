@@ -32,7 +32,7 @@ spec:
         prometheus.io/scrape: "true"
         {{- end }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations }}
-        {{ $annotation }}: {{ $value|quote }}
+        {{ $annotation }}: {{ $value | quote }}
       {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}

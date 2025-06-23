@@ -24,7 +24,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/xmpp-secret.yaml") . | sha256sum }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jicofo.podAnnotations }}
-        {{ $annotation }}: {{ $value|quote }}
+        {{ $annotation }}: {{ $value | quote }}
       {{- end }}
     spec:
     {{- with .Values.imagePullSecrets }}
