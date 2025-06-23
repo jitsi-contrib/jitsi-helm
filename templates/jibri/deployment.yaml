@@ -58,8 +58,20 @@ spec:
         {{- end }}
 
         envFrom:
+        {{ if .Values.global.jibri.xmpp.secret }}
+        - secretRef:
+            name: {{ .Values.global.jibri.xmpp.secret }}
+        {{ end }}
+        {{ if .Values.global.jibri.recorder.secret }}
+        - secretRef:
+            name: {{ .Values.global.jibri.recorder.secret }}
+        {{ end }}
+        {{ if not (or .Values.global.jibri.xmpp.secret .Values.jibri.recorder.secret) }}
         - secretRef:
             name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jibri
+        - secretRef:
+            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-recorder
+        {{ end }}
         - configMapRef:
             name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
         - configMapRef:
