@@ -12,6 +12,15 @@ data:
   {{- if .Values.web.resolverIP }}
   NGINX_RESOLVER: {{ .Values.web.resolverIP }}
   {{- end }}
+  {{- if and .Values.excalidraw.enabled (.Values.excalidraw.ingress.enabled)}}
+    {{- range .Values.excalidraw.ingress.hosts }}
+    {{- if $.Values.excalidraw.ingress.tls }}
+  WHITEBOARD_COLLAB_SERVER_PUBLIC_URL: https://{{ .host }}
+    {{- else }}
+  WHITEBOARD_COLLAB_SERVER_PUBLIC_URL: http://{{ .host }}
+    {{- end }}
+    {{- end }}
+  {{- end}}  
   {{- range $key, $value := .Values.web.extraEnvs }}
   {{- if not (kindIs "invalid" $value) }}
   {{ $key }}: {{ tpl $value $ | quote }}

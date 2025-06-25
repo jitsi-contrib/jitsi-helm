@@ -1,0 +1,106 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "title": "XMPP Traffic",
+      "type": "timeseries",
+      "targets": [
+        {"expr": "jitsi_xmpp_service_total_recv", "legendFormat": "Received"},
+        {"expr": "jitsi_xmpp_service_total_sent", "legendFormat": "Sent"}
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "Jibri Availability",
+      "type": "stat",
+      "targets": [
+        {"expr": "jitsi_jibri_count", "legendFormat": "Total Jibris"},
+        {"expr": "jitsi_jibri_available", "legendFormat": "Available"}
+      ],
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8}
+    },
+    {
+      "title": "Conference Size Stats",
+      "type": "stat",
+      "targets": [
+        {"expr": "jitsi_conference_sizes_average", "legendFormat": "Average"},
+        {"expr": "jitsi_conference_sizes_max", "legendFormat": "Max"},
+        {"expr": "jitsi_conference_sizes_min", "legendFormat": "Min"}
+      ],
+      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8}
+    },
+    {
+      "title": "Conferences & Participants",
+      "type": "timeseries",
+      "targets": [
+        {"expr": "jitsi_total_conferences_created", "legendFormat": "Total Conferences"},
+        {"expr": "jitsi_total_participants", "legendFormat": "Total Participants"},
+        {"expr": "jitsi_conferences", "legendFormat": "Current Conferences"},
+        {"expr": "jitsi_participants", "legendFormat": "Current Participants"}
+      ],
+      "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8}
+    },
+    {
+      "title": "Jicofo Performance",
+      "type": "stat",
+      "targets": [
+        {"expr": "jitsi_jicofo_threads", "legendFormat": "Threads"},
+        {"expr": "jitsi_jicofo_largest_conferences", "legendFormat": "Largest Conference"}
+      ],
+      "gridPos": {"x": 0, "y": 16, "w": 12, "h": 8}
+    },
+    {
+      "title": "Bridge Health",
+      "type": "stat",
+      "targets": [
+        {"expr": "jitsi_bridge_count", "legendFormat": "Total Bridges"},
+        {"expr": "jitsi_operational_bridge_count", "legendFormat": "Operational"},
+        {"expr": "jitsi_bridge_selector_lost_bridges", "legendFormat": "Lost Bridges"}
+      ],
+      "gridPos": {"x": 12, "y": 16, "w": 12, "h": 8}
+    },
+    {
+      "title": "Bridge Load & Failover Stats",
+      "type": "timeseries",
+      "targets": [
+        {"expr": "jitsi_bridge_selector_total_least_loaded_in_region", "legendFormat": "Least Loaded (Region)"},
+        {"expr": "jitsi_bridge_selector_total_split_due_to_load", "legendFormat": "Split Due to Load"},
+        {"expr": "jitsi_bridge_selector_total_not_loaded_in_region", "legendFormat": "Not Loaded (Region)"},
+        {"expr": "jitsi_bridge_selector_in_shutdown_bridge_count", "legendFormat": "In Shutdown"}
+      ],
+      "gridPos": {"x": 0, "y": 24, "w": 24, "h": 8}
+    },
+    {
+      "title": "Jibri Recording & SIP Status",
+      "type": "stat",
+      "targets": [
+        {"expr": "jitsi_recording_active", "legendFormat": "Active Recordings"},
+        {"expr": "jitsi_recording_pending", "legendFormat": "Pending Recordings"},
+        {"expr": "jitsi_sip_call_active", "legendFormat": "Active SIP Calls"},
+        {"expr": "jitsi_sip_call_pending", "legendFormat": "Pending SIP Calls"}
+      ],
+      "gridPos": {"x": 0, "y": 32, "w": 24, "h": 8}
+    },
+    {
+      "title": "Failures Overview",
+      "type": "stat",
+      "targets": [
+        {"expr": "jitsi_total_sip_call_failures", "legendFormat": "SIP Call Failures"},
+        {"expr": "jitsi_total_live_streaming_failures", "legendFormat": "Live Streaming Failures"},
+        {"expr": "jitsi_total_recording_failures", "legendFormat": "Recording Failures"},
+        {"expr": "jitsi_participants_notification_ice_failed", "legendFormat": "ICE Failures"},
+        {"expr": "jitsi_participants_notification_request_restart", "legendFormat": "ICE Restarts"}
+      ],
+      "gridPos": {"x": 0, "y": 40, "w": 24, "h": 8}
+    }
+  ],
+  "title": "Jitsi jicofo Full Metrics",
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "10s"
+}

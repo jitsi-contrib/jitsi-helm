@@ -1,0 +1,30 @@
+{{- if .Values.excalidraw.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jitsi-meet.excalidraw.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.excalidraw.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jitsi-meet.excalidraw.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}    
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.excalidraw.securityContext | nindent 12 }}      
+        image: "{{ .Values.excalidraw.image.repository }}:{{ .Values.excalidraw.image.tag }}"
+        ports:
+        - containerPort: 80
+        - containerPort: 9090
+        resources:
+          {{- toYaml .Values.excalidraw.resources | nindent 12 }}
+{{- end }}

@@ -17,3 +17,19 @@ spec:
   storageClassName: {{ . | quote }}
   {{- end }}
 {{- end -}}
+
+{{- if and .Values.jibri.enabled (not .Values.jibri.useExternalJibri) .Values.jibri.s3.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}-aws
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-1"  # Run before the Job
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Mi
+{{- end -}}      

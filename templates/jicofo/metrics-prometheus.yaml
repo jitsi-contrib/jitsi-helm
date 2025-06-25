@@ -1,0 +1,27 @@
+{{- if and (.Values.jicofo.metrics.enabled) (.Values.jicofo.metrics.serviceMonitor.enabled) }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "jitsi-meet.jicofo.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
+    {{- with .Values.jicofo.metrics.serviceMonitor.selector }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: tcp-metrics
+      path: /metrics
+      {{- with .Values.jicofo.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ . }}
+      {{- end }}
+      {{- with .Values.jicofo.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.jicofo.labels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  {{- end -}}

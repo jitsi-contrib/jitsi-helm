@@ -37,6 +37,20 @@ spec:
     {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       containers:
+      {{- if .Values.jibri.metrics.enabled }}
+      - name: metrics
+        image: {{ .Values.jibri.metrics.image.repository }}:{{ .Values.jibri.metrics.image.tag }}
+        imagePullPolicy: {{ .Values.jibri.metrics.image.pullPolicy }}
+        securityContext:
+          runAsUser: 10001
+        args:
+          - "-jibri-status-url=http://localhost:2222/jibri/api/v1.0/health"
+        ports:
+          - containerPort: 9889
+            name: tcp-metrics
+        resources:
+      {{- toYaml .Values.jibri.metrics.resources | nindent 12 }}      
+      {{- end }}        
       - name: {{ .Chart.Name }}
         securityContext:
           capabilities:
@@ -73,13 +87,17 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         {{- end }}
-
         resources:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
-
         volumeMounts:
         - name: config
           mountPath: /config
+        # S3 compatible
+        {{- if .Values.jibri.s3.enabled }}            
+        - mountPath: /aws
+          name: aws-bin
+          readOnly: true
+        {{- end }}
         {{- if .Values.jibri.custom.contInit._10_config }}
         - name: custom-cont-inits
           mountPath: /etc/cont-init.d/10-config
@@ -118,6 +136,11 @@ spec:
         {{- end }}
 
       volumes:
+      {{- if .Values.jibri.s3.enabled }}      
+      - name: aws-bin
+        persistentVolumeClaim:
+          claimName: {{ include "jitsi-meet.jibri.fullname" . }}-aws
+      {{- end }}
       - name: config
         emptyDir: {}
       - name: custom-cont-inits

@@ -80,7 +80,7 @@ readinessProbe:
 
 persistence:
   enabled: true
-  size: 3G
+  size: 500Mi
   storageClassName:
 
 nodeSelector: {}
