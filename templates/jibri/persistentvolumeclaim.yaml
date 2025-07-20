@@ -8,8 +8,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteOnce
-    - ReadWriteMany
+    - {{ .Values.jibri.persistence.accessModes | quote }}
   resources:
     requests:
       storage: {{ .Values.jibri.persistence.size | quote }}
@@ -17,3 +16,19 @@ spec:
   storageClassName: {{ . | quote }}
   {{- end }}
 {{- end -}}
+
+{{- if and .Values.jibri.enabled (not .Values.jibri.useExternalJibri) .Values.jibri.s3.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}-aws
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-1"  # Run before the Job
+spec:
+  accessModes:
+    - {{ .Values.jibri.s3.accessModes | quote }}
+  resources:
+    requests:
+      storage: 400Mi
+{{- end -}}      

@@ -407,9 +407,23 @@ jibri:
   persistence:
     enabled: false
     size: 4Gi
+    accessModes: ReadWriteMany
     ## Set this to existing PVC name if you have one.
     existingClaim:
     storageClassName:
+
+  s3:
+    # if enable, jibri records will upload to your s3
+    # NOTE, just apply with helm install command
+    enabled: false
+    # this is a pvc for aws bin command
+    accessModes: ReadWriteMany
+    # full below envs with your proper s3 environments
+    extraEnvs:
+      S3_ACCESS_KEY_ID: 'accessKey'
+      S3_SECRET_ACCESS_KEY: 'SecretKey'
+      S3_ENDPOINT: 'https://mys3.com'
+      S3_BUCKET_NAME: 'bucket/subDir'
 
   shm:
     ## Set to true to enable "/dev/shm" mount.
@@ -478,6 +492,7 @@ jibri:
   tolerations: []
   affinity: {}
   extraEnvs: {}
+
 
   ## Override the image-provided configuration files:
   #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs
