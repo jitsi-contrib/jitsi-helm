@@ -74,6 +74,7 @@ web:
       _custom_config_js: ""
 
   extraEnvs: {}
+
   service:
     type: ClusterIP
     port: 80
@@ -554,3 +555,42 @@ prosody:
     # - name: prosody-modules
     #   subPath: mod_measure_client_presence.lua
     #   mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
+
+excalidraw:
+  enabled: false
+  image:
+    repository: jitsi/excalidraw-backend
+    tag: 2025.2.2
+
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "50m"
+    requests:
+      memory: "100Mi"
+      cpu: "10m"
+
+  # for enable excalidraw for see in web by socket you need to enable ingress
+  ingress:
+    enabled: true
+    # ingressClassName: "nginx"
+    annotations: {}
+      # cert-manager.io/cluster-issuer: lets-encrypt
+      # nginx.ingress.kubernetes.io/proxy-body-size: 64m
+      # nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+      # nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+      # nginx.ingress.kubernetes.io/proxy-connect-timeout: '3600' 
+    hosts:
+    - host: excalidraw.local
+      paths: ['/']
+    tls: []
+    #  - secretName: jitsi-web-certificate
+    #    hosts:
+    #      - jitsi.local
+
+  serviceMonitor:
+    enabled: false
+    selector:
+      release: prometheus-operator
+    interval: 10s
+    # honorLabels: false 
