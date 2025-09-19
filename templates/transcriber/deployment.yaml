@@ -46,8 +46,6 @@ spec:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-transcriber
           - secretRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
-          # - secretRef:
-          #    name:  {{ include "jitsi-meet.transcriber.fullname" . }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:
