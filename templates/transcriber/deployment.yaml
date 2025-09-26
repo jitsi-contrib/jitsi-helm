@@ -76,6 +76,18 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.transcriber.resources | nindent 12 }}
+        volumeMounts:
+        - name: transcriber-data
+          mountPath: /var/lib/jigasi/transcripts
+
+      volumes:
+      - name: transcriber-data
+        {{- if .Values.transcriber.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
 
       {{- with .Values.transcriber.nodeSelector }}
       nodeSelector:
