@@ -373,6 +373,12 @@ transcriber:
 
   breweryMuc: jigasibrewery
 
+  persistence:
+    enabled: false
+    # storageClass: ""
+    # size: 10Gi
+    # existingClaim: ""
+
   livenessProbe:
     httpGet:
       path: /about/health
