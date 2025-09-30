@@ -79,7 +79,7 @@ spec:
           volumeMounts:
           {{- if .Values.transcriber.persistence.enabled }}
           - name: transcriber-data
-            mountPath: /var/lib/jigasi/transcripts
+            mountPath: /tmp/transcripts
           {{- end }}
       volumes:
       - name: transcriber-data
