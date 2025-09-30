@@ -87,7 +87,7 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
         {{- else }}
-          emptyDir: {}
+        emptyDir: {}
         {{- end }}
 
       {{- with .Values.transcriber.nodeSelector }}
