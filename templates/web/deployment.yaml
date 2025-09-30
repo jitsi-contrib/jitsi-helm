@@ -127,7 +127,7 @@ spec:
           {{- if .Values.transcriber.persistence.enabled }}
           - name: transcriber-data
             mountPath: /usr/share/jitsi-meet/transcriber
-            readOnly: "true"
+            readOnly: true
           {{- end }}
           {{- with .Values.web.extraVolumeMounts }}
           {{- toYaml . | nindent 10 }}
