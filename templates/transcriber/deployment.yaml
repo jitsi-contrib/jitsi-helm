@@ -76,11 +76,11 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.transcriber.resources | nindent 12 }}
-        volumeMounts:
-        {{- if .Values.transcriber.persistence.enabled }}
-        - name: transcriber-data
-          mountPath: /var/lib/jigasi/transcripts
-        {{- end }}
+          volumeMounts:
+          {{- if .Values.transcriber.persistence.enabled }}
+          - name: transcriber-data
+            mountPath: /var/lib/jigasi/transcripts
+          {{- end }}
       volumes:
       - name: transcriber-data
         {{- if .Values.transcriber.persistence.enabled }}
