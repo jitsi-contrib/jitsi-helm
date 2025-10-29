@@ -38,7 +38,15 @@ spec:
       initContainers:
       - name: init-prosody
         image: busybox:1.36
-        command: ['sh', '-c', 'echo "Waiting for Prosody on port 5280"; while ! nc -z {{ include "jitsi-meet.xmpp.server" . }} 5280; do sleep 1; done; echo ">> Prosody is available"']
+        command:
+          - sh
+          - -c
+          - |
+            echo "Waiting for Prosody on port 5280";
+            while ! nc -z -w 1 {{ include "jitsi-meet.xmpp.server" . }} 5280; do
+              sleep 1;
+            done;
+            echo ">> Prosody is available"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -57,6 +65,9 @@ spec:
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
           {{- end }}
+          env:
+            - name: JIGASI_ENABLE_REST
+              value: "1"
           {{- with .Values.jigasi.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}

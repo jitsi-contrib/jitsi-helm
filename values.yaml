@@ -310,13 +310,12 @@ jvb:
       labels:
         grafana_dashboard: "1"
       annotations: {}
+
 octo:
   enabled: false
 
-
 jigasi:
   ## Enabling Jigasi will allow regular SIP clients to join Jitsi meetings
-  ## or nearly real-time transcription.
   enabled: false
 
   ## Use external Jigasi installation.
@@ -331,7 +330,7 @@ jigasi:
 
   breweryMuc: jigasibrewery
 
-  ## jigasi XMPP user credentials:
+  ## Jigasi XMPP user credentials
   xmpp:
     user: jigasi
     password:
@@ -362,22 +361,35 @@ jigasi:
   extraEnvs: {}
 
 transcriber:
+  ## Enabling Transcriber will allow nearly real-time transcription.
   enabled: false
+
+  ## Use external Transcriber installation.
+  ## This setting skips the creation of Transcriber Deployment altogether,
+  ## instead creating just the config secret and enabling services.
+  ## Defaults to disabled (use bundled Trabsciber).
   useExternalTranscriber: false
+
   replicaCount: 1
   image:
     repository: jitsi/jigasi
+
+  breweryMuc: jigasibrewery
+
+  ## Transcriber XMPP user credentials
   xmpp:
     user: transcriber
     password: ""
-
-  breweryMuc: jigasibrewery
 
   persistence:
     enabled: false
     # storageClass: ""
     # size: 10Gi
     # existingClaim: ""
+
+  whisper:
+    customService: ""
+    url: ""
 
   livenessProbe:
     httpGet:
@@ -394,7 +406,6 @@ transcriber:
         - name: Accept
           value: application/json
 
-  extraEnvs: {}
   podLabels: {}
   podAnnotations: {}
   podSecurityContext: {}
@@ -403,6 +414,7 @@ transcriber:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  extraEnvs: {}
 
 jibri:
   ## Enabling Jibri will allow users to record
