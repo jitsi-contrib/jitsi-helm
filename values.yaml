@@ -584,7 +584,7 @@ prosody:
       name: '{{ include "prosody.fullname" . }}-common'
   image:
     repository: jitsi/prosody
-    tag: stable-10314
+    tag: stable-10590
 
   # service:
   #   ports:

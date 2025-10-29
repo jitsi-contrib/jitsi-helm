@@ -17,4 +17,4 @@ type: application
 version: 1.5.1
 
 # This is the version number of the application being deployed.
-appVersion: stable-10314
+appVersion: stable-10590
