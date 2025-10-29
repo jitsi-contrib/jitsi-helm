@@ -244,6 +244,10 @@ jvb:
     type: ClusterIP
     externalTrafficPolicy: Cluster
     externalIPs: []
+    ## Optional: Specifies the LoadBalancer controller to use (since K8s v1.24).
+    #  If left empty (null), the default cluster controller will be used.
+    #  Example values: "service.k8s.aws/nlb", "loxilb.io/loxilb"
+    # loadBalancerClass: null
     ## If type is set to LoadBalancer and the cluster is dual stack, ipFamilyPolicy can be set to enable dual stack
     # addressing for the service.
     # ipFamilyPolicy: PreferDualStack
