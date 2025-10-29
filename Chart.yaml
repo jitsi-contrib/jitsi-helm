@@ -10,7 +10,7 @@ icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
 ## This is the *chart* version.
 #  This version number should be incremented each time you make
 #  changes to the chart and its templates, including the app version.
-version: 1.5.2
+version: 1.5.1
 
 ## This is the *application* version.
 #  Due to the way the chart is split into the "main" one
