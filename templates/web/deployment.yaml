@@ -124,6 +124,11 @@ spec:
             mountPath: /defaults/system-config.js
             subPath: system-config.js
           {{- end }}
+          {{- if .Values.transcriber.persistence.enabled }}
+          - name: transcriber-data
+            mountPath: /usr/share/jitsi-meet/transcripts
+            readOnly: true
+          {{- end }}
           {{- with .Values.web.extraVolumeMounts }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -174,6 +179,13 @@ spec:
               path: ssl.conf
             - key: system-config.js
               path: system-config.js
+      - name: transcriber-data
+        {{- if .Values.transcriber.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
       {{- with .Values.web.extraVolumes }}
       {{-   toYaml . | nindent 6 }}
       {{- end }}

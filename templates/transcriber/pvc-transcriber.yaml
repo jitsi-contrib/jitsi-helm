@@ -1,0 +1,16 @@
+{{- if and .Values.transcriber.persistence.enabled (not .Values.transcriber.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jitsi-meet.transcriber.fullname" . }}
+  labels:
+    app.kubernetes.io/name: jitsi-transcriber
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .Values.transcriber.persistence.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.transcriber.persistence.size | default "10Gi" }}
+{{- end }}
+

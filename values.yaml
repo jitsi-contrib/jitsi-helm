@@ -361,6 +361,48 @@ jigasi:
   affinity: {}
   extraEnvs: {}
 
+transcriber:
+  enabled: false
+  useExternalTranscriber: false
+  replicaCount: 1
+  image:
+    repository: jitsi/jigasi
+  xmpp:
+    user: transcriber
+    password: ""
+
+  breweryMuc: jigasibrewery
+
+  persistence:
+    enabled: false
+    # storageClass: ""
+    # size: 10Gi
+    # existingClaim: ""
+
+  livenessProbe:
+    httpGet:
+      path: /about/health
+      port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
+  readinessProbe:
+    httpGet:
+      path: /about/health
+      port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
+
+  extraEnvs: {}
+  podLabels: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 jibri:
   ## Enabling Jibri will allow users to record
@@ -522,6 +564,8 @@ prosody:
       name: '{{ include "prosody.fullname" . }}-jicofo'
   - secretRef:
       name: '{{ include "prosody.fullname" . }}-jigasi'
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-transcriber'
   - secretRef:
       name: '{{ include "prosody.fullname" . }}-jvb'
   - configMapRef:
