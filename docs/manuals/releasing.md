@@ -7,9 +7,14 @@ Overall, the release process looks like this:
 - Test again on production installation.
 - Update `version` and `dependencies.version` in [Chart.yaml](/Chart.yaml) and
   [charts/prosody/Chart.yaml](/charts/prosody/Chart.yaml)
+- Update [Chart.lock](/Chart.lock)
+  ```bash
+  helm dependency update .
+  ```
 - Create the package:
   ```bash
-  helm package . -d ./docs/ --sign --key "$my_email" --keyring ~/.gnupg/secring.gpg
+  # Use your GPG signing identity (email or Key ID)
+  helm package . -d ./docs/ --sign --key "$KEY_EMAIL_OR_ID" --keyring ~/.gnupg/secring.gpg
   ```
 - Update the index:
   ```bash
@@ -18,7 +23,8 @@ Overall, the release process looks like this:
   ```
 - Review the diff for [/docs/index.yaml](/docs/index.yaml). Sometimes Helm adds
   a new release to the index and also changes timestamps for **all** old
-  releases as well. So, discard these from the commit.
+  releases as well. **Fix the corrupted timestamps by discarding those hunks
+  from the staged changes.**
 - Add the release files and index changes, commit and push:
   ```bash
   git add ...
