@@ -1,0 +1,35 @@
+{{- if and .Values.jibri.enabled (not .Values.jibri.useExternalJibri) .Values.jibri.s3.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}-aws-init
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: aws-cli
+          image: amazon/aws-cli:2.15.40
+          command:
+            - /bin/sh
+            - -c
+            - |
+              if [ -x /data/aws-cli/bin/aws ]; then
+                echo "AWS CLI already exists. Skipping installation."
+              else
+                echo "Copying AWS CLI to /data..."
+                mkdir -p /data/aws-cli-bin
+                cp -r /usr/local/aws-cli /data/aws-cli
+                cd /data/aws-cli-bin && ln -s ../aws-cli/v2/2.15.40/bin/aws aws
+              fi
+          volumeMounts:
+            - mountPath: /data
+              name: aws-storage        
+      volumes:
+        - name: aws-storage
+          persistentVolumeClaim:
+            claimName: {{ include "jitsi-meet.jibri.fullname" . }}-aws
+{{- end -}}

@@ -18,4 +18,11 @@ data:
   {{ $key }}: {{ tpl $value $ | quote }}
   {{- end }}
   {{- end }}
+  {{- if .Values.jibri.s3.enabled}}
+  {{- range $key, $value := .Values.jibri.s3.extraEnvs }}
+  {{- if not (kindIs "invalid" $value) }}
+  {{ $key }}: {{ tpl $value $ | quote }}
+  {{- end }}
+  {{- end }}    
+  {{- end }}
 {{- end }}
