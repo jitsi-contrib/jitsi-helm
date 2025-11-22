@@ -14,5 +14,5 @@ app.kubernetes.io/component: jvb
 {{- end -}}
 
 {{- define "jitsi-meet.jvb.secret" -}}
-{{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jvb
+{{- default (printf "%s-jvb" (include "call-nested" (list . "prosody" "prosody.fullname"))) .Values.jvb.existingSecret -}}
 {{- end -}}

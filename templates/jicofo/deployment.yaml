@@ -22,7 +22,9 @@ spec:
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum }}
+        {{- if empty .Values.jicofo.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/xmpp-secret.yaml") . | sha256sum }}
+        {{- end }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jicofo.podAnnotations }}
         {{ $annotation }}: {{ $value | quote }}
       {{- end }}
@@ -60,7 +62,7 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jicofo
+              name: {{ include "jitsi-meet.jicofo.secret" . }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:

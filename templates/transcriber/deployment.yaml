@@ -23,7 +23,9 @@ spec:
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/transcriber/configmap.yaml") . | sha256sum }}
+        {{- if empty .Values.transcriber.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/transcriber/xmpp-secret.yaml") . | sha256sum }}
+        {{- end }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations }}
         {{ $annotation }}: {{ $value | quote }}
       {{- end }}
@@ -55,9 +57,9 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.transcriber.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-transcriber
+              name: {{ include "jitsi-meet.transcriber.secret" . }}
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
+              name: {{ include "jitsi-meet.jigasi.secret" . }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:

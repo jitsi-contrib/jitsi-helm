@@ -14,5 +14,5 @@ app.kubernetes.io/component: jicofo
 {{- end -}}
 
 {{- define "jitsi-meet.jicofo.secret" -}}
-{{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jicofo
+{{- default (printf "%s-jicofo" (include "call-nested" (list . "prosody" "prosody.fullname"))) .Values.jicofo.existingSecret -}}
 {{- end -}}

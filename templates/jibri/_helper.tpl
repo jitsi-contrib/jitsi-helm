@@ -14,5 +14,5 @@ app.kubernetes.io/component: jibri
 {{- end -}}
 
 {{- define "jitsi-meet.jibri.secret" -}}
-{{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jibri
+{{- default (printf "%s-jibri" (include "call-nested" (list . "prosody" "prosody.fullname"))) .Values.jibri.existingSecret -}}
 {{- end -}}

@@ -169,6 +169,21 @@ jicofo:
     defaults:
       _jicofo_conf: ""
       _logging_properties: ""
+ 
+  ## Use an existing Kubernetes Secret for Jicofo XMPP credentials.
+  ## When this is set, the chart will NOT create the "<prosody.fullname>-jicofo" Secret.
+  ##
+  ## You must ensure that Prosody references this Secret name in its extraEnvFrom,
+  ## for example in `prosody.extraEnvFrom`:
+  ##
+  ##   - secretRef:
+  ##       name: <your-jicofo-secret-name>
+  ##
+  ## The referenced Secret must contain:
+  ##   - JICOFO_AUTH_USER
+  ##   - JICOFO_AUTH_PASSWORD
+  ##   - JICOFO_COMPONENT_SECRET
+  # existingSecret: ""
 
   xmpp:
     password:
@@ -204,10 +219,24 @@ jvb:
   image:
     repository: jitsi/jvb
 
+  ## Use an existing Kubernetes Secret for JVB XMPP credentials.
+  ## When this is set, the chart will NOT create the "<prosody.fullname>-jvb" Secret.
+  ##
+  ## You must ensure that Prosody references this Secret name in its extraEnvFrom,
+  ## for example in `prosody.extraEnvFrom`:
+  ##
+  ##   - secretRef:
+  ##       name: <your-jvb-secret-name>
+  ##
+  ## The referenced Secret must contain:
+  ##   - JVB_AUTH_USER
+  ##   - JVB_AUTH_PASSWORD
+  # existingSecret: ""
+
   xmpp:
     user: jvb
     password:
-
+ 
   ## Set public IP addresses to be advertised by JVB.
   #  You can specify your nodes' IP addresses,
   #  or IP addresses of proxies/LoadBalancers used for your
@@ -334,6 +363,20 @@ jigasi:
 
   breweryMuc: jigasibrewery
 
+  ## Use an existing Kubernetes Secret for Jigasi XMPP credentials.
+  ## When this is set, the chart will NOT create the "<prosody.fullname>-jigasi" Secret.
+  ##
+  ## You must ensure that Prosody references this Secret name in its extraEnvFrom,
+  ## for example in `prosody.extraEnvFrom`:
+  ##
+  ##   - secretRef:
+  ##       name: <your-jigasi-secret-name>
+  ##
+  ## The referenced Secret must contain:
+  ##   - JIGASI_XMPP_USER
+  ##   - JIGASI_XMPP_PASSWORD
+  # existingSecret: ""
+
   ## Jigasi XMPP user credentials
   xmpp:
     user: jigasi
@@ -379,6 +422,23 @@ transcriber:
     repository: jitsi/jigasi
 
   breweryMuc: jigasibrewery
+
+  ## Use an existing Kubernetes Secret for Transcriber XMPP credentials.
+  ## When this is set, the chart will NOT create the "<prosody.fullname>-transcriber" Secret.
+  ##
+  ## You must ensure that Prosody references this Secret name in its extraEnvFrom,
+  ## for example in `prosody.extraEnvFrom`:
+  ##
+  ##   - secretRef:
+  ##       name: <your-transcriber-secret-name>
+  ##
+  ## The referenced Secret must contain:
+  ##   - JIGASI_TRANSCRIBER_USER
+  ##   - JIGASI_TRANSCRIBER_PASSWORD
+  ## and, when `jigasi.enabled` is false, it must also contain:
+  ##   - JIGASI_XMPP_USER
+  ##   - JIGASI_XMPP_PASSWORD
+  # existingSecret: ""
 
   ## Transcriber XMPP user credentials
   xmpp:
@@ -495,6 +555,22 @@ jibri:
 
   breweryMuc: jibribrewery
   timeout: 90
+
+  ## Use an existing Kubernetes Secret for Jibri XMPP credentials.
+  ## When this is set, the chart will NOT create the "<prosody.fullname>-jibri" Secret.
+  ##
+  ## You must ensure that Prosody references this Secret name in its extraEnvFrom,
+  ## for example in `prosody.extraEnvFrom`:
+  ##
+  ##   - secretRef:
+  ##       name: <your-jibri-secret-name>
+  ##
+  ## The referenced Secret must contain:
+  ##   - JIBRI_XMPP_USER
+  ##   - JIBRI_XMPP_PASSWORD
+  ##   - JIBRI_RECORDER_USER
+  ##   - JIBRI_RECORDER_PASSWORD
+  # existingSecret: ""
 
   ## jibri XMPP user credentials:
   xmpp:

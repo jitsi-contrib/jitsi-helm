@@ -14,5 +14,5 @@ app.kubernetes.io/component: transcriber
 {{- end -}}
 
 {{- define "jitsi-meet.transcriber.secret" -}}
-{{ include "call-nested" (list . "prosody" "prosody.fullname") }}-transcriber
+{{- default (printf "%s-transcriber" (include "call-nested" (list . "prosody" "prosody.fullname"))) .Values.transcriber.existingSecret -}}
 {{- end -}}

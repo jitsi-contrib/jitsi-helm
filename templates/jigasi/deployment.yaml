@@ -23,7 +23,9 @@ spec:
       {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jigasi/configmap.yaml") . | sha256sum }}
+        {{- if empty .Values.jibri.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/jigasi/xmpp-secret.yaml") . | sha256sum }}
+        {{- end }}
       {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jigasi.podAnnotations }}
         {{ $annotation }}: {{ $value | quote }}
       {{- end }}
@@ -55,7 +57,7 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jigasi.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
+              name: {{ include "jitsi-meet.jigasi.secret" . }}
           - configMapRef:
               name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
           - configMapRef:
