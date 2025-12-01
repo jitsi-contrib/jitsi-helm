@@ -1,3 +1,15 @@
+{{- if or
+  .Values.web.custom.configs._custom_config_js
+  .Values.web.custom.configs._custom_interface_config_js
+  .Values.web.custom.defaults._default
+  .Values.web.custom.defaults._ffdhe2048_txt
+  .Values.web.custom.defaults._interface_config_js
+  .Values.web.custom.defaults._meet_conf
+  .Values.web.custom.defaults._nginx_conf
+  .Values.web.custom.defaults._settings_config_js
+  .Values.web.custom.defaults._ssl_conf
+  .Values.web.custom.defaults._system_config_js
+}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,63 +17,53 @@ metadata:
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
 data:
-  custom-config.js: |
   {{- if .Values.web.custom.configs._custom_config_js }}
+  custom-config.js: |
     {{- .Values.web.custom.configs._custom_config_js | nindent 4 }}
-  {{- else }}
-  # Not providing /config/custom-config.js
-  {{ end }}
-  custom-interface_config.js: |
+  {{- end }}
+
   {{- if .Values.web.custom.configs._custom_interface_config_js }}
+  custom-interface_config.js: |
     {{- .Values.web.custom.configs._custom_interface_config_js | nindent 4 }}
-  {{- else }}
-  # Not providing /config/custom-interface_config.js
-  {{ end }}
-  default: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._default }}
+  default: |
     {{- .Values.web.custom.defaults._default | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/default from container image
-  {{ end }}
-  ffdhe2048.txt: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._ffdhe2048_txt }}
+  ffdhe2048.txt: |
     {{- .Values.web.custom.defaults._ffdhe2048_txt | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/ffdhe2048.txt from container image
-  {{ end }}
-  interface_config.js: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._interface_config_js }}
+  interface_config.js: |
     {{- .Values.web.custom.defaults._interface_config_js | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/interface_config.js from container image
-  {{ end }}
-  meet.conf: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._meet_conf }}
+  meet.conf: |
     {{- .Values.web.custom.defaults._meet_conf | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/meet.conf from container image
-  {{ end }}
-  nginx.conf: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._nginx_conf }}
+  nginx.conf: |
     {{- .Values.web.custom.defaults._nginx_conf | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/nginx.conf from container image
-  {{ end }}
-  settings-config.js: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._settings_config_js }}
+  settings-config.js: |
     {{- .Values.web.custom.defaults._settings_config_js | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/settings-config.js from container image
-  {{ end }}
-  ssl.conf: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._ssl_conf }}
+  ssl.conf: |
     {{- .Values.web.custom.defaults._ssl_conf | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/ssl.conf from container image
-  {{ end }}
-  system-config.js: |
+  {{- end }}
+
   {{- if .Values.web.custom.defaults._system_config_js }}
+  system-config.js: |
     {{- .Values.web.custom.defaults._system_config_js | nindent 4 }}
-  {{- else }}
-  # Using web /defaults/system-config.js from container image
-  {{ end }}
+  {{- end }}
+{{- end }}
