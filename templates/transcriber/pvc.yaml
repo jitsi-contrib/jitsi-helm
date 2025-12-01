@@ -1,4 +1,7 @@
-{{- if and .Values.transcriber.persistence.enabled (not .Values.transcriber.persistence.existingClaim) }}
+{{- if and
+    .Values.transcriber.persistence.enabled
+    (not .Values.transcriber.persistence.existingClaim)
+}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
