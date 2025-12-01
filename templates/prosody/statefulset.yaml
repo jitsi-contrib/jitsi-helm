@@ -23,12 +23,34 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/prosody/configmap.yaml") . | sha256sum }}
+        checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum }}
+        checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum }}
+        {{- if and
+            .Values.jibri.enabled
+            (not .Values.jibri.xmpp.existingSecretName)
+        }}
         checksum/secret-jibri-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum }}
         checksum/secret-jibri-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum }}
-        checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum }}
+        {{- else }}
+        checksum/secret-jibri-recorder: {{ printf "disabled-or-existing" | sha256sum }}
+        checksum/secret-jibri-xmpp: {{ printf "disabled-or-existing" | sha256sum }}
+        {{- end }}
+        {{- if and
+            .Values.jigasi.enabled
+            (not .Values.jigasi.xmpp.existingSecretName)
+        }}
         checksum/secret-jigasi: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum }}
-        checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum }}
+        {{- else }}
+        checksum/secret-jigasi: {{ printf "disabled-or-existing" | sha256sum }}
+        {{- end }}
+        {{- if and
+            .Values.transcriber.enabled
+            (not .Values.transcriber.xmpp.existingSecretName)
+        }}
         checksum/secret-transcriber: {{ include (print $.Template.BasePath "/transcriber/secret.yaml") . | sha256sum }}
+        {{- else }}
+        checksum/secret-transcriber: {{ printf "disabled-or-existing" | sha256sum }}
+        {{- end }}
         {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.prosody.podAnnotations }}
         {{    $annotation }}: {{ $value | quote }}
         {{- end }}
@@ -75,17 +97,32 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.image .Values.image | first }}
           envFrom:
           - secretRef:
+              name: {{ include "jitsi-meet.jicofo.secretName" . }}
+          - secretRef:
+              name: {{ include "jitsi-meet.jvb.secretName" . }}
+          {{- if and
+              .Values.jibri.enabled
+              (not .Values.jibri.xmpp.existingSecretName)
+          }}
+          - secretRef:
               name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
           - secretRef:
               name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
-          - secretRef:
-              name: {{ include "jitsi-meet.jicofo.secretName" . }}
+          {{- end }}
+          {{- if and
+              .Values.jigasi.enabled
+              (not .Values.jigasi.xmpp.existingSecretName)
+          }}
           - secretRef:
               name: {{ include "jitsi-meet.jigasi.secretName" . }}
-          - secretRef:
-              name: {{ include "jitsi-meet.jvb.secretName" . }}
+          {{- end }}
+          {{- if and
+              .Values.transcriber.enabled
+              (not .Values.transcriber.xmpp.existingSecretName)
+          }}
           - secretRef:
               name: {{ include "jitsi-meet.transcriber.secretName" . }}
+          {{- end }}
           - configMapRef:
               name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
