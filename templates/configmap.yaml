@@ -32,6 +32,11 @@ data:
   ENABLE_XMPP_WEBSOCKET: "false"
   {{- end }}
 
+  {{- if .Values.octo.enabled }}
+  ENABLE_OCTO: "1"
+  DEPLOYMENTINFO_REGION: "all"
+  {{- end }}
+
   {{- if .Values.jibri.enabled }}
   {{-   if .Values.jibri.recording }}
   ENABLE_RECORDING: "true"
@@ -40,13 +45,6 @@ data:
   {{-   if .Values.jibri.livestreaming }}
   ENABLE_LIVESTREAMING: "true"
   {{-   end }}
-  {{- end }}
-
-  {{- if .Values.octo.enabled }}
-  ENABLE_OCTO: "1"
-  TESTING_OCTO_PROBABILITY: "1"
-  DEPLOYMENTINFO_REGION: "all"
-  DEPLOYMENTINFO_USERREGION: "all"
   {{- end }}
 
   {{- range $key, $value := .Values.extraCommonEnvs }}
