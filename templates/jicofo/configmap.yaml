@@ -29,3 +29,9 @@ data:
   {{      $key }}: {{ tpl $value $ | quote }}
   {{-   end }}
   {{- end }}
+
+  {{- range $key, $value := .Values.jicofo.extraEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
+  {{- end }}
