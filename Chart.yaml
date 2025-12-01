@@ -1,32 +1,19 @@
----
-## Main Chart metadata:
 apiVersion: v2
 name: jitsi-meet
 description: Jitsi Meet packaged for Kubernetes
 type: application
 icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
 
-
 ## This is the *chart* version.
 #  This version number should be incremented each time you make
 #  changes to the chart and its templates, including the app version.
-version: 1.5.2
+version: 2.0.0
 
 ## This is the *application* version.
-#  Due to the way the chart is split into the "main" one
-#  and one for Prosody, make sure to bump application version
-#  in 3 places:
+#  Make sure to bump application version in 2 places:
 #  * Here;
-#  * charts/prosody/Chart.yaml;
-#  * values.yaml.
+#  * values.yaml
 appVersion: stable-10590
-
-## Chart dependencies:
-#  Make sure to keep the Prosody chart version in sync with this one.
-dependencies:
-  - name: prosody
-    condition: prosody.enabled
-    version: 1.5.2
 
 ## Chart annotations (for ArtifactHub):
 annotations:

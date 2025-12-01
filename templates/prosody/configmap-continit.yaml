@@ -1,0 +1,11 @@
+{{- if .Values.prosody.custom.contInit._10_config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.prosody.fullname" . }}-continit
+  labels:
+    {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
+data:
+  10-config: |
+    {{- .Values.prosody.custom.contInit._10_config | nindent 4 }}
+{{- end }}
