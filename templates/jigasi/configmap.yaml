@@ -1,4 +1,7 @@
-{{- if .Values.jigasi.enabled }}
+{{- if and
+    .Values.jigasi.enabled
+    (not .Values.jigasi.useExternalJigasi)
+}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
