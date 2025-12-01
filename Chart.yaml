@@ -13,7 +13,7 @@ version: 2.0.0
 #  Make sure to bump application version in 2 places:
 #  * Here;
 #  * values.yaml
-appVersion: stable-10590
+appVersion: stable-10655
 
 ## Chart annotations (for ArtifactHub):
 annotations:
