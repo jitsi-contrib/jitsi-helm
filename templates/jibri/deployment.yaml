@@ -88,7 +88,7 @@ spec:
         envFrom:
         {{ if .Values.global.jibri.xmpp.secret }}
         - secretRef:
-            name: {{ include "jitsi-meet.jibri.secretName" . }}
+            name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
         - secretRef:
             name: {{ .Values.global.jibri.recorder.secret }}
         {{ end }}
