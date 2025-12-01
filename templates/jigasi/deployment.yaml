@@ -13,7 +13,7 @@ metadata:
     {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.jigasi.replicaCount | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "jitsi-meet.jigasi.selectorLabels" . | nindent 6 }}

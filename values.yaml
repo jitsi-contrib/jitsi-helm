@@ -160,7 +160,8 @@ web:
   extraEnvs: {}
 
 prosody:
-  replicaCount: 1
+  # Always one replica, hardcoded in prosody/statefulset.yaml
+  # replicaCount: 1
   image:
     repository: jitsi/prosody
 
@@ -235,7 +236,8 @@ prosody:
   extraEnvs: {}
 
 jicofo:
-  replicaCount: 1
+  # Always one replica, hardcoded in jicofo/deployment.yaml
+  # replicaCount: 1
   image:
     repository: jitsi/jicofo
 
@@ -413,7 +415,8 @@ jigasi:
   ## Defaults to disabled (use bundled Jigasi).
   useExternalJigasi: false
 
-  replicaCount: 1
+  # Always one replica, hardcoded in jigasi/deployment.yaml
+  # replicaCount: 1
   image:
     repository: jitsi/jigasi
 
@@ -462,7 +465,8 @@ transcriber:
   ## Defaults to disabled (use bundled Trabsciber).
   useExternalTranscriber: false
 
-  replicaCount: 1
+  # Always one replica, hardcoded in transcriber/deployment.yaml
+  # replicaCount: 1
   image:
     repository: jitsi/jigasi
 

@@ -10,7 +10,7 @@ metadata:
   {{- end }}
 spec:
   serviceName: {{ include "jitsi-meet.prosody.fullname" . }}
-  replicas: {{ .Values.prosody.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 6 }}

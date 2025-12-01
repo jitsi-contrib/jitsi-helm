@@ -13,7 +13,7 @@ metadata:
     {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.transcriber.replicaCount | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 6 }}
