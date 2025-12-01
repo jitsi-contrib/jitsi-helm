@@ -24,6 +24,7 @@ fullnameOverride: ""
 
 enableAuth: false
 enableGuests: true
+
 # Where Jitsi Web UI is made available
 # such as jitsi.example.com
 publicURL: ""
@@ -87,25 +88,27 @@ web:
     ## Annotations to be added to the service (if LoadBalancer is used)
     #  An example below is needed for GKE IAP enablement
     annotations: {}
-      # beta.cloud.google.com/backend-config: backend-config-iap
+    #  beta.cloud.google.com/backend-config: backend-config-iap
 
   ingress:
     enabled: false
     # ingressClassName: nginx-ingress-0
     annotations: {}
-      # kubernetes.io/tls-acme: "true"
+    #  kubernetes.io/tls-acme: "true"
     hosts:
-    - host: jitsi.local
-      paths: ['/']
+      - host: jitsi.local
+        paths: ["/"]
     tls: []
     #  - secretName: jitsi-web-certificate
     #    hosts:
     #      - jitsi.local
 
-  # Useful for ingresses that don't support http-to-https redirect by themself, (namely: GKE),
+  # Useful for ingresses that don't support http-to-https redirect by themself,
+  # (namely: GKE),
   httpRedirect: false
 
-  # When tls-termination by the ingress is not wanted, enable this and set web.service.type=Loadbalancer
+  # When tls-termination by the ingress is not wanted, enable this and set
+  # web.service.type=Loadbalancer
   httpsEnabled: false
 
   ## Resolver IP for nginx.
@@ -128,27 +131,28 @@ web:
   podLabels: {}
   podAnnotations: {}
   podSecurityContext: {}
-    # fsGroup: 2000
+  #  fsGroup: 2000
 
   securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
+  #  capabilities:
+  #    drop:
+  #    - ALL
+  #  readOnlyRootFilesystem: true
+  #  runAsNonRoot: true
+  #  runAsUser: 1000
 
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+  # We usually recommend not to specify default resources and to leave this as a
+  # conscious choice for the user. This also increases chances charts run on
+  # environments with little resources, such as Minikube. If you do want to
+  # specify resources, uncomment the following lines, adjust them as necessary,
+  # and remove the curly braces after 'resources:'
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
 
   nodeSelector: {}
   tolerations: []
@@ -197,18 +201,18 @@ prosody:
     storageClassName:
 
   extraVolumes: []
-    # - name: prosody-modules
-    #   configMap:
-    #     name: prosody-modules
+  #  - name: prosody-modules
+  #    configMap:
+  #      name: prosody-modules
 
   extraVolumeMounts: []
-    # - name: prosody-modules
-    #   subPath: mod_measure_client_presence.lua
-    #   mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
+  #  - name: prosody-modules
+  #    subPath: mod_measure_client_presence.lua
+  #    mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
 
   metrics:
     enabled: false
-    allowed_cidr: "0.0.0.0/0"  # change to cluster pod ip cidr
+    allowed_cidr: "0.0.0.0/0" # change to cluster pod ip cidr
     image:
       repository: otel/opentelemetry-collector-contrib
       tag: "0.76.1"
@@ -331,22 +335,22 @@ jvb:
     #  If left empty (null), the default cluster controller will be used.
     #  Example values: "service.k8s.aws/nlb", "loxilb.io/loxilb"
     # loadBalancerClass: null
-    ## If type is set to LoadBalancer and the cluster is dual stack, ipFamilyPolicy can be set to enable dual stack
-    # addressing for the service.
+    ## If type is set to LoadBalancer and the cluster is dual stack,
+    #  ipFamilyPolicy can be set to enable dual stack addressing for the service
     # ipFamilyPolicy: PreferDualStack
     ## Annotations to be added to the service (if LoadBalancer is used)
     #  An example below is needed for DigitalOcean managed k8s setups
     #  with a LoadBalancer service, so that DO's external LB can perform
     #  health checks on JVB.
     annotations: {}
-      # service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "8080"
-      # service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
+    #  service.beta.kubernetes.io/do-loadbalancer-healthcheck-port: "8080"
+    #  service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
     ## Add extra ports to the service.
     #  An example below is needed for DigitalOcean managed k8s setups.
     extraPorts: []
-      # - name: http-healthcheck
-      #   port: 8080
-      #   protocol: TCP
+    #  - name: http-healthcheck
+    #    port: 8080
+    #    protocol: TCP
 
   livenessProbe:
     httpGet:
@@ -617,9 +621,9 @@ jibri:
         - /bin/bash
         - "-c"
         - >-
-          curl -sq localhost:2222/jibri/api/v1.0/health
-          | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
-          | grep -qP 'HEALTHY (IDLE|BUSY)'
+            curl -sq localhost:2222/jibri/api/v1.0/health
+            | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
+            | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   readinessProbe:
     initialDelaySeconds: 5
@@ -630,9 +634,9 @@ jibri:
         - /bin/bash
         - "-c"
         - >-
-          curl -sq localhost:2222/jibri/api/v1.0/health
-          | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
-          | grep -qP 'HEALTHY (IDLE|BUSY)'
+            curl -sq localhost:2222/jibri/api/v1.0/health
+            | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
+            | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   podLabels: {}
   podAnnotations: {}
@@ -650,7 +654,8 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the fullname
+  # template
   name:
 
 xmpp:
