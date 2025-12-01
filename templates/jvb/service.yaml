@@ -1,12 +1,18 @@
-{{- if or (and (kindIs "invalid" .Values.jvb.service.enabled) (not (or .Values.jvb.useHostPort .Values.jvb.useHostNetwork))) .Values.jvb.service.enabled }}
+{{- if or
+    (and
+      (kindIs "invalid" .Values.jvb.service.enabled)
+      (not (or .Values.jvb.useHostPort .Values.jvb.useHostNetwork))
+    )
+    .Values.jvb.service.enabled
+}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "jitsi-meet.jvb.fullname" . }}
   annotations:
-  {{- range $key, $value := .Values.jvb.service.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+    {{- range $key, $value := .Values.jvb.service.annotations }}
+    {{    $key }}: {{ $value | quote }}
+    {{- end }}
   labels:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
 spec:
@@ -19,7 +25,10 @@ spec:
   {{- end }}
   ports:
     - port: {{ default 10000 .Values.jvb.UDPPort }}
-      {{- if and .Values.jvb.nodePort (or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer")) }}
+      {{- if and
+          .Values.jvb.nodePort
+          (or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer"))
+      }}
       nodePort: {{ .Values.jvb.nodePort }}
       {{- end }}
       protocol: UDP
