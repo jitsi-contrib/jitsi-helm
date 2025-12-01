@@ -327,21 +327,13 @@ jicofo:
     defaults:
       _jicofo_conf: ""
       _logging_properties: ""
- 
-  ## Use an existing Kubernetes Secret for Jicofo XMPP credentials.
-  ## When this is set, the chart will NOT create the "<prosody.fullname>-jicofo" Secret.
-  ##
-  ## You must ensure that Prosody references this Secret name in its extraEnvFrom,
-  ## for example in `prosody.extraEnvFrom`:
-  ##
-  ##   - secretRef:
-  ##       name: <your-jicofo-secret-name>
-  ##
-  ## The referenced Secret must contain:
-  ##   - JICOFO_AUTH_USER
-  ##   - JICOFO_AUTH_PASSWORD
-  ##   - JICOFO_COMPONENT_SECRET
-  # existingSecret: ""
+
+  # Jicofo XMPP user credentials
+  xmpp:
+    password:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JICOFO_AUTH_PASSWORD
+    existingSecretName:
 
   # Jicofo XMPP user credentials
   xmpp:
