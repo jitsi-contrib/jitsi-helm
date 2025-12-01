@@ -1,4 +1,7 @@
-{{- if and .Values.transcriber.enabled (not .Values.transcriber.useExternalTranscriber) }}
+{{- if and
+    .Values.transcriber.enabled
+    (not .Values.transcriber.useExternalTranscriber)
+}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,15 +21,15 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.transcriber.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.transcriber.podLabels }}
+        {{    $label }}: {{ $value }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/transcriber/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/transcriber/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations }}
-        {{ $annotation }}: {{ $value | quote }}
-      {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/transcriber/secret.yaml") . | sha256sum }}
+        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations }}
+        {{    $annotation }}: {{ $value | quote }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -55,11 +58,9 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.transcriber.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-transcriber
-          - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
+              name: {{ include "jitsi-meet.transcriber.secret" . }}
           - configMapRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+              name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
               name: {{ include "jitsi-meet.transcriber.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
@@ -67,13 +68,6 @@ spec:
           - {{ tpl (toYaml .) $ | indent 12 | trim }}
           {{- end }}
           {{- end }}
-          env:
-            - name: ENABLE_TRANSCRIPTIONS
-              value: "1"
-            - name: JIGASI_MODE
-              value: "transcriber"
-            - name: JIGASI_ENABLE_REST
-              value: "1"
           {{- with .Values.transcriber.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -97,17 +91,16 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
-
       {{- with .Values.transcriber.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.transcriber.affinity }}
+      {{- with .Values.transcriber.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.transcriber.tolerations }}
+      {{- end }}
+      {{- with .Values.transcriber.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 {{- end }}

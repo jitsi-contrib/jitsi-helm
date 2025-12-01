@@ -1,4 +1,7 @@
-{{- if and .Values.jibri.enabled (not .Values.jibri.useExternalJibri) }}
+{{- if and
+    .Values.jibri.enabled
+    (not .Values.jibri.useExternalJibri)
+}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,20 +24,21 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jibri.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jibri.podLabels }}
+        {{    $label }}: {{ $value }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jibri/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations }}
-        {{ $annotation }}: {{ $value | quote }}
-      {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum }}
+        checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum }}
+        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations }}
+        {{    $annotation }}: {{ $value | quote }}
+        {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       containers:
       - name: {{ .Chart.Name }}
@@ -59,9 +63,11 @@ spec:
 
         envFrom:
         - secretRef:
-            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jibri
+            name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
+        - secretRef:
+            name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
         - configMapRef:
-            name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+            name: {{ include "jitsi-meet.common" . }}
         - configMapRef:
             name: {{ include "jitsi-meet.jibri.fullname" . }}
 
@@ -81,7 +87,7 @@ spec:
         - name: config
           mountPath: /config
         {{- if .Values.jibri.custom.contInit._10_config }}
-        - name: custom-cont-inits
+        - name: custom-continits
           mountPath: /etc/cont-init.d/10-config
           subPath: 10-config
         {{- end }}
@@ -120,10 +126,10 @@ spec:
       volumes:
       - name: config
         emptyDir: {}
-      - name: custom-cont-inits
+      - name: custom-continits
         configMap:
           defaultMode: 493
-          name: {{ include "jitsi-meet.jibri.fullname" . }}-cont-inits
+          name: {{ include "jitsi-meet.jibri.fullname" . }}-continits
           items:
             - key: 10-config
               path: 10-config
@@ -161,16 +167,16 @@ spec:
           sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
       {{-   end }}
       {{- end }}
-    {{- with .Values.jibri.nodeSelector }}
+      {{- with .Values.jibri.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.jibri.affinity }}
+      {{- end }}
+      {{- with .Values.jibri.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.jibri.tolerations }}
+      {{- end }}
+      {{- with .Values.jibri.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 {{- end }}

@@ -1,4 +1,3 @@
-
 {{- define "jitsi-meet.web.fullname" -}}
 {{ include "jitsi-meet.fullname" . }}-web
 {{- end -}}

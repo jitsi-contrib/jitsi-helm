@@ -7,13 +7,14 @@ metadata:
 data:
   DISABLE_HTTPS: {{ ternary "0" "1" .Values.web.httpsEnabled | quote }}
   ENABLE_HTTP_REDIRECT: {{ ternary "1" "0" .Values.web.httpRedirect | quote }}
-  JICOFO_AUTH_USER: focus
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
+
   {{- if .Values.web.resolverIP }}
   NGINX_RESOLVER: {{ .Values.web.resolverIP }}
   {{- end }}
+
   {{- range $key, $value := .Values.web.extraEnvs }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
   {{- end }}

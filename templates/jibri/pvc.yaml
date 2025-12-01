@@ -1,0 +1,24 @@
+{{- if and
+    .Values.jibri.enabled
+    .Values.jibri.persistence.enabled
+    (not .Values.jibri.persistence.existingClaim)
+    (not .Values.jibri.useExternalJibri) 
+}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.jibri.persistence.size | quote }}
+  {{- with .Values.jibri.persistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+{{- end -}}

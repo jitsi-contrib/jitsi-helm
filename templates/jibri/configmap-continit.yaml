@@ -1,0 +1,11 @@
+{{- if .Values.jibri.custom.contInit._10_config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jibri.fullname" . }}-continit
+  labels:
+    {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+data:
+  10-config: |
+    {{- .Values.jibri.custom.contInit._10_config | nindent 4 }}
+{{- end }}

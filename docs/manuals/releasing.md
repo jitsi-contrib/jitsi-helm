@@ -5,12 +5,7 @@ Overall, the release process looks like this:
 - Add some changes to the chart.
 - Test these changes on a test installation.
 - Test again on production installation.
-- Update `version` and `dependencies.version` in [Chart.yaml](/Chart.yaml) and
-  [charts/prosody/Chart.yaml](/charts/prosody/Chart.yaml)
-- Update [Chart.lock](/Chart.lock)
-  ```bash
-  helm dependency update .
-  ```
+- Update `version` in [Chart.yaml](/Chart.yaml).
 - Create the package:
   ```bash
   # Use your GPG signing identity (email or Key ID)
