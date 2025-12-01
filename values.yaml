@@ -196,6 +196,8 @@ prosody:
 
   dataDir: /config/data
 
+  # Persistence is needed if user accounts are stored in Prosody.
+  # e.g. internal_hashed as authentication
   persistence:
     enabled: true
     size: 3G
