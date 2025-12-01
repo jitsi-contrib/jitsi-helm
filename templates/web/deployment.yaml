@@ -124,7 +124,10 @@ spec:
             mountPath: /defaults/system-config.js
             subPath: system-config.js
           {{- end }}
-          {{- if .Values.transcriber.persistence.enabled }}
+          {{- if and
+                 .Values.transcriber.enabled
+                 .Values.transcriber.persistence.enabled
+          }}
           - name: transcriber-data
             mountPath: /usr/share/jitsi-meet/transcripts
             readOnly: true
@@ -180,7 +183,10 @@ spec:
             - key: system-config.js
               path: system-config.js
       - name: transcriber-data
-        {{- if .Values.transcriber.persistence.enabled }}
+        {{- if and
+               .Values.transcriber.enabled
+               .Values.transcriber.persistence.enabled
+        }}
         persistentVolumeClaim:
           claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
         {{- else }}
