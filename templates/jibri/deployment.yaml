@@ -29,7 +29,7 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum }}
+        checksum/secret-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum }}
         checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum }}
         {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations }}
         {{    $annotation }}: {{ $value | quote }}
