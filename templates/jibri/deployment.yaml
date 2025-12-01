@@ -63,7 +63,7 @@ spec:
 
         envFrom:
         - secretRef:
-            name: {{ include "jitsi-meet.jibri.secretName" . }}
+            name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
         - secretRef:
             name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
         - configMapRef:

@@ -75,7 +75,7 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "jitsi-meet.jibri.secretName" . }}
+              name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
           - secretRef:
               name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
           - secretRef:

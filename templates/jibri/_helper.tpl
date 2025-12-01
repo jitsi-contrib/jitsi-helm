@@ -2,15 +2,15 @@
 {{ include "jitsi-meet.fullname" . }}-jibri
 {{- end -}}
 
-{{- define "jitsi-meet.jibri.secret" -}}
-{{ include "jitsi-meet.jibri.fullname" . }}-secret
+{{- define "jitsi-meet.jibri.xmppSecret" -}}
+{{ include "jitsi-meet.jibri.fullname" . }}-secret-xmpp
 {{- end -}}
 
-{{- define "jitsi-meet.jibri.secretName" -}}
+{{- define "jitsi-meet.jibri.xmppSecretName" -}}
 {{- if .Values.jibri.xmpp.existingSecretName -}}
 {{    .Values.jibri.xmpp.existingSecretName }}
 {{- else -}}
-{{    include "jitsi-meet.jibri.secret" . }}
+{{    include "jitsi-meet.jibri.xmppSecret" . }}
 {{- end -}}
 {{- end -}}
 
