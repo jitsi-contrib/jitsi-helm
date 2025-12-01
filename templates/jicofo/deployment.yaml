@@ -17,30 +17,30 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jicofo.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jicofo.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jicofo.podLabels }}
+        {{    $label }}: {{ $value }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jicofo/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jicofo.podAnnotations }}
-        {{ $annotation }}: {{ $value | quote }}
-      {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum }}
+        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jicofo.podAnnotations }}
+        {{    $annotation }}: {{ $value | quote }}
+        {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.jicofo.podSecurityContext | nindent 8 }}
       volumes:
       - name: config
         emptyDir: {}
-      - name: custom-cont-inits
+      - name: custom-continit
         configMap:
           defaultMode: 493
-          name: {{ include "jitsi-meet.jicofo.fullname" . }}-cont-inits
+          name: {{ include "jitsi-meet.jicofo.fullname" . }}-continit
           items:
             - key: 10-config
               path: 10-config
@@ -60,9 +60,9 @@ spec:
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.image .Values.image | first }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jicofo
+              name: {{ include "jitsi-meet.jicofo.secretName" . }}
           - configMapRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+              name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
               name: {{ include "jitsi-meet.jicofo.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
@@ -89,7 +89,7 @@ spec:
           - name: config
             mountPath: /config
           {{- if .Values.jicofo.custom.contInit._10_config }}
-          - name: custom-cont-inits
+          - name: custom-continits
             mountPath: /etc/cont-init.d/10-config
             subPath: 10-config
           {{- end }}
