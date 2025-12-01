@@ -11,7 +11,8 @@ global:
   podAnnotations: {}
   releaseSecretsOverride:
     enabled: false
-    #Support environment variables from pre-created secrets, such as 1Password operator
+    ## Support environment variables from pre-created secrets, such as 1Password
+    ## operator.
     #extraEnvFrom:
     #  - secretRef:
     #      name: '{{ include "prosody.fullname" . }}-overrides'
@@ -56,7 +57,7 @@ web:
     repository: jitsi/web
 
   ## Override the image-provided configuration files:
-  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/web/rootfs
+  ## See https://github.com/jitsi/docker-jitsi-meet/tree/master/web/rootfs
   custom:
     contInit:
       _10_config: ""
@@ -73,7 +74,6 @@ web:
       _custom_interface_config_js: ""
       _custom_config_js: ""
 
-  extraEnvs: {}
   service:
     type: ClusterIP
     port: 80
@@ -91,7 +91,7 @@ web:
 
   ingress:
     enabled: false
-    # ingressClassName: "nginx-ingress-0"
+    # ingressClassName: nginx-ingress-0
     annotations: {}
       # kubernetes.io/tls-acme: "true"
     hosts:
@@ -151,10 +151,84 @@ web:
     #   memory: 128Mi
 
   nodeSelector: {}
-
   tolerations: []
-
   affinity: {}
+  extraEnvs: {}
+
+prosody:
+  replicaCount: 1
+  image:
+    repository: jitsi/prosody
+
+  ## Override the image-provided configuration files:
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/prosody/rootfs
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _prosody_cfg_lua: ""
+      _saslauthd_conf: ""
+      _jitsi_meet_cfg_lua: ""
+
+  service:
+    type: ClusterIP
+    ports:
+      bosh-insecure: 5280
+      bosh-secure: 5281
+      xmpp-c2s: 5222
+      xmpp-s2s: 5269
+      xmpp-component: 5347
+
+  livenessProbe:
+    httpGet:
+      path: /http-bind
+      port: bosh-insecure
+
+  readinessProbe:
+    httpGet:
+      path: /http-bind
+      port: bosh-insecure
+
+  dataDir: /config/data
+
+  persistence:
+    enabled: true
+    size: 3G
+    storageClassName:
+
+  extraVolumes: []
+    # - name: prosody-modules
+    #   configMap:
+    #     name: prosody-modules
+
+  extraVolumeMounts: []
+    # - name: prosody-modules
+    #   subPath: mod_measure_client_presence.lua
+    #   mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
+
+  metrics:
+    enabled: false
+    allowed_cidr: "0.0.0.0/0"  # change to cluster pod ip cidr
+    image:
+      repository: otel/opentelemetry-collector-contrib
+      tag: "0.76.1"
+      pullPolicy: IfNotPresent
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false
+
+  podLabels: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraEnvs: {}
 
 jicofo:
   replicaCount: 1
@@ -170,9 +244,12 @@ jicofo:
       _jicofo_conf: ""
       _logging_properties: ""
 
+  # Jicofo XMPP user credentials
   xmpp:
     password:
-    componentSecret:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JICOFO_AUTH_PASSWORD
+    existingSecretName:
 
   livenessProbe:
     tcpSocket:
@@ -204,9 +281,15 @@ jvb:
   image:
     repository: jitsi/jvb
 
+  breweryMuc: jvbbrewery
+
+  # JVB XMPP user credentials
   xmpp:
     user: jvb
     password:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JVB_AUTH_USER, JVB_AUTH_PASSWORD
+    existingSecretName:
 
   ## Set public IP addresses to be advertised by JVB.
   #  You can specify your nodes' IP addresses,
@@ -226,7 +309,7 @@ jvb:
   useNodeIP: false
   ## Use a STUN server to help some users punch through some
   #  especially nasty NAT setups. Usually makes sense for P2P calls.
-  stunServers: 'meet-jit-si-turnrelay.jitsi.net:443'
+  stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
   ## Try to use the hostPort feature:
   #  (might not be supported by some clouds or CNI engines)
   useHostPort: false
@@ -264,8 +347,6 @@ jvb:
       # - name: http-healthcheck
       #   port: 8080
       #   protocol: TCP
-
-  breweryMuc: jvbbrewery
 
   livenessProbe:
     httpGet:
@@ -334,10 +415,13 @@ jigasi:
 
   breweryMuc: jigasibrewery
 
-  ## Jigasi XMPP user credentials
+  # Jigasi XMPP user credentials
   xmpp:
     user: jigasi
     password:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JIGASI_XMPP_USER and JIGASI_XMPP_PASSWORD
+    existingSecretName:
 
   livenessProbe:
     httpGet:
@@ -380,10 +464,13 @@ transcriber:
 
   breweryMuc: jigasibrewery
 
-  ## Transcriber XMPP user credentials
+  # Transcriber XMPP user credentials
   xmpp:
     user: transcriber
-    password: ""
+    password:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JIGASI_TRANSCRIBER_USER and JIGASI_TRANSCRIBER_PASSWORD
+    existingSecretName:
 
   persistence:
     enabled: false
@@ -489,22 +576,37 @@ jibri:
   image:
     repository: jitsi/jibri
 
-  podLabels: {}
-  podAnnotations: {}
-  resources: {}
+  ## Override the image-provided configuration files:
+  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _jibri_conf: ""
+      _logging_properties: ""
+      _xorg_video_dummy_conf: ""
+    other:
+      _finalize_sh: ""
 
   breweryMuc: jibribrewery
   timeout: 90
 
-  ## jibri XMPP user credentials:
+  # Jibri XMPP user credentials
   xmpp:
     user: jibri
     password:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JIBRI_XMPP_USER and JIBRI_XMPP_PASSWORD
+    existingSecretName:
 
-  ## recorder XMPP user credentials:
+  # Recorder XMPP user credentials
   recorder:
     user: recorder
     password:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JIBRI_RECORDER_USER and JIBRI_RECORDER_PASSWORD
+    existingSecretName:
 
   livenessProbe:
     initialDelaySeconds: 5
@@ -532,23 +634,15 @@ jibri:
           | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
           | grep -qP 'HEALTHY (IDLE|BUSY)'
 
+  podLabels: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
   extraEnvs: {}
-
-  ## Override the image-provided configuration files:
-  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs
-  custom:
-    contInit:
-      _10_config: ""
-    defaults:
-      _autoscaler_sidecar_config: ""
-      _jibri_conf: ""
-      _logging_properties: ""
-      _xorg_video_dummy_conf: ""
-    other:
-      _finalize_sh: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -568,49 +662,3 @@ xmpp:
   hiddenDomain:
 
 extraCommonEnvs: {}
-
-prosody:
-  enabled: true
-  useExternalProsody: false
-  server:
-  extraEnvFrom:
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jibri'
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jicofo'
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jigasi'
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-transcriber'
-  - secretRef:
-      name: '{{ include "prosody.fullname" . }}-jvb'
-  - configMapRef:
-      name: '{{ include "prosody.fullname" . }}-common'
-  image:
-    repository: jitsi/prosody
-    tag: stable-10590
-
-  # service:
-  #   ports:
-  # If Prosody c2s in needed on private net outside the cluster
-  #     xmppc2snodePort: 30522
-
-  ## Override the image-provided configuration files:
-  #  See https://github.com/jitsi/docker-jitsi-meet/tree/master/prosody/rootfs
-  custom:
-    contInit:
-      _10_config: ""
-    defaults:
-      _prosody_cfg_lua: ""
-      _saslauthd_conf: ""
-      _jitsi_meet_cfg_lua: ""
-
-  extraVolumes: []
-    # - name: prosody-modules
-    #   configMap:
-    #     name: prosody-modules
-
-  extraVolumeMounts: []
-    # - name: prosody-modules
-    #   subPath: mod_measure_client_presence.lua
-    #   mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
