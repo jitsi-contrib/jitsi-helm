@@ -1,4 +1,9 @@
-{{- if and .Values.jibri.enabled .Values.jibri.persistence.enabled (not .Values.jibri.persistence.existingClaim) (not .Values.jibri.useExternalJibri) }}
+{{- if and
+    .Values.jibri.enabled
+    .Values.jibri.persistence.enabled
+    (not .Values.jibri.persistence.existingClaim)
+    (not .Values.jibri.useExternalJibri) 
+}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

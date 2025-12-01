@@ -1,4 +1,7 @@
-{{- if and .Values.jibri.enabled (not .Values.jibri.useExternalJibri) }}
+{{- if and
+    .Values.jibri.enabled
+    (not .Values.jibri.useExternalJibri)
+}}
 apiVersion: v1
 kind: Service
 metadata:
