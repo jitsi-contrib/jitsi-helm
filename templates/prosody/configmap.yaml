@@ -1,3 +1,4 @@
+{{- if not (empty .Values.prosody.extraEnvs) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +11,4 @@ data:
   {{      $key }}: {{ tpl $value $ | quote }}
   {{-   end }}
   {{- end }}
+{{- end }}
