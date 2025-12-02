@@ -199,7 +199,7 @@ prosody:
   # Persistence is needed if user accounts are stored in Prosody.
   # e.g. internal_hashed as authentication
   persistence:
-    enabled: true
+    enabled: false
     size: 3G
     storageClassName:
 
