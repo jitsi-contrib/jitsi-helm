@@ -166,6 +166,12 @@ coturn:
   image:
     repository: coturn/coturn
 
+  staticAuth:
+    secret:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for TURN_CREDENTIALS
+    existingSecretName:
+
   service:
     type: ClusterIP
     ports:
