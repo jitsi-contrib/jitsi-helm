@@ -40,6 +40,6 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ .Values.coturn.service.ports.turns }}
+                  number: {{ $.Values.coturn.service.ports.turns }}
     {{- end }}
 {{- end }}
