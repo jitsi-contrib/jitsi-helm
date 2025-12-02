@@ -90,6 +90,19 @@ web:
     annotations: {}
     #  beta.cloud.google.com/backend-config: backend-config-iap
 
+  ingress:
+    enabled: false
+    # ingressClassName: nginx-ingress-0
+    annotations: {}
+    #  kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: jitsi.local
+        paths: ["/"]
+    tls: []
+    #  - secretName: jitsi-web-certificate
+    #    hosts:
+    #      - jitsi.local
+
   # Useful for ingresses that don't support http-to-https redirect by themself,
   # (namely: GKE),
   httpRedirect: false
@@ -146,18 +159,43 @@ web:
   affinity: {}
   extraEnvs: {}
 
-ingress:
+coturn:
   enabled: false
-  # ingressClassName: nginx-ingress-0
-  annotations: {}
-  #  kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: jitsi.local
-      paths: ["/"]
-  tls: []
-  #  - secretName: jitsi-web-certificate
-  #    hosts:
-  #      - jitsi.local
+
+  replicaCount: 1
+  image:
+    repository: coturn/coturn
+
+  service:
+    type: ClusterIP
+    ports:
+      turns: 5349
+      stun: 3478
+
+  ingress:
+    enabled: false
+    # ingressClassName: nginx-ingress-0
+    annotations: {}
+    #  kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: turn.local
+    tls: []
+    #  - secretName: turn-web-certificate
+    #    hosts:
+    #      - turn.local
+
+  livenessProbe:
+  readinessProbe:
+
+  podLabels: {}
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  extraEnvs: {}
 
 prosody:
   # Always one replica, hardcoded in prosody/statefulset.yaml

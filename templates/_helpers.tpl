@@ -82,11 +82,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- else -}}
 {{-   $host := "" -}}
 {{-   $tlsEnabled := false -}}
-{{-   if and .Values.ingress.enabled .Values.ingress.tls -}}
-{{-     $host = (.Values.ingress.tls|first).hosts|first -}}
+{{-   if and .Values.web.ingress.enabled .Values.web.ingress.tls -}}
+{{-     $host = (.Values.web.ingress.tls|first).hosts|first -}}
 {{-     $tlsEnabled = true -}}
-{{-   else if and .Values.ingress.enabled .Values.ingress.hosts -}}
-{{-     $host = (.Values.ingress.hosts|first).host -}}
+{{-   else if and .Values.web.ingress.enabled .Values.web.ingress.hosts -}}
+{{-     $host = (.Values.web.ingress.hosts|first).host -}}
 {{-   end -}}
 {{-   if $host -}}
 {{-     if $tlsEnabled -}}https://{{- else -}}http://{{- end -}}
