@@ -1,0 +1,22 @@
+{{- if .Values.coturn.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.coturn.service.type }}
+  ports:
+    - port: {{ index .Values.coturn.service.ports "turns" }}
+      protocol: TCP
+      name: tcp-turns
+    - port: {{ index .Values.coturn.service.ports "stun" }}
+      protocol: TCP
+      name: tcp-stun
+    - port: {{ index .Values.coturn.service.ports "stun" }}
+      protocol: UDP
+      name: udp-stun
+  selector:
+    {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
+{{- end }}
