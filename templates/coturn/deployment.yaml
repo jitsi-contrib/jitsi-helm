@@ -53,7 +53,6 @@ spec:
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
           {{- end }}
-          {{- with .Values.coturn.livenessProbe }}
           ports:
             - name: tcp-turns
               containerPort: {{ index .Values.coturn.service.ports "turns" }}
@@ -64,6 +63,7 @@ spec:
             - name: udp-stun
               containerPort: {{ index .Values.coturn.service.ports "stun" }}
               protocol: UDP
+          {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
           {{- end }}
