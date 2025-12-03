@@ -212,7 +212,12 @@ coturn:
     #      - turn.local
 
   livenessProbe:
+    tcpSocket:
+      port: 5349
+
   readinessProbe:
+    tcpSocket:
+      port: 5349
 
   affinity: {}
   annotations: {}
