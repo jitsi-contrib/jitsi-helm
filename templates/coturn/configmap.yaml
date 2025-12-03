@@ -1,0 +1,14 @@
+{{- if .Values.coturn.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.coturn.extraEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
+  {{- end }}
+{{- end }}
