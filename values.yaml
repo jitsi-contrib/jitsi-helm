@@ -186,6 +186,7 @@ coturn:
   replicaCount: 1
   image:
     repository: coturn/coturn
+    tag: 4.7
 
   staticAuth:
     secret:

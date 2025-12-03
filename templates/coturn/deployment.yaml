@@ -39,7 +39,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.coturn.securityContext | nindent 12 }}
-          image: "{{ .Values.coturn.image.repository }}:{{ default .Chart.AppVersion .Values.coturn.image.tag }}"
+          image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.coturn.image .Values.image | first }}
           envFrom:
           - secretRef:
