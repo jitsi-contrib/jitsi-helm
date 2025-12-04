@@ -203,7 +203,7 @@ coturn:
     existingSecretName:
 
   service:
-    type: NodePort
+    type: LoadBalancer
     ports:
       turn: 3478
 
