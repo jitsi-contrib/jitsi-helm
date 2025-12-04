@@ -41,23 +41,15 @@ spec:
         configMap:
           defaultMode: 493
           name: {{ include "jitsi-meet.jicofo.fullname" . }}-continit
-          items:
-            - key: 10-config
-              path: 10-config
       - name: custom-defaults
         configMap:
           name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
-          items:
-            - key: jicofo.conf
-              path: jicofo.conf
-            - key: logging.properties
-              path: logging.properties
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.jicofo.securityContext | nindent 12 }}
           image: "{{ .Values.jicofo.image.repository }}:{{ default .Chart.AppVersion .Values.jicofo.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.jicofo.securityContext | nindent 12 }}
           envFrom:
           - secretRef:
               name: {{ include "jitsi-meet.jicofo.secretName" . }}
@@ -66,14 +58,14 @@ spec:
           - configMapRef:
               name: {{ include "jitsi-meet.jicofo.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
-          {{- end }}
+          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
+          {{-   end }}
           {{- end }}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+          - name: http
+            containerPort: 80
+            protocol: TCP
           {{- with .Values.jicofo.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -103,14 +95,15 @@ spec:
             mountPath: /defaults/logging.properties
             subPath: logging.properties
           {{- end }}
+
         {{- if .Values.jicofo.metrics.enabled }}
         - name: metrics
           image: "{{ .Values.jicofo.metrics.image.repository }}:{{ .Values.jicofo.metrics.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.metrics.image .Values.image | first }}
           ports:
-            - name: metrics
-              containerPort: 9996
-              protocol: TCP
+          - name: metrics
+            containerPort: 9996
+            protocol: TCP
           readinessProbe:
             httpGet:
               path: /
@@ -120,12 +113,13 @@ spec:
           resources:
             {{- toYaml .Values.jicofo.metrics.resources | nindent 12 }}
         {{- end }}
-      {{- with .Values.jicofo.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+
       {{- with .Values.jicofo.affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.jicofo.nodeSelector }}
+      nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.jicofo.tolerations }}

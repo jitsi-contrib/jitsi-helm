@@ -14,13 +14,13 @@ metadata:
   {{- end }}
 spec:
   replicas: {{ .Values.jibri.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 6 }}
   {{- if .Values.jibri.strategy }}
   strategy:
     {{- toYaml .Values.jibri.strategy | nindent 4 }}
   {{- end }}
-  selector:
-    matchLabels:
-      {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
@@ -41,27 +41,50 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      volumes:
+        - name: config
+          emptyDir: {}
+        - name: custom-continits
+          configMap:
+            defaultMode: 493
+            name: {{ include "jitsi-meet.jibri.fullname" . }}-continits
+        - name: custom-defaults
+          configMap:
+            name: {{ include "jitsi-meet.jibri.fullname" . }}-defaults
+        - name: custom-other
+          configMap:
+            defaultMode: 493
+            name: {{ include "jitsi-meet.jibri.fullname" . }}-other
+        - name: jibri-data
+          {{- if .Values.jibri.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.jibri.persistence.existingClaim | default (include "jitsi-meet.jibri.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.jibri.shm.enabled }}
+        - name: dev-shm
+        {{-   if .Values.jibri.shm.useHost }}
+          hostPath:
+            path: /dev/shm
+        {{-   else }}
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
+        {{-   end }}
+        {{- end }}
       containers:
       - name: {{ .Chart.Name }}
+        image: "{{ .Values.jibri.image.repository }}:{{ default .Chart.AppVersion .Values.jibri.image.tag }}"
+        imagePullPolicy: {{ pluck "pullPolicy" .Values.jibri.image .Values.image | first }}
         securityContext:
           capabilities:
             add: ["SYS_ADMIN"]
-        image: "{{ .Values.jibri.image.repository }}:{{ default .Chart.AppVersion .Values.jibri.image.tag }}"
-        imagePullPolicy: {{ pluck "pullPolicy" .Values.jibri.image .Values.image | first }}
         ports:
         - name: http-internal
           containerPort: 3333
         - name: http-api
           containerPort: 2222
-        {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
-        livenessProbe:
-        {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with default .Values.jibri.readinessProbe .Values.jibri.readinessProbeOverride }}
-        readinessProbe:
-        {{- toYaml . | nindent 10 }}
-        {{- end }}
-
         envFrom:
         - secretRef:
             name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
@@ -71,7 +94,6 @@ spec:
             name: {{ include "jitsi-meet.common" . }}
         - configMapRef:
             name: {{ include "jitsi-meet.jibri.fullname" . }}
-
         {{- if (gt (int .Values.jibri.replicaCount) 1) }}
         # Set Jibri Instance ID based on pod name:
         env:
@@ -80,10 +102,16 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         {{- end }}
-
+        {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
+        livenessProbe:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with default .Values.jibri.readinessProbe .Values.jibri.readinessProbeOverride }}
+        readinessProbe:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.jibri.resources | nindent 12 }}
-
         volumeMounts:
         - name: config
           mountPath: /config
@@ -124,56 +152,12 @@ spec:
           mountPath: /dev/shm
         {{- end }}
 
-      volumes:
-      - name: config
-        emptyDir: {}
-      - name: custom-continits
-        configMap:
-          defaultMode: 493
-          name: {{ include "jitsi-meet.jibri.fullname" . }}-continits
-          items:
-            - key: 10-config
-              path: 10-config
-      - name: custom-defaults
-        configMap:
-          name: {{ include "jitsi-meet.jibri.fullname" . }}-defaults
-          items:
-            - key: jibri.conf
-              path: jibri.conf
-            - key: logging.properties
-              path: logging.properties
-            - key: autoscaler-sidecar.config
-              path: autoscaler-sidecar.config
-            - key: xorg-video-dummy.conf
-              path: xorg-video-dummy.conf
-      - name: custom-other
-        configMap:
-          defaultMode: 493
-          name: {{ include "jitsi-meet.jibri.fullname" . }}-other
-      - name: jibri-data
-        {{- if .Values.jibri.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.jibri.persistence.existingClaim | default (include "jitsi-meet.jibri.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
-        {{- end }}
-      {{- if .Values.jibri.shm.enabled }}
-      - name: dev-shm
-      {{-   if .Values.jibri.shm.useHost }}
-        hostPath:
-          path: /dev/shm
-      {{-   else }}
-        emptyDir:
-          medium: Memory
-          sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
-      {{-   end }}
+      {{- with .Values.jibri.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.jibri.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.jibri.affinity }}
-      affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.jibri.tolerations }}

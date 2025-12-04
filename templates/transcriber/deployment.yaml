@@ -38,6 +38,14 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.transcriber.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: transcriber-data
+        {{- if .Values.transcriber.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
       initContainers:
       - name: init-prosody
         image: busybox:1.36
@@ -52,10 +60,10 @@ spec:
             echo ">> Prosody is available"
       containers:
         - name: {{ .Chart.Name }}-transcriber
-          securityContext:
-            {{- toYaml .Values.transcriber.securityContext | nindent 12 }}
           image: "{{ .Values.transcriber.image.repository }}:{{ default .Chart.AppVersion .Values.transcriber.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.transcriber.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.transcriber.securityContext | nindent 12 }}
           envFrom:
           - secretRef:
               name: {{ include "jitsi-meet.transcriber.secret" . }}
@@ -64,9 +72,9 @@ spec:
           - configMapRef:
               name: {{ include "jitsi-meet.transcriber.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml .) $ | indent 12 | trim }}
-          {{- end }}
+          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{    tpl (toYaml .) $ | indent 12 | trim }}
+          {{-   end }}
           {{- end }}
           {{- with .Values.transcriber.livenessProbe }}
           livenessProbe:
@@ -83,20 +91,13 @@ spec:
           - name: transcriber-data
             mountPath: /tmp/transcripts
           {{- end }}
-      volumes:
-      - name: transcriber-data
-        {{- if .Values.transcriber.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
-        {{- end }}
-      {{- with .Values.transcriber.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+
       {{- with .Values.transcriber.affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.transcriber.nodeSelector }}
+      nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.transcriber.tolerations }}

@@ -9,8 +9,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  serviceName: {{ include "jitsi-meet.prosody.fullname" . }}
   replicas: 1
+  serviceName: {{ include "jitsi-meet.prosody.fullname" . }}
   selector:
     matchLabels:
       {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 6 }}
@@ -63,38 +63,37 @@ spec:
       securityContext:
         {{- toYaml .Values.prosody.podSecurityContext | nindent 8 }}
       volumes:
-      - name: config
-        emptyDir: {}
-      - name: custom-continits
-        configMap:
-          defaultMode: 493
-          name: {{ include "jitsi-meet.prosody.fullname" . }}-continit
-          items:
-            - key: 10-config
-              path: 10-config
-      - name: custom-defaults
-        configMap:
-          name: {{ include "jitsi-meet.prosody.fullname" . }}-defaults
-          items:
-            - key: prosody.cfg.lua
-              path: prosody.cfg.lua
-            - key: saslauthd.conf
-              path: saslauthd.conf
-            - key: jitsi-meet.cfg.lua
-              path: jitsi-meet.cfg.lua
-      - name: prosody-data
-        {{- if .Values.prosody.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: prosody-data
-        {{- else }}
-        emptyDir: {}
+        - name: config
+          emptyDir: {}
+        - name: custom-continits
+          configMap:
+            defaultMode: 493
+            name: {{ include "jitsi-meet.prosody.fullname" . }}-continit
+        - name: custom-defaults
+          configMap:
+            name: {{ include "jitsi-meet.prosody.fullname" . }}-defaults
+        - name: prosody-data
+          {{- if .Values.prosody.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: prosody-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.prosody.metrics.enabled }}
+        - name: metrics-config
+          configMap:
+            name: {{ include "jitsi-meet.prosody.fullname" . }}-metrics
+            defaultMode: 420
+        {{- end }}
+        {{- with .Values.prosody.extraVolumes }}
+        {{-   toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.prosody.securityContext | nindent 12 }}
           image: "{{ .Values.prosody.image.repository }}:{{ default .Chart.AppVersion .Values.prosody.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.prosody.securityContext | nindent 12 }}
           envFrom:
           - secretRef:
               name: {{ include "jitsi-meet.jicofo.secretName" . }}
@@ -140,21 +139,21 @@ spec:
             value: "{{ .Values.prosody.metrics.allowed_cidr }}"
           {{- end }}
           ports:
-            - name: xmpp-c2s
-              containerPort: {{ index .Values.prosody.service.ports "xmpp-c2s" }}
-              protocol: TCP
-            - name: xmpp-s2s
-              containerPort: {{ index .Values.prosody.service.ports "xmpp-s2s" }}
-              protocol: TCP
-            - name: xmpp-component
-              containerPort: {{ index .Values.prosody.service.ports "xmpp-component" }}
-              protocol: TCP
-            - name: bosh-insecure
-              containerPort: {{ index .Values.prosody.service.ports "bosh-insecure" }}
-              protocol: TCP
-            - name: bosh-secure
-              containerPort: {{ index .Values.prosody.service.ports "bosh-secure" }}
-              protocol: TCP
+          - name: xmpp-c2s
+            containerPort: {{ index .Values.prosody.service.ports "xmpp-c2s" }}
+            protocol: TCP
+          - name: xmpp-s2s
+            containerPort: {{ index .Values.prosody.service.ports "xmpp-s2s" }}
+            protocol: TCP
+          - name: xmpp-component
+            containerPort: {{ index .Values.prosody.service.ports "xmpp-component" }}
+            protocol: TCP
+          - name: bosh-insecure
+            containerPort: {{ index .Values.prosody.service.ports "bosh-insecure" }}
+            protocol: TCP
+          - name: bosh-secure
+            containerPort: {{ index .Values.prosody.service.ports "bosh-secure" }}
+            protocol: TCP
           {{- with .Values.prosody.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -193,42 +192,36 @@ spec:
           {{- with .Values.prosody.extraVolumeMounts }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
+
         {{- if .Values.prosody.metrics.enabled }}
         - name: metrics
           image: "{{ .Values.prosody.metrics.image.repository }}:{{ .Values.prosody.metrics.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.metrics.image .Values.image | first }}
           args: [--config=/etc/otel-collector-config.yaml]
           ports:
-            - name: metrics
-              containerPort: 8889
-              protocol: TCP
+          - name: metrics
+            containerPort: 8889
+            protocol: TCP
           volumeMounts:
-            - name: metrics-config
-              mountPath: /etc/otel-collector-config.yaml
-              subPath: otel-collector-config.yaml
-              readOnly: true
+          - name: metrics-config
+            mountPath: /etc/otel-collector-config.yaml
+            subPath: otel-collector-config.yaml
+            readOnly: true
         {{- end }}
-      {{- if .Values.prosody.metrics.enabled }}
-      - name: metrics-config
-        configMap:
-          name: {{ include "jitsi-meet.prosody.fullname" . }}-metrics
-          defaultMode: 420
-      {{- end }}
-      {{- with .Values.prosody.extraVolumes }}
-      {{- toYaml . | nindent 6 }}
-      {{- end }}
-    {{- with .Values.prosody.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.prosody.affinity }}
+
+      {{- with .Values.prosody.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.prosody.tolerations }}
+      {{- end }}
+      {{- with .Values.prosody.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.prosody.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
+
   {{- if or .Values.prosody.persistence.enabled .Values.prosody.extraVolumeClaimTemplates }}
   volumeClaimTemplates:
   - metadata:
@@ -243,7 +236,7 @@ spec:
       {{- with .Values.prosody.persistence.storageClassName }}
       storageClassName: {{ . | quote }}
       {{- end }}
-  {{- with .Values.prosody.extraVolumeClaimTemplates }}
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
+  {{-   with .Values.prosody.extraVolumeClaimTemplates }}
+  {{-     toYaml . | nindent 2 }}
+  {{-   end }}
   {{- end }}

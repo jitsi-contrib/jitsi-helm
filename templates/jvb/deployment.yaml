@@ -46,12 +46,16 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+      {{- with .Values.jvb.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.jvb.securityContext | nindent 12 }}
           image: "{{ .Values.jvb.image.repository }}:{{ default .Chart.AppVersion .Values.jvb.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jvb.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.jvb.securityContext | nindent 12 }}
           envFrom:
           - secretRef:
               name: {{ include "jitsi-meet.jvb.secretName" . }}
@@ -60,9 +64,9 @@ spec:
           - configMapRef:
               name: {{ include "jitsi-meet.jvb.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
-          {{- end }}
+          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
+          {{-   end }}
           {{- end }}
           env:
           {{- if or .Values.jvb.useNodeIP .Values.jvb.publicIPs }}
@@ -83,7 +87,7 @@ spec:
                 fieldPath: status.hostIP
             {{- end }}
           {{- else }}
-          {{- fail "(jvb.publicIPs | jvb.useNodeIP) Please set an external IP addresses for JVB(s) or enable the Node IP autodetection!" }}
+          {{-   fail "(jvb.publicIPs | jvb.useNodeIP) Please set an external IP addresses for JVB(s) or enable the Node IP autodetection!" }}
           {{- end }}
           {{- if .Values.websockets.colibri.enabled }}
           - name: JVB_WS_SERVER_ID
@@ -102,22 +106,22 @@ spec:
                 fieldPath: status.podIP
           {{- end }}
           ports:
-            - name: rtp-udp
-              containerPort: {{ .Values.jvb.UDPPort }}
-              {{- if .Values.jvb.useHostPort }}
-              hostPort: {{ .Values.jvb.UDPPort }}
-              {{- end }}
-              protocol: UDP
-            {{- if .Values.websockets.colibri.enabled }}
-            - name: colibri-ws-tcp
-              containerPort: 9090
-              protocol: TCP
+          - name: rtp-udp
+            containerPort: {{ .Values.jvb.UDPPort }}
+            {{- if .Values.jvb.useHostPort }}
+            hostPort: {{ .Values.jvb.UDPPort }}
             {{- end }}
-            {{- if .Values.octo.enabled }}
-            - name: octo
-              containerPort: 4096
-              protocol: TCP
-            {{- end }}
+            protocol: UDP
+          {{- if .Values.websockets.colibri.enabled }}
+          - name: colibri-ws-tcp
+            containerPort: 9090
+            protocol: TCP
+          {{- end }}
+          {{- if .Values.octo.enabled }}
+          - name: octo
+            containerPort: 4096
+            protocol: TCP
+          {{- end }}
           {{- with .Values.jvb.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -144,9 +148,9 @@ spec:
             - -videobridge-url
             - http://localhost:8080/colibri/stats
           ports:
-            - containerPort: 9888
-              name: tcp-metrics
-              protocol: TCP
+          - containerPort: 9888
+            name: tcp-metrics
+            protocol: TCP
           readinessProbe:
             httpGet:
               path: /health
@@ -157,10 +161,6 @@ spec:
         {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
         {{- end }}
 
-      {{- with .Values.jvb.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- if or .Values.jvb.useHostPort .Values.jvb.affinity }}
       affinity:
         {{- if .Values.jvb.affinity }}
@@ -177,11 +177,11 @@ spec:
             topologyKey: "kubernetes.io/hostname"
         {{- end }}
       {{- end }}
-      {{- with .Values.jvb.tolerations }}
-      tolerations:
+      {{- with .Values.jvb.nodeSelector }}
+      nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.jvb.extraVolumes }}
-      volumes:
+      {{- with .Values.jvb.tolerations }}
+      tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

@@ -33,29 +33,52 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config
+          emptyDir: {}
+        - name: custom-continit
+          configMap:
+            defaultMode: 493
+            name: {{ include "jitsi-meet.web.fullname" . }}-continit
+        - name: custom-conffiles
+          configMap:
+            name: {{ include "jitsi-meet.web.fullname" . }}-conffiles
+        - name: transcriber-data
+          {{- if and
+                 .Values.transcriber.enabled
+                 .Values.transcriber.persistence.enabled
+          }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- with .Values.web.extraVolumes }}
+        {{-   toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.web.securityContext | nindent 12 }}
           image: "{{ .Values.web.image.repository }}:{{ default .Chart.AppVersion .Values.web.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.web.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.web.securityContext | nindent 12 }}
           envFrom:
           - configMapRef:
               name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
               name: {{ include "jitsi-meet.web.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
-          {{- end }}
+          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
+          {{-   end }}
           {{- end }}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-            - name: https
-              containerPort: 443
-              protocol: TCP
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          - name: https
+            containerPort: 443
+            protocol: TCP
           {{- with .Values.web.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -136,62 +159,15 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
 
-      {{- with .Values.web.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.web.affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.nodeSelector }}
+      nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.web.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
-      volumes:
-      - name: config
-        emptyDir: {}
-      - name: custom-continit
-        configMap:
-          defaultMode: 493
-          name: {{ include "jitsi-meet.web.fullname" . }}-continit
-          items:
-            - key: 10-config
-              path: 10-config
-      - name: custom-conffiles
-        configMap:
-          name: {{ include "jitsi-meet.web.fullname" . }}-conffiles
-          items:
-            - key: custom-config.js
-              path: custom-config.js
-            - key: custom-interface_config.js
-              path: custom-interface_config.js
-            - key: default
-              path: default
-            - key: ffdhe2048.txt
-              path: ffdhe2048.txt
-            - key: interface_config.js
-              path: interface_config.js
-            - key: meet.conf
-              path: meet.conf
-            - key: nginx.conf
-              path: nginx.conf
-            - key: settings-config.js
-              path: settings-config.js
-            - key: ssl.conf
-              path: ssl.conf
-            - key: system-config.js
-              path: system-config.js
-      - name: transcriber-data
-        {{- if and
-               .Values.transcriber.enabled
-               .Values.transcriber.persistence.enabled
-        }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
-        {{- end }}
-      {{- with .Values.web.extraVolumes }}
-      {{-   toYaml . | nindent 6 }}
       {{- end }}
