@@ -10,12 +10,13 @@ metadata:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
   {{- with .Values.jibri.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   replicas: {{ .Values.jibri.replicaCount }}
   {{- if .Values.jibri.strategy }}
-  strategy: {{- toYaml .Values.jibri.strategy | nindent 4 }}
+  strategy:
+    {{- toYaml .Values.jibri.strategy | nindent 4 }}
   {{- end }}
   selector:
     matchLabels:

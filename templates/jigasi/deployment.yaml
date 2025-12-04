@@ -10,7 +10,7 @@ metadata:
     {{- include "jitsi-meet.jigasi.labels" . | nindent 4 }}
   {{- with .Values.jigasi.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   replicas: 1

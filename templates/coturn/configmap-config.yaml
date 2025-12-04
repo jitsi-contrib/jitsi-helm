@@ -1,0 +1,19 @@
+{{- if .Values.coturn.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}-config
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+data:
+  turnserver.conf: |-
+    realm={{ .Values.turnHost }}
+    server-name={{ .Values.turnHost }}
+    listening-port={{ .Values.coturn.service.ports.turn }}
+    listening-ip=0.0.0.0
+    min-port=10000
+    max-port=20000
+    lt-cred-mech
+    fingerprint
+    log-file=stdout
+{{- end }}

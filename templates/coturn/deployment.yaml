@@ -7,7 +7,7 @@ metadata:
     {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
   {{- with .Values.coturn.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   replicas: {{ .Values.coturn.replicaCount }}
@@ -35,6 +35,10 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.coturn.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "jitsi-meet.coturn.fullname" . }}-config
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -48,21 +52,20 @@ spec:
               name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
               name: {{ include "jitsi-meet.coturn.fullname" . }}
+          - configMapRef:
+              name: {{ include "jitsi-meet.coturn.fullname" . }}-config
           {{- if .Values.global.releaseSecretsOverride.enabled }}
           {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
           {{- end }}
           ports:
-            - name: tcp-turns
-              containerPort: {{ index .Values.coturn.service.ports "turns" }}
+            - name: tcp-turn
               protocol: TCP
-            - name: tcp-stun
-              containerPort: {{ index .Values.coturn.service.ports "stun" }}
-              protocol: TCP
-            - name: udp-stun
-              containerPort: {{ index .Values.coturn.service.ports "stun" }}
+              containerPort: {{ index .Values.coturn.service.ports "turn" }}
+            - name: udp-turn
               protocol: UDP
+              containerPort: {{ index .Values.coturn.service.ports "turn" }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -73,6 +76,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/turnserver.conf
+              subPath: turnserver.conf
 
       {{- with .Values.coturn.nodeSelector }}
       nodeSelector:

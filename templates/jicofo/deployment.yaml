@@ -6,7 +6,7 @@ metadata:
     {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
   {{- with .Values.jicofo.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   replicas: 1

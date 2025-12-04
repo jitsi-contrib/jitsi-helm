@@ -10,7 +10,7 @@ metadata:
     {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
   {{- with .Values.transcriber.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   replicas: 1

@@ -7,28 +7,28 @@ metadata:
 spec:
   type: {{ .Values.prosody.service.type }}
   ports:
-    - port: {{ index .Values.prosody.service.ports "bosh-insecure" }}
+    - name: tcp-bosh-insecure
       protocol: TCP
-      name: tcp-bosh-insecure
-    - port: {{ index .Values.prosody.service.ports "bosh-secure" }}
+      port: {{ index .Values.prosody.service.ports "bosh-insecure" }}
+    - name: tcp-bosh-secure
       protocol: TCP
-      name: tcp-bosh-secure
-    - port: {{ index .Values.prosody.service.ports "xmpp-component" }}
+      port: {{ index .Values.prosody.service.ports "bosh-secure" }}
+    - name: tcp-xmpp-component
       protocol: TCP
-      name: tcp-xmpp-component
-    - port: {{ index .Values.prosody.service.ports "xmpp-c2s" }}
+      port: {{ index .Values.prosody.service.ports "xmpp-component" }}
+    - name: tcp-xmpp-c2
       protocol: TCP
-      name: tcp-xmpp-c2
+      port: {{ index .Values.prosody.service.ports "xmpp-c2s" }}
       {{- if .Values.prosody.service.ports.xmppc2snodePort }}
       nodePort: {{ index .Values.prosody.service.ports "xmppc2snodePort" }}
       {{- end }}
-    - port: {{ index .Values.prosody.service.ports "xmpp-s2s" }}
+    - name: tcp-xmpp-s2
       protocol: TCP
-      name: tcp-xmpp-s2
+      port: {{ index .Values.prosody.service.ports "xmpp-s2s" }}
     {{- if .Values.prosody.metrics.enabled }}
-    - port: 8889
+    - name: metrics
       protocol: TCP
-      name: metrics
+      port: 8889
     {{- end }}
   selector:
     {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 4 }}

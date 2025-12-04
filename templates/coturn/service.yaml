@@ -8,15 +8,14 @@ metadata:
 spec:
   type: {{ .Values.coturn.service.type }}
   ports:
-    - port: {{ index .Values.coturn.service.ports "turns" }}
+    - name: tcp-turn
       protocol: TCP
-      name: tcp-turns
-    - port: {{ index .Values.coturn.service.ports "stun" }}
-      protocol: TCP
-      name: tcp-stun
-    - port: {{ index .Values.coturn.service.ports "stun" }}
+      port: {{ index .Values.coturn.service.ports "turn" }}
+      nodePort: {{ index .Values.coturn.service.ports "turn" }}
+    - name: udp-turn
       protocol: UDP
-      name: udp-stun
+      port: {{ index .Values.coturn.service.ports "turn" }}
+      nodePort: {{ index .Values.coturn.service.ports "turn" }}
   selector:
     {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
 {{- end }}

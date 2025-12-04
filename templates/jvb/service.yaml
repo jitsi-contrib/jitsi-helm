@@ -24,21 +24,21 @@ spec:
   ipFamilyPolicy: {{ . }}
   {{- end }}
   ports:
-    - port: {{ default 10000 .Values.jvb.UDPPort }}
+    - name: rtp-udp
+      protocol: UDP
+      port: {{ default 10000 .Values.jvb.UDPPort }}
       {{- if and
           .Values.jvb.nodePort
           (or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer"))
       }}
       nodePort: {{ .Values.jvb.nodePort }}
       {{- end }}
-      protocol: UDP
-      name: rtp-udp
     {{- with .Values.jvb.service.extraPorts }}
     {{ toYaml . | indent 4 | trim }}
     {{- end }}
   {{- with .Values.jvb.service.loadBalancerClass }}
   loadBalancerClass: {{ . }}
-  {{ end }}
+  {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
   {{ toYaml . | indent 2 | trim }}

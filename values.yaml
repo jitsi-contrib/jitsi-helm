@@ -30,6 +30,10 @@ image:
 # such as jitsi.example.com
 publicURL: ""
 
+# Where TURN service is made available
+# such as turn.example.com
+turnHost: ""
+
 enableAuth: false
 enableGuests: true
 
@@ -180,6 +184,9 @@ web:
 ## #############################################################################
 ## Coturn configuration
 ## #############################################################################
+# Currently, it supports only STUN and TURN over UDP-TCP/3478.
+# No support for TURNS over TCP/5349.
+# Media packages are still encrypted with DTLS-SRTP.
 coturn:
   enabled: false
 
@@ -189,36 +196,24 @@ coturn:
     tag: 4.7
 
   staticAuth:
-    secret:
+    user: turn
+    password:
     # Alternatively provide a name for an externally managed secret containing
-    # the values for TURN_CREDENTIALS
+    # the values for TURN_USERNAME and TURN_PASSWORD
     existingSecretName:
 
   service:
-    type: ClusterIP
+    type: NodePort
     ports:
-      turns: 5349
-      stun: 3478
-
-  ingress:
-    enabled: false
-    # ingressClassName: nginx-ingress-0
-    annotations: {}
-    #  kubernetes.io/tls-acme: "true"
-    hosts:
-      - host: turn.local
-    tls: []
-    #  - secretName: turn-web-certificate
-    #    hosts:
-    #      - turn.local
+      turn: 3478
 
   livenessProbe:
     tcpSocket:
-      port: 5349
+      port: 3478
 
   readinessProbe:
     tcpSocket:
-      port: 5349
+      port: 3478
 
   affinity: {}
   annotations: {}

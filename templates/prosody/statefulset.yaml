@@ -6,7 +6,7 @@ metadata:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
   {{- with .Values.prosody.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   serviceName: {{ include "jitsi-meet.prosody.fullname" . }}
