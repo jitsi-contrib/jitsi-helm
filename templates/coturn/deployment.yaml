@@ -78,7 +78,7 @@ spec:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: /etc/turnserver.conf
+              mountPath: /etc/coturn/turnserver.conf
               subPath: turnserver.conf
 
       {{- with .Values.coturn.nodeSelector }}
