@@ -40,7 +40,7 @@ data:
     denied-peer-ip=2002::-2002:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-   {{- if .Values.coturn.allowedPeerIp }}
-   allowed-peer-ip={{ .Values.coturn.allowedPeerIp }}
-   {{- end }}
+    {{- if .Values.coturn.allowedPeerIp }}
+    allowed-peer-ip={{ .Values.coturn.allowedPeerIp }}
+    {{- end }}
 {{- end }}
