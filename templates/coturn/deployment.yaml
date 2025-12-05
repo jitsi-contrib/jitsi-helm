@@ -36,6 +36,8 @@ spec:
       securityContext:
         {{- toYaml .Values.coturn.podSecurityContext | nindent 8 }}
       volumes:
+        - name: config-dir
+          emptyDir: {}
         - name: config
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-config
@@ -46,10 +48,18 @@ spec:
           - sh
           - -c
           - |
-            echo "static-auth-secret=$TURN_CREDENTIALS" >>/tmp/turnserver.conf
+            chmod 755 /config-dir && \
+            cp /turnserver.conf /config-dir/ && \
+            echo >>/config-dir/turnserver.conf && \
+            echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
+        envFrom:
+        - secretRef:
+            name: {{ include "jitsi-meet.coturn.secretName" . }}
         volumeMounts:
+        - name: config-dir
+          mountPath: /config-dir
         - name: config
-          mountPath: /tmp/turnserver.conf
+          mountPath: /turnserver.conf
           subPath: turnserver.conf
       containers:
         - name: {{ .Chart.Name }}
@@ -89,9 +99,9 @@ spec:
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
           volumeMounts:
-          - name: config
-            mountPath: /etc/coturn/turnserver.conf
-            subPath: turnserver.conf
+          - name: config-dir
+            mountPath: /etc/coturn
+            readOnly: true
 
       {{- with .Values.coturn.affinity }}
       affinity:
