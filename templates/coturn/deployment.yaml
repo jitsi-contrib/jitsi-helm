@@ -40,6 +40,19 @@ spec:
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-config
       containers:
+        initContainers:
+        - name: init-coturn
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "static-auth-secret=$TURN_CREDENTIALS" >>/tmp/turnserver.conf
+          volumeMounts:
+          - name: config
+            mountPath: /tmp/turnserver.conf
+            subPath: turnserver.conf
+
         - name: {{ .Chart.Name }}
           image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.coturn.image .Values.image | first }}

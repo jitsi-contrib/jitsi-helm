@@ -25,6 +25,11 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/prosody/configmap.yaml") . | sha256sum }}
         checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum }}
         checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum }}
+        {{- if .Values.coturn.enabled }}
+        checksum/secret-coturn: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum }}
+        {{- else }}
+        checksum/secret-coturn: {{ printf "disabled" | sha256sum }}
+        {{- end }}
         {{- if and
             .Values.jibri.enabled
             (not .Values.jibri.xmpp.existingSecretName)
@@ -99,6 +104,12 @@ spec:
               name: {{ include "jitsi-meet.jicofo.secretName" . }}
           - secretRef:
               name: {{ include "jitsi-meet.jvb.secretName" . }}
+          {{- if .Values.coturn.enabled }}
+          - secretRef:
+              name: {{ include "jitsi-meet.coturn.secretName" . }}
+          - configMapRef:
+              name: {{ include "jitsi-meet.prosody.fullname" . }}-coturn
+          {{- end }}
           {{- if and
               .Values.jibri.enabled
               (not .Values.jibri.xmpp.existingSecretName)

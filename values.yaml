@@ -196,16 +196,18 @@ coturn:
     tag: 4.7
 
   staticAuth:
-    user: turn
-    password:
+    secret:
     # Alternatively provide a name for an externally managed secret containing
-    # the values for TURN_USERNAME and TURN_PASSWORD
+    # the value for TURN_CREDENTIALS
     existingSecretName:
 
   service:
     type: LoadBalancer
     ports:
       turn: 3478
+
+  # This is only for testing in a local cluster. Dont set this in production.
+  #allowedPeerIp: 172.16.0.0-172.31.255.255
 
   livenessProbe:
     tcpSocket:
