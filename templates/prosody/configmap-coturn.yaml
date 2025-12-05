@@ -10,5 +10,5 @@ data:
   STUN_PORT: '{{ .Values.coturn.service.ports.turn }}'
   TURN_HOST: '{{ .Values.turnHost }}'
   TURN_PORT: '{{ .Values.coturn.service.ports.turn }}'
-  TURN_TRANSPORTS: "udp,tcp"
+  TURN_TRANSPORT: "udp,tcp"
 {{- end }}
