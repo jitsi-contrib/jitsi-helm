@@ -5,16 +5,17 @@ Overall, the release process looks like this:
 - Add some changes to the chart.
 - Test these changes on a test installation.
 - Test again on production installation.
-- Update `version` and `dependencies.version` in [Chart.yaml](/Chart.yaml) and
-  [charts/prosody/Chart.yaml](/charts/prosody/Chart.yaml)
-- Update [Chart.lock](/Chart.lock)
-  ```bash
-  helm dependency update .
-  ```
+- Update `version` in [Chart.yaml](/Chart.yaml).
 - Create the package:
   ```bash
-  # Use your GPG signing identity (email or Key ID)
-  helm package . -d ./docs/ --sign --key "$KEY_EMAIL_OR_ID" --keyring ~/.gnupg/secring.gpg
+  # List keys
+  gpg --list-keys --keyid-format LONG
+
+  # Check the key on the key server.
+  gpg --keyserver hkps://keys.openpgp.org --recv-keys "$KEY_ID"
+
+  # Use your GPG signing identity
+  helm package . -d ./docs/ --sign --key "$KEY_EMAIL" --keyring ~/.gnupg/secring.gpg
   ```
 - Update the index:
   ```bash

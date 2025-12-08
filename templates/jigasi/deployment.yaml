@@ -1,4 +1,7 @@
-{{- if and .Values.jigasi.enabled (not .Values.jigasi.useExternalJigasi) }}
+{{- if and
+    .Values.jigasi.enabled
+    (not .Values.jigasi.useExternalJigasi)
+}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,10 +10,10 @@ metadata:
     {{- include "jitsi-meet.jigasi.labels" . | nindent 4 }}
   {{- with .Values.jigasi.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.jigasi.replicaCount | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "jitsi-meet.jigasi.selectorLabels" . | nindent 6 }}
@@ -18,20 +21,20 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jigasi.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jigasi.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jigasi.podLabels }}
+        {{    $label }}: {{ $value }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jigasi/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jigasi/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jigasi.podAnnotations }}
-        {{ $annotation }}: {{ $value | quote }}
-      {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum }}
+        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jigasi.podAnnotations }}
+        {{    $annotation }}: {{ $value | quote }}
+        {{- end }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.jigasi.podSecurityContext | nindent 8 }}
@@ -49,25 +52,22 @@ spec:
             echo ">> Prosody is available"
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.jigasi.securityContext | nindent 12 }}
           image: "{{ .Values.jigasi.image.repository }}:{{ default .Chart.AppVersion .Values.jigasi.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jigasi.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.jigasi.securityContext | nindent 12 }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
+              name: {{ include "jitsi-meet.jigasi.secretName" . }}
           - configMapRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+              name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
               name: {{ include "jitsi-meet.jigasi.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
+          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
+          {{-   end }}
           {{- end }}
-          {{- end }}
-          env:
-            - name: JIGASI_ENABLE_REST
-              value: "1"
           {{- with .Values.jigasi.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -79,16 +79,16 @@ spec:
           resources:
             {{- toYaml .Values.jigasi.resources | nindent 12 }}
 
+      {{- with .Values.jigasi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.jigasi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.jigasi.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.jigasi.tolerations }}
+      {{- with .Values.jigasi.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 {{- end }}

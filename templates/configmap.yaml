@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.common" . }}
+  labels:
+    {{- include "jitsi-meet.labels" . | nindent 4 }}
+data:
+  ENABLE_AUTH: {{ ternary "1" "0" .Values.enableAuth | quote }}
+  ENABLE_GUESTS: {{ ternary "1" "0" .Values.enableGuests | quote }}
+  PUBLIC_URL: {{ include "jitsi-meet.publicURL" . }}
+  TZ: "{{ .Values.tz }}"
+  XMPP_DOMAIN: {{ include "jitsi-meet.xmpp.domain" . }}
+  XMPP_MUC_DOMAIN: {{ .Values.xmpp.mucDomain | default (printf "muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+  XMPP_AUTH_DOMAIN: {{ .Values.xmpp.authDomain | default (printf "auth.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+  XMPP_GUEST_DOMAIN: {{ .Values.xmpp.guestDomain | default (printf "guest.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+  XMPP_HIDDEN_DOMAIN: {{ .Values.xmpp.hiddenDomain | default (printf "hidden.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+  XMPP_INTERNAL_MUC_DOMAIN: {{ .Values.xmpp.internalMucDomain | default (printf "internal-muc.%s" (include "jitsi-meet.xmpp.domain" .)) }}
+
+  {{- if .Values.websockets.colibri.enabled }}
+  ENABLE_COLIBRI_WEBSOCKET: "true"
+  # TODO: rework into a proper regex or dynamic name list
+  ENABLE_COLIBRI_WEBSOCKET_UNSAFE_REGEX: "1"
+  {{- else }}
+  ENABLE_SCTP: "true"
+  ENABLE_COLIBRI_WEBSOCKET: "false"
+  JVB_PREFER_SCTP: "true"
+  {{- end }}
+
+  {{- if .Values.websockets.xmpp.enabled }}
+  ENABLE_XMPP_WEBSOCKET: "true"
+  {{- else }}
+  ENABLE_XMPP_WEBSOCKET: "false"
+  {{- end }}
+
+  {{- if .Values.octo.enabled }}
+  ENABLE_OCTO: "1"
+  DEPLOYMENTINFO_REGION: "all"
+  {{- end }}
+
+  {{- if .Values.jibri.enabled }}
+  {{-   if .Values.jibri.recording }}
+  ENABLE_RECORDING: "true"
+  ENABLE_FILE_RECORDING_SERVICE_SHARING: "true"
+  {{-   end }}
+  {{-   if .Values.jibri.livestreaming }}
+  ENABLE_LIVESTREAMING: "true"
+  {{-   end }}
+  {{- end }}
+
+  {{- range $key, $value := .Values.extraCommonEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
+  {{- end }}

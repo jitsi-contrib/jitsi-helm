@@ -5,23 +5,27 @@ metadata:
   labels:
     {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
 data:
+  JICOFO_ENABLE_REST: "1"
   JVB_BREWERY_MUC: '{{ .Values.jvb.breweryMuc }}'
   XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
-  JICOFO_ENABLE_REST: '1'
+
   {{- if .Values.jibri.enabled }}
   JIBRI_BREWERY_MUC: '{{ .Values.jibri.breweryMuc }}'
   JIBRI_PENDING_TIMEOUT: '{{ .Values.jibri.timeout }}'
   {{- end }}
+
   {{- if .Values.jigasi.enabled }}
   JIGASI_BREWERY_MUC: '{{ .Values.jigasi.breweryMuc }}'
   JIGASI_SIP_URI: "available"
   {{- end }}
-  {{- range $key, $value := .Values.jicofo.extraEnvs }}
-  {{- if not (kindIs "invalid" $value) }}
-  {{ $key }}: {{ tpl $value $ | quote }}
-  {{- end }}
-  {{- end }}
+
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
-  OCTO_BRIDGE_SELECTION_STRATEGY: "SplitBridgeSelectionStrategy"
+  OCTO_BRIDGE_SELECTION_STRATEGY: "RegionBasedBridgeSelectionStrategy"
+  {{- end }}
+
+  {{- range $key, $value := .Values.jicofo.extraEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
   {{- end }}

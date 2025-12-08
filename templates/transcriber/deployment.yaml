@@ -1,4 +1,7 @@
-{{- if and .Values.transcriber.enabled (not .Values.transcriber.useExternalTranscriber) }}
+{{- if and
+    .Values.transcriber.enabled
+    (not .Values.transcriber.useExternalTranscriber)
+}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,10 +10,10 @@ metadata:
     {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
   {{- with .Values.transcriber.annotations }}
   annotations:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.transcriber.replicaCount | default 1 }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 6 }}
@@ -18,15 +21,15 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 8 }}
-      {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.transcriber.podLabels }}
-        {{ $label }}: {{ $value }}
-      {{- end }}
+        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.transcriber.podLabels }}
+        {{    $label }}: {{ $value }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/transcriber/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/transcriber/xmpp-secret.yaml") . | sha256sum }}
-      {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations }}
-        {{ $annotation }}: {{ $value | quote }}
-      {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/transcriber/secret.yaml") . | sha256sum }}
+        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations }}
+        {{    $annotation }}: {{ $value | quote }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -35,6 +38,14 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.transcriber.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: transcriber-data
+        {{- if .Values.transcriber.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
       initContainers:
       - name: init-prosody
         image: busybox:1.36
@@ -49,31 +60,22 @@ spec:
             echo ">> Prosody is available"
       containers:
         - name: {{ .Chart.Name }}-transcriber
-          securityContext:
-            {{- toYaml .Values.transcriber.securityContext | nindent 12 }}
           image: "{{ .Values.transcriber.image.repository }}:{{ default .Chart.AppVersion .Values.transcriber.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.transcriber.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.transcriber.securityContext | nindent 12 }}
           envFrom:
           - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-transcriber
-          - secretRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-jigasi
+              name: {{ include "jitsi-meet.transcriber.secret" . }}
           - configMapRef:
-              name: {{ include "call-nested" (list . "prosody" "prosody.fullname") }}-common
+              name: {{ include "jitsi-meet.common" . }}
           - configMapRef:
               name: {{ include "jitsi-meet.transcriber.fullname" . }}
           {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml .) $ | indent 12 | trim }}
+          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+          - {{    tpl (toYaml .) $ | indent 12 | trim }}
+          {{-   end }}
           {{- end }}
-          {{- end }}
-          env:
-            - name: ENABLE_TRANSCRIPTIONS
-              value: "1"
-            - name: JIGASI_MODE
-              value: "transcriber"
-            - name: JIGASI_ENABLE_REST
-              value: "1"
           {{- with .Values.transcriber.livenessProbe }}
           livenessProbe:
           {{- toYaml . | nindent 12 }}
@@ -89,25 +91,17 @@ spec:
           - name: transcriber-data
             mountPath: /tmp/transcripts
           {{- end }}
-      volumes:
-      - name: transcriber-data
-        {{- if .Values.transcriber.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
-        {{- end }}
 
+      {{- with .Values.transcriber.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.transcriber.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.transcriber.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.transcriber.tolerations }}
+      {{- with .Values.transcriber.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 {{- end }}

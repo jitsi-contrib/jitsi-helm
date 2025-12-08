@@ -1,0 +1,11 @@
+{{- if .Values.jicofo.custom.contInit._10_config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jicofo.fullname" . }}-continit
+  labels:
+    {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
+data:
+  10-config: |
+    {{- .Values.jicofo.custom.contInit._10_config | nindent 4 }}
+{{- end }}

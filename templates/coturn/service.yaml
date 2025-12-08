@@ -1,0 +1,19 @@
+{{- if .Values.coturn.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.coturn.service.type }}
+  ports:
+    - name: tcp-turn
+      protocol: TCP
+      port: {{ index .Values.coturn.service.ports "turn" }}
+    - name: udp-turn
+      protocol: UDP
+      port: {{ index .Values.coturn.service.ports "turn" }}
+  selector:
+    {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
+{{- end }}
