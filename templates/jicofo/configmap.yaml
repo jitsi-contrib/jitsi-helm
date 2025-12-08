@@ -21,7 +21,7 @@ data:
 
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
-  OCTO_BRIDGE_SELECTION_STRATEGY: "SplitBridgeSelectionStrategy"
+  OCTO_BRIDGE_SELECTION_STRATEGY: "RegionBasedBridgeSelectionStrategy"
   {{- end }}
 
   {{- range $key, $value := .Values.jicofo.extraEnvs }}
