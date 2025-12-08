@@ -233,7 +233,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
-  {{- if or .Values.prosody.persistence.enabled .Values.prosody.extraVolumeClaimTemplates }}
+  {{- if or
+      .Values.prosody.persistence.enabled
+      .Values.prosody.extraVolumeClaimTemplates
+  }}
   volumeClaimTemplates:
   - metadata:
       name: prosody-data

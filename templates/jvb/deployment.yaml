@@ -27,7 +27,10 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum }}
-        {{- if and .Values.jvb.metrics.enabled  .Values.jvb.metrics.prometheusAnnotations  }}
+        {{- if and
+            .Values.jvb.metrics.enabled
+            .Values.jvb.metrics.prometheusAnnotations
+        }}
         prometheus.io/port: "9888"
         prometheus.io/scrape: "true"
         {{- end }}
@@ -69,7 +72,10 @@ spec:
           {{-   end }}
           {{- end }}
           env:
-          {{- if or .Values.jvb.useNodeIP .Values.jvb.publicIPs }}
+          {{- if or
+              .Values.jvb.useNodeIP
+              .Values.jvb.publicIPs
+          }}
           - name: DOCKER_HOST_ADDRESS
             {{- if .Values.jvb.publicIPs }}
             value: {{ first .Values.jvb.publicIPs | quote }}
@@ -161,7 +167,10 @@ spec:
         {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
         {{- end }}
 
-      {{- if or .Values.jvb.useHostPort .Values.jvb.affinity }}
+      {{- if or
+          .Values.jvb.useHostPort
+          .Values.jvb.affinity
+      }}
       affinity:
         {{- if .Values.jvb.affinity }}
         {{- toYaml .Values.jvb.affinity | nindent 8 }}

@@ -29,7 +29,10 @@ spec:
       port: {{ default 10000 .Values.jvb.UDPPort }}
       {{- if and
           .Values.jvb.nodePort
-          (or (eq .Values.jvb.service.type "NodePort") (eq .Values.jvb.service.type "LoadBalancer"))
+          (or
+             (eq .Values.jvb.service.type "NodePort")
+             (eq .Values.jvb.service.type "LoadBalancer")
+          )
       }}
       nodePort: {{ .Values.jvb.nodePort }}
       {{- end }}
