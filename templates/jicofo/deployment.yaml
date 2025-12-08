@@ -51,10 +51,6 @@ spec:
           securityContext:
             {{- toYaml .Values.jicofo.securityContext | nindent 12 }}
           envFrom:
-          {{ if .Values.global.jicofo.xmpp.secret }}
-          - secretRef:
-              name: {{ .Values.global.jicofo.xmpp.secret }}
-          {{ else }}
           - secretRef:
               name: {{ include "jitsi-meet.jicofo.secretName" . }}
           - configMapRef:

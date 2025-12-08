@@ -335,13 +335,6 @@ jicofo:
     # the values for JICOFO_AUTH_PASSWORD
     existingSecretName:
 
-  # Jicofo XMPP user credentials
-  xmpp:
-    password:
-    # Alternatively provide a name for an externally managed secret containing
-    # the values for JICOFO_AUTH_PASSWORD
-    existingSecretName:
-
   livenessProbe:
     tcpSocket:
       port: 8888
