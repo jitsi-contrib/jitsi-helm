@@ -23,6 +23,7 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/prosody/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/prosody/secret.yaml") . | sha256sum }}
         checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum }}
         checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum }}
         {{- if .Values.coturn.enabled }}
@@ -100,6 +101,13 @@ spec:
           securityContext:
             {{- toYaml .Values.prosody.securityContext | nindent 12 }}
           envFrom:
+          {{- if or
+              .Values.prosody.jwt.secret
+              .Values.prosody.jwt.existingSecretName
+          }}
+          - secretRef:
+              name: {{ include "jitsi-meet.prosody.secretName" . }}
+          {{- end }}
           - secretRef:
               name: {{ include "jitsi-meet.jicofo.secretName" . }}
           - secretRef:

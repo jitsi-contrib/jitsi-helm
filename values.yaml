@@ -247,6 +247,14 @@ prosody:
       _saslauthd_conf: ""
       _jitsi_meet_cfg_lua: ""
 
+  # JWT secret.
+  # Required only if authentication type is "token" or "hybrid_matrix_token"
+  jwt:
+    secret:
+    # Alternatively provide a name for an externally managed secret containing
+    # the values for JWT_APP_SECRET
+    existingSecretName:
+
   service:
     type: ClusterIP
     ports:
