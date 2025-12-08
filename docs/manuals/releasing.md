@@ -20,6 +20,7 @@ Overall, the release process looks like this:
 - Update the index:
   ```bash
   cd docs
+  cp index.yaml /tmp/
   helm repo index . --url https://jitsi-contrib.github.io/jitsi-helm/ --merge index.yaml
   ```
 - Review the diff for [/docs/index.yaml](/docs/index.yaml). Sometimes Helm adds
