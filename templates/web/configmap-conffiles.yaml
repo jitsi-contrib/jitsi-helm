@@ -1,14 +1,15 @@
 {{- if or
-  .Values.web.custom.configs._custom_config_js
-  .Values.web.custom.configs._custom_interface_config_js
-  .Values.web.custom.defaults._default
-  .Values.web.custom.defaults._ffdhe2048_txt
-  .Values.web.custom.defaults._interface_config_js
-  .Values.web.custom.defaults._meet_conf
-  .Values.web.custom.defaults._nginx_conf
-  .Values.web.custom.defaults._settings_config_js
-  .Values.web.custom.defaults._ssl_conf
-  .Values.web.custom.defaults._system_config_js
+    .Values.web.custom.configs._custom_config_js
+    .Values.web.custom.configs._custom_interface_config_js
+    .Values.web.custom.defaults._default
+    .Values.web.custom.defaults._ffdhe2048_txt
+    .Values.web.custom.defaults._interface_config_js
+    .Values.web.custom.defaults._meet_conf
+    .Values.web.custom.defaults._nginx_conf
+    .Values.web.custom.defaults._settings_config_js
+    .Values.web.custom.defaults._ssl_conf
+    .Values.web.custom.defaults._system_config_js
+    .Values.coturn.enabled
 }}
 apiVersion: v1
 kind: ConfigMap
@@ -20,6 +21,12 @@ data:
   {{- if .Values.web.custom.configs._custom_config_js }}
   custom-config.js: |
     {{- .Values.web.custom.configs._custom_config_js | nindent 4 }}
+    {{- if .Values.coturn.enabled }}
+    config.useTurnUdp=true;
+    {{- end }}
+  {{- else if .Values.coturn.enabled }}
+  custom-config.js: |
+    config.useTurnUdp=true;
   {{- end }}
 
   {{- if .Values.web.custom.configs._custom_interface_config_js }}

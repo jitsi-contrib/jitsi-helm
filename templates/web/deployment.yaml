@@ -97,7 +97,10 @@ spec:
             mountPath: /etc/cont-init.d/10-config
             subPath: 10-config
           {{- end }}
-          {{- if .Values.web.custom.configs._custom_config_js }}
+          {{- if or
+              .Values.web.custom.configs._custom_config_js
+              .Values.coturn.enabled
+          }}
           - name: custom-conffiles
             mountPath: /config/custom-config.js
             subPath: custom-config.js
