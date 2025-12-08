@@ -207,7 +207,7 @@ coturn:
       turn: 3478
 
   # This is only for testing in a local cluster. Dont set this in production.
-  #allowedPeerIp: 172.16.0.0-172.31.255.255
+  #allowedPeerIp: 10.244.0.0-10.244.255.255
 
   livenessProbe:
     tcpSocket:
