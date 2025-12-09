@@ -26,7 +26,7 @@ spec:
   ports:
     - name: rtp-udp
       protocol: UDP
-      port: {{ default 10000 .Values.jvb.UDPPort }}
+      port: {{ .Values.jvb.UDPPort | default 10000 }}
       {{- if and
           .Values.jvb.nodePort
           (or
@@ -44,7 +44,7 @@ spec:
   {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
-  {{ toYaml . | indent 2 | trim }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   externalTrafficPolicy: {{ .Values.jvb.service.externalTrafficPolicy }}
   selector:

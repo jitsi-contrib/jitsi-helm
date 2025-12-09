@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ include "jitsi-meet.jvb.fullname" . }}-metrics
   labels:
-  {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+    {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
@@ -12,5 +12,5 @@ spec:
       protocol: TCP
       name: tcp-metrics
   selector:
-  {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
+    {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
 {{- end }}
