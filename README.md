@@ -1,8 +1,8 @@
 # Helm Chart for Jitsi Meet
 
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jitsi-meet)](https://artifacthub.io/packages/search?repo=jitsi-meet) ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
- ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
-
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jitsi-meet)](https://artifacthub.io/packages/search?repo=jitsi-meet)
+![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
+![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
 
 [jitsi-meet](https://jitsi.org/jitsi-meet/) Secure, Simple and Scalable Video
 Conferences that you use as a standalone app or embed in your web application.
@@ -30,8 +30,8 @@ tries to make all options available without enforcing one.
 
 ### Option 1: service of type `LoadBalancer`
 
-This requires a cloud setup that enables a Loadbalancer attachement.
-This could be enabled via values:
+This requires a cloud setup that enables a Loadbalancer attachement. This could
+be enabled via values:
 
 ```yaml
 jvb:
@@ -120,20 +120,21 @@ jvb:
   # 1.2.3.4 being one of the IP of the ingress controller
   publicIPs:
     - 1.2.3.4
-
 ```
 
 Again in this case, only one jvb will work in this case.
 
 ### Option 5: Bring your own setup
 
-There are multiple other possibilities combining the available parameters, depending of your cluster/network setup.
-
+There are multiple other possibilities combining the available parameters,
+depending of your cluster/network setup.
 
 ## Recording and streaming support
 
-This chart includes support for *Jibri*, which allows Jitsi Meet users to record and stream their meetings.
-To enable Jibri support, add this section to your `values.yaml`:
+This chart includes support for _Jibri_, which allows Jitsi Meet users to record
+and stream their meetings. To enable Jibri support, add this section to your
+`values.yaml`:
+
 ```yaml
 jibri:
   ## Enabling Jibri will allow users to record
@@ -173,7 +174,6 @@ jibri:
 The above example will allow your Jitsi users to make local recordings, as well
 as live streams of their meetings.
 
-
 ## Scaling your installation
 
 At the moment you can freely scale Jitsi Web and Jibri pods, as they're
@@ -204,14 +204,13 @@ jvb:
   #  IP address and nothing more:
   useNodeIP: true
 
-
 octo:
   ## Enable OCTO support for both JVB and Jicofo:
   enabled: true
 ```
 
 Please note that the JVB scaling feature is currently under-tested and thus
-considered *experimental*. Also note that this chart doesn't allow to scale JVB
+considered _experimental_. Also note that this chart doesn't allow to scale JVB
 into multiple zones/regions yet: all JVB pods will be part of the single OCTO
 region named `all`.
 
@@ -235,90 +234,7 @@ prosody:
 
 ## Configuration
 
-The following table lists the configurable parameters of the jisti-meet chart and their default values.
-
-Parameter | Description | Default
---- | --- | ---
-`imagePullSecrets` | List of names of secrets resources containing private registry credentials | `[]`
-`enableAuth` | Enable authentication | `false`
-`enableGuests` | Enable guest access | `true`
-`websockets.colibri.enabled` | Enable WebSocket support for JVB/Colibri | `false`
-`websockets.xmpp.enabled` | Enable WebSocket support for Prosody/XMPP | `false`
-`jibri.enabled` | Enable Jibri service | `false`
-`jibri.useExternalJibri` | Use external Jibri service, instead of chart-provided one | `false`
-`jibri.singleUseMode` | Enable Jibri single-use mode | `false`
-`jibri.recording` | Enable local recording service | `true`
-`jibri.livestreaming` | Enable livestreaming service | `false`
-`jibri.persistence.enabled` | Enable persistent storage for Jibri recordings | `false`
-`jibri.persistence.size` | Jibri persistent storage size | `4Gi`
-`jibri.persistence.existingClaim` | Use pre-created PVC for Jibri | `(unset)`
-`jibri.persistence.storageClassName` | StorageClass to use with Jibri | `(unset)`
-`jibri.shm.enabled` | Allocate shared memory to Jibri pod | `false`
-`jibri.shm.useHost` | Pass `/dev/shm` from host to Jibri | `false`
-`jibri.shm.size` | Jibri shared memory size | `2Gi`
-`jibri.replicaCount` | Number of replica of the jibri pods | `1`
-`jibri.image.repository` | Name of the image to use for the jibri pods | `jitsi/jibri`
-`jibri.extraEnvs` | Map containing additional environment variables for jibri | `{}`
-`jibri.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jibri.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jibri.breweryMuc` | Name of the XMPP MUC used by jibri | `jibribrewery`
-`jibri.xmpp.user` | Name of the XMPP user used by jibri to authenticate | `jibri`
-`jibri.xmpp.password` | Password used by jibri to authenticate on the XMPP service | 10 random chars
-`jibri.recorder.user` | Name of the XMPP user used by jibri to record | `recorder`
-`jibri.recorder.password` | Password used by jibri to record on the XMPP service | 10 random chars
-`jibri.strategy` | Depolyment update strategy and parameters | `(unset)`
-`jigasi.enabled` | Enable Jigasi service | `false`
-`jigasi.useExternalJigasi` | Use external Jigasi service, instead of chart-provided one | `false`
-`jigasi.replicaCount` | Number of replica of the Jigasi pods | `1`
-`jigasi.image.repository` | Name of the image to use for the Jigasi pods | `jitsi/jigasi`
-`jigasi.breweryMuc` | Name of the XMPP MUC used by Jigasi | `jigasibrewery`
-`jigasi.xmpp.user` | Name of the XMPP user used by Jigasi to authenticate | `jigasi`
-`jigasi.xmpp.password` | Password used by Jigasi to authenticate on the XMPP service | 10 random chars
-`jigasi.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jigasi.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jigasi.extraEnvs` | Map containing additional environment variables for Jigasi | `{}`
-`jicofo.replicaCount` | Number of replica of the jicofo pods | `1`
-`jicofo.image.repository` | Name of the image to use for the jicofo pods | `jitsi/jicofo`
-`jicofo.extraEnvs` | Map containing additional environment variables for jicofo | `{}`
-`jicofo.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jicofo.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jicofo.xmpp.password` | Password used by jicofo to authenticate on the XMPP service | 10 random chars
-`jicofo.xmpp.componentSecret` | Values of the secret used by jicofo for the xmpp-component | 10 random chars
-`jvb.publicIPs` | List of IP addresses for JVB to announce to clients | `(unset)`
-`jvb.useNodeIP` | Auto-detect external IP address based on the Node IP | `false`
-`jvb.stunServers` | List of STUN/TURN servers to announce to the users | `meet-jit-si-turnrelay.jitsi.net:443`
-`jvb.service.enabled` | Boolean to enable os disable the jvb service creation | `false` if `jvb.useHostPort` is `true` otherwise `true`
-`jvb.service.type` | Type of the jvb service | `ClusterIP`
-`jvb.service.ipFamilyPolicy` | `ipFamilyPolicy` for the service ([docs](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)) | `(unset)`
-`jvb.service.annotations` | Additional annotations for JVB service (might be useful for managed k8s) | `{}`
-`jvb.service.extraPorts` | Additional ports to expose from your JVB pod(s) | `[]`
-`jvb.UDPPort` | UDP port used by jvb, also affects port of service, and hostPort | `10000`
-`jvb.nodePort` | UDP port used by NodePort service | `(unset)`
-`jvb.useHostPort` | Enable HostPort feature (may not work on some CNI plugins) | `false`
-`jvb.useHostNetwork` | Connect JVB pod to host network namespace | `false`
-`jvb.extraEnvs` | Map containing additional environment variables to jvb | `{}`
-`jvb.xmpp.user` | Name of the XMPP user used by jvb to authenticate | `jvb`
-`jvb.xmpp.password` | Password used by jvb to authenticate on the XMPP service | 10 random chars
-`jvb.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`jvb.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`jvb.metrics.enabled` | Boolean that control the metrics exporter for jvb. If true the `ServiceMonitor` will also created | `false`
-`jvb.metrics.prometheusAnnotations` | Boolean that controls the generation of prometheus annotations, to expose metrics for HPA | `false`
-`jvb.metrics.image.repository` | Default image repository for metrics exporter | `docker.io/systemli/prometheus-jitsi-meet-exporter`
-`jvb.metrics.image.tag` | Default tag for metrics exporter | `1.1.5`
-`jvb.metrics.image.pullPolicy` | ImagePullPolicy for metrics exporter | `IfNotPresent`
-`jvb.metrics.serviceMonitor.enabled` | `ServiceMonitor` for Prometheus | `true`
-`jvb.metrics.serviceMonitor.selector` | Selector for `ServiceMonitor` | `{ release: prometheus-operator }`
-`jvb.metrics.serviceMonitor.interval` | Interval for `ServiceMonitor` | `10s`
-`jvb.metrics.serviceMonitor.honorLabels` | Make `ServiceMonitor` honor labels | `false`
-`jvb.metrics.resources` | Resources for the metrics container | `{ requests: { cpu: 10m, memory: 16Mi }, limits: { cpu: 20m, memory: 32Mi } }`
-`octo.enabled` | Boolean to enable or disable the OCTO mode, for a single region | `false`
-`web.httpsEnabled` | Boolean that enabled tls-termination on the web pods. Useful if you expose the UI via a `Loadbalancer` IP instead of an ingress | `false`
-`web.httpRedirect` | Boolean that enabled http-to-https redirection. Useful for ingress that don't support this feature (ex: GKE ingress) | `false`
-`web.resolverIP` | Override nameserver IP for Web container | (*unset*, use auto-detected nameserver IP)
-`web.extraEnvs` | Map containing additional environment variable to web pods | `{}`
-`web.livenessProbe` | Map that holds the liveness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A livenessProbe map
-`web.readinessProbe` | Map that holds the readiness probe, you can add parameters such as timeout or retries following the Kubernetes spec | A readinessProbe map
-`tz` | System Time Zone | `Europe/Amsterdam`
+Please check [values.yaml](/values.yaml)
 
 ## Package
 
