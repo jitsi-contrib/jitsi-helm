@@ -96,7 +96,7 @@ spec:
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.prosody.image.repository }}:{{ default .Chart.AppVersion .Values.prosody.image.tag }}"
+          image: "{{ .Values.prosody.image.repository }}:{{ .Values.prosody.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.image .Values.image | first }}
           securityContext:
             {{- toYaml .Values.prosody.securityContext | nindent 12 }}

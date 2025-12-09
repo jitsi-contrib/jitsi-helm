@@ -75,7 +75,7 @@ spec:
         {{- end }}
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.jibri.image.repository }}:{{ default .Chart.AppVersion .Values.jibri.image.tag }}"
+        image: "{{ .Values.jibri.image.repository }}:{{ .Values.jibri.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ pluck "pullPolicy" .Values.jibri.image .Values.image | first }}
         securityContext:
           capabilities:

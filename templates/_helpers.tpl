@@ -1,6 +1,6 @@
 {{/* Expand the name of the chart. */}}
 {{- define "jitsi-meet.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- .Values.nameOverride | default .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -50,9 +50,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{/* Create the name of the service account to use */}}
 {{- define "jitsi-meet.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-{{-   default (include "jitsi-meet.fullname" .) .Values.serviceAccount.name -}}
+{{-   .Values.serviceAccount.name | default (include "jitsi-meet.fullname" .) -}}
 {{- else -}}
-{{-   default "default" .Values.serviceAccount.name -}}
+{{-   .Values.serviceAccount.name | default "default" -}}
 {{- end -}}
 {{- end -}}
 

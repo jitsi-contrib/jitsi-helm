@@ -46,7 +46,7 @@ spec:
           name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.jicofo.image.repository }}:{{ default .Chart.AppVersion .Values.jicofo.image.tag }}"
+          image: "{{ .Values.jicofo.image.repository }}:{{ .Values.jicofo.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jicofo.image .Values.image | first }}
           securityContext:
             {{- toYaml .Values.jicofo.securityContext | nindent 12 }}
