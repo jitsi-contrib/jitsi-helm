@@ -150,8 +150,11 @@ spec:
           - {{ tpl (toYaml . ) $ | indent 12 | trim }}
           {{- end }}
           {{- end }}
-          {{- if .Values.prosody.metrics.enabled }}
           env:
+          {{- range .Values.prosody.extraSecrets }}
+          - {{  tpl (toYaml . ) $ | indent 12 | trim }}
+          {{- end }}
+          {{- if .Values.prosody.metrics.enabled }}
           - name: PROSODY_ENABLE_METRICS
             value: "true"
           - name: PROSODY_METRICS_ALLOWED_CIDR

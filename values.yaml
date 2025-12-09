@@ -293,6 +293,13 @@ prosody:
   #    subPath: mod_measure_client_presence.lua
   #    mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
 
+  extraSecrets: []
+  #  - name: "JWT_APP_SECRET"
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: "my-application-secrets"
+  #        key: "JITSI_JWT_SECRET"
+
   metrics:
     enabled: false
     allowed_cidr: "0.0.0.0/0" # change to cluster pod ip cidr
