@@ -12,7 +12,7 @@ data:
   ENABLE_TRANSCRIPTIONS: "1"
   JIGASI_ENABLE_REST: "1"
   JIGASI_MODE: "transcriber"
-  XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
+  XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
   {{- with .Values.transcriber.whisper.customService }}
   JIGASI_TRANSCRIBER_CUSTOM_SERVICE: {{ . | quote }}

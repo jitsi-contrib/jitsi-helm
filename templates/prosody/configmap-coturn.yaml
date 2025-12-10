@@ -6,9 +6,9 @@ metadata:
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
-  STUN_HOST: '{{ .Values.turnHost }}'
-  STUN_PORT: '{{ .Values.coturn.service.ports.turn }}'
-  TURN_HOST: '{{ .Values.turnHost }}'
-  TURN_PORT: '{{ .Values.coturn.service.ports.turn }}'
+  STUN_HOST: {{ .Values.turnHost | quote }}
+  STUN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
+  TURN_HOST: {{ .Values.turnHost | quote }}
+  TURN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_TRANSPORT: "udp,tcp"
 {{- end }}

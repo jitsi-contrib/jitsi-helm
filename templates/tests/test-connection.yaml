@@ -10,6 +10,6 @@ spec:
   containers:
     - name: wget
       image: busybox
-      command: ['wget']
+      command: ["wget"]
       args: ['{{ include "jitsi-meet.web.fullname" . }}:{{ .Values.web.service.port }}']
   restartPolicy: Never

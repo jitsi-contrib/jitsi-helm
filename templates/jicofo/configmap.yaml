@@ -6,16 +6,16 @@ metadata:
     {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
 data:
   JICOFO_ENABLE_REST: "1"
-  JVB_BREWERY_MUC: '{{ .Values.jvb.breweryMuc }}'
-  XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
+  JVB_BREWERY_MUC: {{ .Values.jvb.breweryMuc | quote}}
+  XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
   {{- if .Values.jibri.enabled }}
-  JIBRI_BREWERY_MUC: '{{ .Values.jibri.breweryMuc }}'
-  JIBRI_PENDING_TIMEOUT: '{{ .Values.jibri.timeout }}'
+  JIBRI_BREWERY_MUC: {{ .Values.jibri.breweryMuc | quote }}
+  JIBRI_PENDING_TIMEOUT: {{ .Values.jibri.timeout | quote }}
   {{- end }}
 
   {{- if .Values.jigasi.enabled }}
-  JIGASI_BREWERY_MUC: '{{ .Values.jigasi.breweryMuc }}'
+  JIGASI_BREWERY_MUC: {{ .Values.jigasi.breweryMuc | quote}}
   JIGASI_SIP_URI: "available"
   {{- end }}
 
