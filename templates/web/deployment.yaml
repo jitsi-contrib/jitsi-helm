@@ -21,7 +21,7 @@ spec:
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite .Values.global.podAnnotations .Values.web.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}

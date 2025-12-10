@@ -29,9 +29,9 @@ spec:
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum }}
-        checksum/secret-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum }}
-        checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum | quote }}
+        checksum/secret-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum | quote }}
+        checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}

@@ -25,8 +25,8 @@ spec:
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") . | sha256sum | quote }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum | quote }}
         {{- if and
             .Values.jvb.metrics.enabled
             .Values.jvb.metrics.prometheusAnnotations
