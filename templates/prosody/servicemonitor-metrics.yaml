@@ -13,20 +13,20 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-  - port: metrics
-    path: /metrics
+    - port: metrics
+      path: /metrics
 
-    {{- if .Values.prosody.metrics.serviceMonitor.honorLabels }}
-    honorLabels: {{ .Values.prosody.metrics.serviceMonitor.honorLabels }}
-    {{- end }}
+      {{- if .Values.prosody.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ .Values.prosody.metrics.serviceMonitor.honorLabels }}
+      {{- end }}
 
-    {{- if .Values.prosody.metrics.serviceMonitor.interval }}
-    interval: {{ .Values.prosody.metrics.serviceMonitor.interval }}
-    {{- end }}
+      {{- if .Values.prosody.metrics.serviceMonitor.interval }}
+      interval: {{ .Values.prosody.metrics.serviceMonitor.interval }}
+      {{- end }}
   selector:
     matchLabels:
       {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
-    - {{ .Release.Namespace }}
+      - {{ .Release.Namespace }}
 {{- end }}

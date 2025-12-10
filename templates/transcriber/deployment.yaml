@@ -39,25 +39,25 @@ spec:
       securityContext:
         {{- toYaml .Values.transcriber.podSecurityContext | nindent 8 }}
       volumes:
-      - name: transcriber-data
-        {{- if .Values.transcriber.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
-        {{- else }}
-        emptyDir: {}
-        {{- end }}
+        - name: transcriber-data
+          {{- if .Values.transcriber.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.transcriber.persistence.existingClaim | default (include "jitsi-meet.transcriber.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
       initContainers:
-      - name: init-prosody
-        image: busybox:1.36
-        command:
-          - sh
-          - -c
-          - |
-            echo "Waiting for Prosody on port 5280";
-            while ! nc -z -w 1 {{ include "jitsi-meet.xmpp.server" . }} 5280; do
-              sleep 1;
-            done;
-            echo ">> Prosody is available"
+        - name: init-prosody
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Prosody on port 5280";
+              while ! nc -z -w 1 {{ include "jitsi-meet.xmpp.server" . }} 5280; do
+                sleep 1;
+              done;
+              echo ">> Prosody is available"
       containers:
         - name: {{ .Chart.Name }}-transcriber
           image: "{{ .Values.transcriber.image.repository }}:{{ .Values.transcriber.image.tag | default .Chart.AppVersion }}"
@@ -65,17 +65,17 @@ spec:
           securityContext:
             {{- toYaml .Values.transcriber.securityContext | nindent 12 }}
           envFrom:
-          - secretRef:
-              name: {{ include "jitsi-meet.transcriber.secret" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.common" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.transcriber.fullname" . }}
-          {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{    tpl (toYaml .) $ | indent 12 | trim }}
-          {{-   end }}
-          {{- end }}
+            - secretRef:
+                name: {{ include "jitsi-meet.transcriber.secret" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.transcriber.fullname" . }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
           {{- with .Values.transcriber.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -87,10 +87,10 @@ spec:
           resources:
             {{- toYaml .Values.transcriber.resources | nindent 12 }}
           volumeMounts:
-          {{- if .Values.transcriber.persistence.enabled }}
-          - name: transcriber-data
-            mountPath: /tmp/transcripts
-          {{- end }}
+            {{- if .Values.transcriber.persistence.enabled }}
+            - name: transcriber-data
+              mountPath: /tmp/transcripts
+            {{- end }}
 
       {{- with .Values.transcriber.affinity }}
       affinity:

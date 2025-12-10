@@ -39,17 +39,17 @@ spec:
       securityContext:
         {{- toYaml .Values.jigasi.podSecurityContext | nindent 8 }}
       initContainers:
-      - name: init-prosody
-        image: busybox:1.36
-        command:
-          - sh
-          - -c
-          - |
-            echo "Waiting for Prosody on port 5280";
-            while ! nc -z -w 1 {{ include "jitsi-meet.xmpp.server" . }} 5280; do
-              sleep 1;
-            done;
-            echo ">> Prosody is available"
+        - name: init-prosody
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Prosody on port 5280";
+              while ! nc -z -w 1 {{ include "jitsi-meet.xmpp.server" . }} 5280; do
+                sleep 1;
+              done;
+              echo ">> Prosody is available"
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.jigasi.image.repository }}:{{ .Values.jigasi.image.tag | default .Chart.AppVersion }}"
@@ -57,17 +57,17 @@ spec:
           securityContext:
             {{- toYaml .Values.jigasi.securityContext | nindent 12 }}
           envFrom:
-          - secretRef:
-              name: {{ include "jitsi-meet.jigasi.secretName" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.common" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.jigasi.fullname" . }}
-          {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
-          {{-   end }}
-          {{- end }}
+            - secretRef:
+                name: {{ include "jitsi-meet.jigasi.secretName" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.jigasi.fullname" . }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
           {{- with .Values.jigasi.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

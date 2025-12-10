@@ -63,22 +63,22 @@ spec:
           securityContext:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
           envFrom:
-          - configMapRef:
-              name: {{ include "jitsi-meet.common" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.web.fullname" . }}
-          {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
-          {{-   end }}
-          {{- end }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.web.fullname" . }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
           ports:
-          - name: http
-            containerPort: 80
-            protocol: TCP
-          - name: https
-            containerPort: 443
-            protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
           {{- with .Values.web.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -90,77 +90,77 @@ spec:
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
           volumeMounts:
-          - name: config
-            mountPath: /config
-          {{- if .Values.web.custom.contInit._10_config }}
-          - name: custom-continit
-            mountPath: /etc/cont-init.d/10-config
-            subPath: 10-config
-          {{- end }}
-          {{- if or
-              .Values.web.custom.configs._custom_config_js
-              .Values.coturn.enabled
-          }}
-          - name: custom-conffiles
-            mountPath: /config/custom-config.js
-            subPath: custom-config.js
-          {{- end }}
-          {{- if .Values.web.custom.configs._custom_interface_config_js }}
-          - name: custom-conffiles
-            mountPath: /config/custom-interface_config.js
-            subPath: custom-interface_config.js
-          {{- end }}
-          {{- if .Values.web.custom.defaults._default }}
-          - name: custom-conffiles
-            mountPath: /defaults/default
-            subPath: default
-          {{- end }}
-          {{- if .Values.web.custom.defaults._ffdhe2048_txt }}
-          - name: custom-conffiles
-            mountPath: /defaults/ffdhe2048.txt
-            subPath: ffdhe2048.txt
-          {{- end }}
-          {{- if .Values.web.custom.defaults._interface_config_js }}
-          - name: custom-conffiles
-            mountPath: /defaults/interface_config.js
-            subPath: interface_config.js
-          {{- end }}
-          {{- if .Values.web.custom.defaults._meet_conf }}
-          - name: custom-conffiles
-            mountPath: /defaults/meet.conf
-            subPath: meet.conf
-          {{- end }}
-          {{- if .Values.web.custom.defaults._nginx_conf }}
-          - name: custom-conffiles
-            mountPath: /defaults/nginx.conf
-            subPath: nginx.conf
-          {{- end }}
-          {{- if .Values.web.custom.defaults._settings_config_js }}
-          - name: custom-conffiles
-            mountPath: /defaults/settings-config.js
-            subPath: settings-config.js
-          {{- end }}
-          {{- if .Values.web.custom.defaults._ssl_conf }}
-          - name: custom-conffiles
-            mountPath: /defaults/ssl.conf
-            subPath: ssl.conf
-          {{- end }}
-          {{- if .Values.web.custom.defaults._system_config_js }}
-          - name: custom-conffiles
-            mountPath: /defaults/system-config.js
-            subPath: system-config.js
-          {{- end }}
-          {{- if and
-              .Values.transcriber.enabled
-              .Values.transcriber.persistence.enabled
-          }}
-          - name: transcriber-data
-            mountPath: /usr/share/jitsi-meet/transcripts
-            readOnly: true
-          {{- end }}
-          {{- with .Values.web.extraVolumeMounts }}
-          {{- toYaml . | nindent 10 }}
-          {{- end }}
+            - name: config
+              mountPath: /config
+            {{- if .Values.web.custom.contInit._10_config }}
+            - name: custom-continit
+              mountPath: /etc/cont-init.d/10-config
+              subPath: 10-config
+            {{- end }}
+            {{- if or
+                .Values.web.custom.configs._custom_config_js
+                .Values.coturn.enabled
+            }}
+            - name: custom-conffiles
+              mountPath: /config/custom-config.js
+              subPath: custom-config.js
+            {{- end }}
+            {{- if .Values.web.custom.configs._custom_interface_config_js }}
+            - name: custom-conffiles
+              mountPath: /config/custom-interface_config.js
+              subPath: custom-interface_config.js
+            {{- end }}
+            {{- if .Values.web.custom.defaults._default }}
+            - name: custom-conffiles
+              mountPath: /defaults/default
+              subPath: default
+            {{- end }}
+            {{- if .Values.web.custom.defaults._ffdhe2048_txt }}
+            - name: custom-conffiles
+              mountPath: /defaults/ffdhe2048.txt
+              subPath: ffdhe2048.txt
+            {{- end }}
+            {{- if .Values.web.custom.defaults._interface_config_js }}
+            - name: custom-conffiles
+              mountPath: /defaults/interface_config.js
+              subPath: interface_config.js
+            {{- end }}
+            {{- if .Values.web.custom.defaults._meet_conf }}
+            - name: custom-conffiles
+              mountPath: /defaults/meet.conf
+              subPath: meet.conf
+            {{- end }}
+            {{- if .Values.web.custom.defaults._nginx_conf }}
+            - name: custom-conffiles
+              mountPath: /defaults/nginx.conf
+              subPath: nginx.conf
+            {{- end }}
+            {{- if .Values.web.custom.defaults._settings_config_js }}
+            - name: custom-conffiles
+              mountPath: /defaults/settings-config.js
+              subPath: settings-config.js
+            {{- end }}
+            {{- if .Values.web.custom.defaults._ssl_conf }}
+            - name: custom-conffiles
+              mountPath: /defaults/ssl.conf
+              subPath: ssl.conf
+            {{- end }}
+            {{- if .Values.web.custom.defaults._system_config_js }}
+            - name: custom-conffiles
+              mountPath: /defaults/system-config.js
+              subPath: system-config.js
+            {{- end }}
+            {{- if and
+                .Values.transcriber.enabled
+                .Values.transcriber.persistence.enabled
+            }}
+            - name: transcriber-data
+              mountPath: /usr/share/jitsi-meet/transcripts
+              readOnly: true
+            {{- end }}
+            {{- with .Values.web.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
 
       {{- with .Values.web.affinity }}
       affinity:

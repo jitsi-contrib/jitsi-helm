@@ -81,19 +81,19 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
           envFrom:
-          - secretRef:
-              name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
-          - secretRef:
-              name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.common" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.jibri.fullname" . }}
-          {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{    tpl (toYaml . ) $ | indent 12 | trim }}
-          {{-   end }}
-          {{- end }}
+            - secretRef:
+                name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
+            - secretRef:
+                name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.jibri.fullname" . }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
           {{- if (gt (int .Values.jibri.replicaCount) 1) }}
           # Set Jibri Instance ID based on pod name:
           env:
@@ -104,10 +104,10 @@ spec:
           {{- end }}
           {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
           ports:
-          - name: http-internal
-            containerPort: 3333
-          - name: http-api
-            containerPort: 2222
+            - name: http-internal
+              containerPort: 3333
+            - name: http-api
+              containerPort: 2222
           livenessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -118,44 +118,44 @@ spec:
           resources:
             {{- toYaml .Values.jibri.resources | nindent 12 }}
           volumeMounts:
-          - name: config
-            mountPath: /config
-          {{- if .Values.jibri.custom.contInit._10_config }}
-          - name: custom-continits
-            mountPath: /etc/cont-init.d/10-config
-            subPath: 10-config
-          {{- end }}
-          {{- if .Values.jibri.custom.defaults._jibri_conf }}
-          - name: custom-defaults
-            mountPath: /defaults/jibri.conf
-            subPath: jibri.conf
-          {{- end }}
-          {{- if .Values.jibri.custom.defaults._logging_properties }}
-          - name: custom-defaults
-            mountPath: /defaults/logging.properties
-            subPath: logging.properties
-          {{- end }}
-          {{- if .Values.jibri.custom.defaults._autoscaler_sidecar_config }}
-          - name: custom-defaults
-            mountPath: /defaults/autoscaler-sidecar.config
-            subPath: autoscaler-sidecar.config
-          {{- end }}
-          {{- if .Values.jibri.custom.defaults._xorg_video_dummy_conf }}
-          - name: custom-defaults
-            mountPath: /defaults/xorg-video-dummy.conf
-            subPath: xorg-video-dummy.conf
-          {{- end }}
-          {{- if .Values.jibri.custom.other._finalize_sh }}
-          - name: custom-other
-            mountPath: /config/finalize.sh
-            subPath: finalize.sh
-          {{- end }}
-          - name: jibri-data
-            mountPath: /data
-          {{- if .Values.jibri.shm.enabled }}
-          - name: dev-shm
-            mountPath: /dev/shm
-          {{- end }}
+            - name: config
+              mountPath: /config
+            {{- if .Values.jibri.custom.contInit._10_config }}
+            - name: custom-continits
+              mountPath: /etc/cont-init.d/10-config
+              subPath: 10-config
+            {{- end }}
+            {{- if .Values.jibri.custom.defaults._jibri_conf }}
+            - name: custom-defaults
+              mountPath: /defaults/jibri.conf
+              subPath: jibri.conf
+            {{- end }}
+            {{- if .Values.jibri.custom.defaults._logging_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/logging.properties
+              subPath: logging.properties
+            {{- end }}
+            {{- if .Values.jibri.custom.defaults._autoscaler_sidecar_config }}
+            - name: custom-defaults
+              mountPath: /defaults/autoscaler-sidecar.config
+              subPath: autoscaler-sidecar.config
+            {{- end }}
+            {{- if .Values.jibri.custom.defaults._xorg_video_dummy_conf }}
+            - name: custom-defaults
+              mountPath: /defaults/xorg-video-dummy.conf
+              subPath: xorg-video-dummy.conf
+            {{- end }}
+            {{- if .Values.jibri.custom.other._finalize_sh }}
+            - name: custom-other
+              mountPath: /config/finalize.sh
+              subPath: finalize.sh
+            {{- end }}
+            - name: jibri-data
+              mountPath: /data
+            {{- if .Values.jibri.shm.enabled }}
+            - name: dev-shm
+              mountPath: /dev/shm
+            {{- end }}
 
       {{- with .Values.jibri.affinity }}
       affinity:

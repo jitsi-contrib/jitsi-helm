@@ -11,12 +11,12 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: http-internal
-    protocol: TCP
-    port: 3333
-  - name: http-api
-    protocol: TCP
-    port: 2222
+    - name: http-internal
+      protocol: TCP
+      port: 3333
+    - name: http-api
+      protocol: TCP
+      port: 2222
   selector:
     {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 4 }}
 {{- end }}
