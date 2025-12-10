@@ -10,5 +10,5 @@ spec:
     matchLabels:
       {{- include "jitsi-meet.jicofo.selectorLabels" . | nindent 6 }}
   podMetricsEndpoints:
-  - port: metrics
+    - port: metrics
 {{- end }}

@@ -9,9 +9,9 @@ metadata:
   labels:
     {{- include "jitsi-meet.jigasi.labels" . | nindent 4 }}
 data:
-  JIGASI_BREWERY_MUC: '{{ .Values.jigasi.breweryMuc }}'
+  JIGASI_BREWERY_MUC: {{ .Values.jigasi.breweryMuc | quote }}
   JIGASI_ENABLE_REST: "1"
-  XMPP_SERVER: '{{ include "jitsi-meet.xmpp.server" . }}'
+  XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
   {{- range $key, $value := .Values.jigasi.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}

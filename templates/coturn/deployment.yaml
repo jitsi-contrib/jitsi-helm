@@ -18,14 +18,14 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 8 }}
-        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.coturn.podLabels }}
-        {{    $label }}: {{ $value }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.coturn.podLabels) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum }}
-        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations }}
-        {{    $annotation }}: {{ $value | quote }}
+        checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum | quote }}
+        checksum/secret: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -42,25 +42,25 @@ spec:
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-config
       initContainers:
-      - name: init-coturn
-        image: busybox:1.36
-        command:
-          - sh
-          - -c
-          - |
-            chmod 755 /config-dir && \
-            cp /turnserver.conf /config-dir/ && \
-            echo >>/config-dir/turnserver.conf && \
-            echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
-        envFrom:
-        - secretRef:
-            name: {{ include "jitsi-meet.coturn.secretName" . }}
-        volumeMounts:
-        - name: config-dir
-          mountPath: /config-dir
-        - name: config
-          mountPath: /turnserver.conf
-          subPath: turnserver.conf
+        - name: init-coturn
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              chmod 755 /config-dir && \
+              cp /turnserver.conf /config-dir/ && \
+              echo >>/config-dir/turnserver.conf && \
+              echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
+          envFrom:
+            - secretRef:
+                name: {{ include "jitsi-meet.coturn.secretName" . }}
+          volumeMounts:
+            - name: config-dir
+              mountPath: /config-dir
+            - name: config
+              mountPath: /turnserver.conf
+              subPath: turnserver.conf
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
@@ -68,40 +68,40 @@ spec:
           securityContext:
             {{- toYaml .Values.coturn.securityContext | nindent 12 }}
           envFrom:
-          - secretRef:
-              name: {{ include "jitsi-meet.coturn.secretName" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.common" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.coturn.fullname" . }}
-          - configMapRef:
-              name: {{ include "jitsi-meet.coturn.fullname" . }}-config
-          {{- if .Values.global.releaseSecretsOverride.enabled }}
-          {{- range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-          - {{ tpl (toYaml . ) $ | indent 12 | trim }}
-          {{- end }}
-          {{- end }}
+            - secretRef:
+                name: {{ include "jitsi-meet.coturn.secretName" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.coturn.fullname" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.coturn.fullname" . }}-config
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
           ports:
-          - name: tcp-turn
-            protocol: TCP
-            containerPort: {{ index .Values.coturn.service.ports "turn" }}
-          - name: udp-turn
-            protocol: UDP
-            containerPort: {{ index .Values.coturn.service.ports "turn" }}
+            - name: tcp-turn
+              protocol: TCP
+              containerPort: {{ index .Values.coturn.service.ports "turn" }}
+            - name: udp-turn
+              protocol: UDP
+              containerPort: {{ index .Values.coturn.service.ports "turn" }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.coturn.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
           volumeMounts:
-          - name: config-dir
-            mountPath: /etc/coturn
-            readOnly: true
+            - name: config-dir
+              mountPath: /etc/coturn
+              readOnly: true
 
       {{- with .Values.coturn.affinity }}
       affinity:
