@@ -34,8 +34,8 @@ spec:
         prometheus.io/port: "9888"
         prometheus.io/scrape: "true"
         {{- end }}
-        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations }}
-        {{    $annotation }}: {{ $value | quote }}
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}

@@ -24,8 +24,8 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum }}
-        {{- range $annotation, $value := mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations }}
-        {{    $annotation }}: {{ $value | quote }}
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
