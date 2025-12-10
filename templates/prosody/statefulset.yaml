@@ -18,8 +18,8 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 8 }}
-        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.prosody.podLabels }}
-        {{    $label }}: {{ $value }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.prosody.podLabels) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/prosody/configmap.yaml") . | sha256sum }}

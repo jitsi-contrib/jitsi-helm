@@ -21,8 +21,8 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jigasi.selectorLabels" . | nindent 8 }}
-        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.jigasi.podLabels }}
-        {{    $label }}: {{ $value }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.jigasi.podLabels) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jigasi/configmap.yaml") . | sha256sum }}

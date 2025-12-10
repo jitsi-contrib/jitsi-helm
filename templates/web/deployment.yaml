@@ -17,8 +17,8 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.web.selectorLabels" . | nindent 8 }}
-        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.web.podLabels }}
-        {{    $label }}: {{ $value }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.web.podLabels) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum }}

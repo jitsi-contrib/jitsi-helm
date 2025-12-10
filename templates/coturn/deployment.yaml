@@ -18,8 +18,8 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 8 }}
-        {{- range $label, $value := mergeOverwrite .Values.global.podLabels .Values.coturn.podLabels }}
-        {{    $label }}: {{ $value }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.coturn.podLabels) }}
+        {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum }}
