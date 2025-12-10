@@ -64,14 +64,14 @@ spec:
           {{- end }}
         {{- if .Values.jibri.shm.enabled }}
         - name: dev-shm
-        {{-   if .Values.jibri.shm.useHost }}
+          {{- if .Values.jibri.shm.useHost }}
           hostPath:
             path: /dev/shm
-        {{-   else }}
+          {{- else }}
           emptyDir:
             medium: Memory
             sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
-        {{-   end }}
+          {{- end }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}

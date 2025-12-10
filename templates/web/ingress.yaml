@@ -10,7 +10,7 @@ metadata:
   {{- if .Values.web.ingress.annotations }}
   annotations:
     {{- with .Values.web.ingress.annotations }}
-    {{-   toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
 spec:
