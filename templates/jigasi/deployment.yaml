@@ -70,11 +70,11 @@ spec:
           {{- end }}
           {{- with .Values.jigasi.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.jigasi.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.jigasi.resources | nindent 12 }}

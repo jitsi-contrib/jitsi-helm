@@ -109,11 +109,11 @@ spec:
           - name: http-api
             containerPort: 2222
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with default .Values.jibri.readinessProbe .Values.jibri.readinessProbeOverride }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.jibri.resources | nindent 12 }}

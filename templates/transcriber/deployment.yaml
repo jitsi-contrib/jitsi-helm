@@ -78,11 +78,11 @@ spec:
           {{- end }}
           {{- with .Values.transcriber.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.transcriber.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.transcriber.resources | nindent 12 }}

@@ -178,11 +178,11 @@ spec:
             protocol: TCP
           {{- with .Values.prosody.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.prosody.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.prosody.resources | nindent 12 }}

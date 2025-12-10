@@ -90,11 +90,11 @@ spec:
             containerPort: {{ index .Values.coturn.service.ports "turn" }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.coturn.readinessProbe }}
           readinessProbe:
-          {{- toYaml . | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
