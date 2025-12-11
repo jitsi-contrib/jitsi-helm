@@ -9,8 +9,8 @@ data:
   ENABLE_HTTP_REDIRECT: {{ .Values.web.httpRedirect | ternary "1" "0" | quote }}
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
 
-  {{- if .Values.web.resolverIP }}
-  NGINX_RESOLVER: {{ .Values.web.resolverIP }}
+  {{- with .Values.web.resolverIP }}
+  NGINX_RESOLVER: {{ . }}
   {{- end }}
 
   {{- range $key, $value := .Values.web.extraEnvs }}

@@ -29,48 +29,48 @@ data:
     config.useTurnUdp=true;
   {{- end }}
 
-  {{- if .Values.web.custom.configs._custom_interface_config_js }}
+  {{- with .Values.web.custom.configs._custom_interface_config_js }}
   custom-interface_config.js: |
-    {{- .Values.web.custom.configs._custom_interface_config_js | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._default }}
+  {{- with .Values.web.custom.defaults._default }}
   default: |
-    {{- .Values.web.custom.defaults._default | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._ffdhe2048_txt }}
+  {{- with .Values.web.custom.defaults._ffdhe2048_txt }}
   ffdhe2048.txt: |
-    {{- .Values.web.custom.defaults._ffdhe2048_txt | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._interface_config_js }}
+  {{- with .Values.web.custom.defaults._interface_config_js }}
   interface_config.js: |
-    {{- .Values.web.custom.defaults._interface_config_js | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._meet_conf }}
+  {{- with .Values.web.custom.defaults._meet_conf }}
   meet.conf: |
-    {{- .Values.web.custom.defaults._meet_conf | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._nginx_conf }}
+  {{- with .Values.web.custom.defaults._nginx_conf }}
   nginx.conf: |
-    {{- .Values.web.custom.defaults._nginx_conf | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._settings_config_js }}
+  {{- with .Values.web.custom.defaults._settings_config_js }}
   settings-config.js: |
-    {{- .Values.web.custom.defaults._settings_config_js | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._ssl_conf }}
+  {{- with .Values.web.custom.defaults._ssl_conf }}
   ssl.conf: |
-    {{- .Values.web.custom.defaults._ssl_conf | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.web.custom.defaults._system_config_js }}
+  {{- with .Values.web.custom.defaults._system_config_js }}
   system-config.js: |
-    {{- .Values.web.custom.defaults._system_config_js | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 {{- end }}

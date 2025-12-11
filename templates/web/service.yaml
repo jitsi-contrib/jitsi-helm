@@ -14,8 +14,8 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.web.service.port }}
-      {{- if .Values.web.service.nodePort }}
-      nodePort: {{ index .Values.web.service.nodePort }}
+      {{- with .Values.web.service.nodePort }}
+      nodePort: {{ . }}
       {{- end }}
   {{- with .Values.web.service.externalIPs }}
   externalIPs:
