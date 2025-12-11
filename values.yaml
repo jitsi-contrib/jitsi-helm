@@ -579,6 +579,7 @@ transcriber:
   breweryMuc: jigasibrewery
 
   # Transcriber XMPP user credentials
+  # Transcriber also requires credentials for Jigasi, even its pod is disabled.
   xmpp:
     user: transcriber
     password:
