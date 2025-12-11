@@ -16,10 +16,10 @@
 
 {{- define "jitsi-meet.jvb.labels" -}}
 {{ include "jitsi-meet.labels" . }}
-app.kubernetes.io/component: jvb
+app.kubernetes.io/component: "jvb"
 {{- end -}}
 
 {{- define "jitsi-meet.jvb.selectorLabels" -}}
 {{ include "jitsi-meet.selectorLabels" . }}
-app.kubernetes.io/component: jvb
+app.kubernetes.io/component: "jvb"
 {{- end -}}

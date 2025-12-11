@@ -16,10 +16,10 @@
 
 {{- define "jitsi-meet.jigasi.labels" -}}
 {{ include "jitsi-meet.labels" . }}
-app.kubernetes.io/component: jigasi
+app.kubernetes.io/component: "jigasi"
 {{- end -}}
 
 {{- define "jitsi-meet.jigasi.selectorLabels" -}}
 {{ include "jitsi-meet.selectorLabels" . }}
-app.kubernetes.io/component: jigasi
+app.kubernetes.io/component: "jigasi"
 {{- end -}}

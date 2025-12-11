@@ -7,9 +7,9 @@ metadata:
 data:
   ENABLE_AUTH: {{ .Values.enableAuth | ternary "1" "0" | quote }}
   ENABLE_GUESTS: {{ .Values.enableGuests | ternary "1" "0" | quote }}
-  PUBLIC_URL: {{ include "jitsi-meet.publicURL" . }}
+  PUBLIC_URL: {{ include "jitsi-meet.publicURL" . | quote }}
   TZ: {{ .Values.tz | quote}}
-  XMPP_DOMAIN: {{ include "jitsi-meet.xmpp.domain" . }}
+  XMPP_DOMAIN: {{ include "jitsi-meet.xmpp.domain" . | quote }}
   XMPP_MUC_DOMAIN: {{ .Values.xmpp.mucDomain | default (printf "muc.%s" (include "jitsi-meet.xmpp.domain" .)) | quote }}
   XMPP_AUTH_DOMAIN: {{ .Values.xmpp.authDomain | default (printf "auth.%s" (include "jitsi-meet.xmpp.domain" .)) | quote }}
   XMPP_GUEST_DOMAIN: {{ .Values.xmpp.guestDomain | default (printf "guest.%s" (include "jitsi-meet.xmpp.domain" .)) | quote }}

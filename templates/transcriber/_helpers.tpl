@@ -16,10 +16,10 @@
 
 {{- define "jitsi-meet.transcriber.labels" -}}
 {{ include "jitsi-meet.labels" . }}
-app.kubernetes.io/component: transcriber
+app.kubernetes.io/component: "transcriber"
 {{- end -}}
 
 {{- define "jitsi-meet.transcriber.selectorLabels" -}}
 {{ include "jitsi-meet.selectorLabels" . }}
-app.kubernetes.io/component: transcriber
+app.kubernetes.io/component: "transcriber"
 {{- end -}}

@@ -16,10 +16,10 @@
 
 {{- define "jitsi-meet.coturn.labels" -}}
 {{ include "jitsi-meet.labels" . }}
-app.kubernetes.io/component: coturn
+app.kubernetes.io/component: "coturn"
 {{- end -}}
 
 {{- define "jitsi-meet.coturn.selectorLabels" -}}
 {{ include "jitsi-meet.selectorLabels" . }}
-app.kubernetes.io/component: coturn
+app.kubernetes.io/component: "coturn"
 {{- end -}}

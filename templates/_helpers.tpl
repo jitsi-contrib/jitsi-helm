@@ -33,18 +33,18 @@ If release name contains chart name it will be used as a full name.
 
 {{/* Common labels */}}
 {{- define "jitsi-meet.labels" -}}
-helm.sh/chart: {{ include "jitsi-meet.chart" . }}
+helm.sh/chart: {{ include "jitsi-meet.chart" . | quote }}
 {{ include "jitsi-meet.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 {{- end -}}
 
 {{/* Selector labels */}}
 {{- define "jitsi-meet.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "jitsi-meet.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "jitsi-meet.name" . | quote }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
 
 {{/* Create the name of the service account to use */}}

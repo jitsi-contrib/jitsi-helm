@@ -28,10 +28,10 @@
 
 {{- define "jitsi-meet.jibri.labels" -}}
 {{ include "jitsi-meet.labels" . }}
-app.kubernetes.io/component: jibri
+app.kubernetes.io/component: "jibri"
 {{- end -}}
 
 {{- define "jitsi-meet.jibri.selectorLabels" -}}
 {{ include "jitsi-meet.selectorLabels" . }}
-app.kubernetes.io/component: jibri
+app.kubernetes.io/component: "jibri"
 {{- end -}}
