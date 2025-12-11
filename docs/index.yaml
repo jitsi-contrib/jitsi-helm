@@ -12,6 +12,26 @@ entries:
           url: https://github.com/jitsi-contrib/jitsi-helm
     apiVersion: v2
     appVersion: stable-10655
+    created: "2025-12-11T13:45:28.221921976+03:00"
+    description: Jitsi Meet packaged for Kubernetes
+    digest: 0205c323b9b3929b54541cb26496aae31e74644de2f7dfc9ce32f90648bb6163
+    icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
+    name: jitsi-meet
+    type: application
+    urls:
+    - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-2.0.4.tgz
+    version: 2.0.4
+  - annotations:
+      artifacthub.io/category: streaming-messaging
+      artifacthub.io/links: |
+        - name: Jitsi Meet
+          url: https://jitsi.org/jitsi-meet/
+        - name: Jitsi Meet Documentation
+          url: https://jitsi.github.io/handbook/docs/intro/
+        - name: Jitsi-Helm GitHub
+          url: https://github.com/jitsi-contrib/jitsi-helm
+    apiVersion: v2
+    appVersion: stable-10655
     created: "2025-12-11T11:37:33.561555504+03:00"
     description: Jitsi Meet packaged for Kubernetes
     digest: 529bd3ff5500526b0d86e53cd1cf4e392535c53680ee0e3a5480c652031b5342
@@ -526,4 +546,4 @@ entries:
     urls:
     - https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet-0.1.2.tgz
     version: 0.1.2
-generated: "2025-12-11T11:37:33.51521637+03:00"
+generated: "2025-12-11T13:45:28.185071769+03:00"
