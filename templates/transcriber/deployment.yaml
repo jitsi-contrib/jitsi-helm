@@ -67,7 +67,9 @@ spec:
             {{- toYaml .Values.transcriber.securityContext | nindent 12 }}
           envFrom:
             - secretRef:
-                name: {{ include "jitsi-meet.transcriber.secret" . }}
+                name: {{ include "jitsi-meet.jigasi.secretName" . }}
+            - secretRef:
+                name: {{ include "jitsi-meet.transcriber.secretName" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
