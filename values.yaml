@@ -427,7 +427,7 @@ jvb:
   #nodePort: 10000
 
   service:
-    enabled:
+    enabled: true
     type: ClusterIP
     externalTrafficPolicy: Cluster
     externalIPs: []
