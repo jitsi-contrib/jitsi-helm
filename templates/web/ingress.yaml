@@ -7,11 +7,9 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
-  {{- if .Values.web.ingress.annotations }}
+  {{- with .Values.web.ingress.annotations }}
   annotations:
-    {{- with .Values.web.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
-    {{- end }}
   {{- end }}
 spec:
   {{- if .Values.web.ingress.ingressClassName }}

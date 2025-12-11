@@ -4,10 +4,10 @@ metadata:
   name: {{ include "jitsi-meet.web.fullname" . }}
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
+  {{- with .Values.web.service.annotations }}
   annotations:
-    {{- range $key, $value := .Values.web.service.annotations }}
-    {{    $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
   ports:
