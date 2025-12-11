@@ -16,12 +16,12 @@ spec:
     - port: metrics
       path: /metrics
 
-      {{- if .Values.prosody.metrics.serviceMonitor.honorLabels }}
-      honorLabels: {{ .Values.prosody.metrics.serviceMonitor.honorLabels }}
+      {{- with .Values.prosody.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ . }}
       {{- end }}
 
-      {{- if .Values.prosody.metrics.serviceMonitor.interval }}
-      interval: {{ .Values.prosody.metrics.serviceMonitor.interval }}
+      {{- with .Values.prosody.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
       {{- end }}
   selector:
     matchLabels:

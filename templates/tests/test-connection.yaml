@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": test-success
+    "helm.sh/hook": "test-success"
 spec:
   containers:
     - name: wget

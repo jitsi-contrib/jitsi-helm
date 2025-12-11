@@ -10,18 +10,18 @@ metadata:
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
-  {{- if .Values.prosody.custom.defaults._prosody_cfg_lua }}
+  {{- with .Values.prosody.custom.defaults._prosody_cfg_lua }}
   prosody.cfg.lua: |
-    {{- .Values.prosody.custom.defaults._prosody_cfg_lua | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.prosody.custom.defaults._saslauthd_conf }}
+  {{- with .Values.prosody.custom.defaults._saslauthd_conf }}
   saslauthd.conf: |
-    {{- .Values.prosody.custom.defaults._saslauthd_conf | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.prosody.custom.defaults._jitsi_meet_cfg_lua }}
+  {{- with .Values.prosody.custom.defaults._jitsi_meet_cfg_lua }}
   jitsi-meet.cfg.lua: |
-    {{- .Values.prosody.custom.defaults._jitsi_meet_cfg_lua | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 {{- end }}

@@ -9,13 +9,13 @@ metadata:
   labels:
     {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
 data:
-  {{- if .Values.jicofo.custom.defaults._jicofo_conf }}
+  {{- with .Values.jicofo.custom.defaults._jicofo_conf }}
   jicofo.conf: |
-    {{- .Values.jicofo.custom.defaults._jicofo_conf | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 
-  {{- if .Values.jicofo.custom.defaults._logging_properties }}
+  {{- with .Values.jicofo.custom.defaults._logging_properties }}
   logging.properties: |
-    {{- .Values.jicofo.custom.defaults._logging_properties | nindent 4 }}
+    {{- . | nindent 4 }}
   {{- end }}
 {{- end }}

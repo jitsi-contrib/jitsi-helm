@@ -1,20 +1,18 @@
-{{- if or
-    (and
-      (kindIs "invalid" .Values.jvb.service.enabled)
-      (not (or .Values.jvb.useHostPort .Values.jvb.useHostNetwork))
-    )
+{{- if and
     .Values.jvb.service.enabled
+    (not .Values.jvb.useHostPort)
+    (not .Values.jvb.useHostNetwork)
 }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "jitsi-meet.jvb.fullname" . }}
-  annotations:
-    {{- range $key, $value := .Values.jvb.service.annotations }}
-    {{    $key }}: {{ $value | quote }}
-    {{- end }}
   labels:
     {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+  {{- with .Values.jvb.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.jvb.service.type }}
   {{- with .Values.jvb.service.loadBalancerIP }}

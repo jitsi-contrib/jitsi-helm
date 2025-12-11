@@ -17,9 +17,9 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 6 }}
-  {{- if .Values.jibri.strategy }}
+  {{- with .Values.jibri.strategy }}
   strategy:
-    {{- toYaml .Values.jibri.strategy | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   template:
     metadata:
