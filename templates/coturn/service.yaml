@@ -7,6 +7,9 @@ metadata:
     {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.coturn.service.type }}
+  {{- with .Values.coturn.service.loadBalancerClass }}
+  loadBalancerClass: {{ . }}
+  {{- end }}
   ports:
     - name: tcp-turn
       protocol: TCP

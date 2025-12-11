@@ -15,6 +15,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.jvb.service.type }}
+  {{- with .Values.jvb.service.loadBalancerClass }}
+  loadBalancerClass: {{ . }}
+  {{- end }}
   {{- with .Values.jvb.service.loadBalancerIP }}
   loadBalancerIP: {{ . }}
   {{- end }}
@@ -37,9 +40,6 @@ spec:
     {{- with .Values.jvb.service.extraPorts }}
     {{ toYaml . | indent 4 | trim }}
     {{- end }}
-  {{- with .Values.jvb.service.loadBalancerClass }}
-  loadBalancerClass: {{ . }}
-  {{- end }}
   {{- with .Values.jvb.service.externalIPs }}
   externalIPs:
     {{- toYaml . | nindent 4 }}
