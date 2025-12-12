@@ -194,6 +194,15 @@ web:
     repository: jitsi/excalidraw-backend
     tag: 2025.2.2
 
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 80
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 80
+
   metrics:
     enabled: false
     serviceMonitor:
@@ -202,6 +211,17 @@ web:
         release: prometheus-operator
       interval: 10s
       #honorLabels: false
+
+  affinity: {}
+  annotations: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
 
 ## #############################################################################
 ## Coturn configuration
