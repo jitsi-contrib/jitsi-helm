@@ -186,6 +186,7 @@ web:
 ## Excalidraw configuration
 ## #############################################################################
 excalidraw:
+  # Enabling Excalidraw will allow the virtual whiteboard within meetings.
   enabled: false
 
   # Always one replica, hardcoded in excalidraw/deployment.yaml
