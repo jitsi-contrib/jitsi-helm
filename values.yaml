@@ -194,6 +194,14 @@ web:
     repository: jitsi/excalidraw-backend
     tag: 2025.2.2
 
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      #honorLabels: false
 
 ## #############################################################################
 ## Coturn configuration

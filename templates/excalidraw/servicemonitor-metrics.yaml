@@ -1,0 +1,33 @@
+{{- if and
+    .Values.excalidraw.enabled
+    .Values.excalidraw.metrics.enabled
+    .Values.excalidraw.metrics.serviceMonitor.enabled
+}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "jitsi-meet.excalidraw.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.excalidraw.labels" . | nindent 4 }}
+    {{- range $key, $value := .Values.excalidraw.metrics.serviceMonitor.selector }}
+    {{    $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: metrics
+      path: /metrics
+
+      {{- with .Values.excalidraw.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ . }}
+      {{- end }}
+
+      {{- with .Values.excalidraw.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.excalidraw.labels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
