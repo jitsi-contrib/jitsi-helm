@@ -185,6 +185,7 @@ web:
 ## #############################################################################
 ## Excalidraw configuration
 ## #############################################################################
+excalidraw:
   enabled: false
 
   # Always one replica, hardcoded in excalidraw/deployment.yaml
