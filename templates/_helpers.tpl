@@ -76,6 +76,14 @@ app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
 {{- end -}}
 
+{{- define "jitsi-meet.excalidraw.server" -}}
+{{- if .Values.global.clusterDomain -}}
+{{    include "jitsi-meet.fullname" . }}-excalidraw.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{- else -}}
+{{    include "jitsi-meet.fullname" . }}-excalidraw.{{ .Release.Namespace }}.svc
+{{- end -}}
+{{- end -}}
+
 {{- define "jitsi-meet.publicURL" -}}
 {{- if .Values.publicURL -}}
 {{-   .Values.publicURL -}}

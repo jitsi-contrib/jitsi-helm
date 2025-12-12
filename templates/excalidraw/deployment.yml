@@ -1,0 +1,72 @@
+{{- if .Values.excalidraw.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jitsi-meet.excalidraw.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.excalidraw.labels" . | nindent 4 }}
+  {{- with .Values.excalidraw.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.excalidraw.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jitsi-meet.excalidraw.selectorLabels" . | nindent 8 }}
+        {{- with (mergeOverwrite .Values.global.podLabels .Values.excalidraw.podLabels) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+      annotations:
+        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.excalidraw.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.excalidraw.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.excalidraw.image.repository }}:{{ .Values.excalidraw.image.tag }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.excalidraw.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.excalidraw.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 80
+            - name: metrics
+              protocol: TCP
+              containerPort: 9090
+          {{- with .Values.excalidraw.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.excalidraw.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.excalidraw.resources | nindent 12 }}
+
+      {{- with .Values.excalidraw.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.excalidraw.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.excalidraw.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

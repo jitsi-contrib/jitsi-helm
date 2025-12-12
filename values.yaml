@@ -80,6 +80,7 @@ extraCommonEnvs: {}
 ## #############################################################################
 web:
   replicaCount: 1
+
   image:
     repository: jitsi/web
 
@@ -182,6 +183,48 @@ web:
   tolerations: []
 
 ## #############################################################################
+## Excalidraw configuration
+## #############################################################################
+excalidraw:
+  enabled: false
+
+  # Always one replica, hardcoded in excalidraw/deployment.yaml
+  # replicaCount: 1
+
+  image:
+    repository: jitsi/excalidraw-backend
+    tag: 2025.2.2
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 80
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 80
+
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      #honorLabels: false
+
+  affinity: {}
+  annotations: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+## #############################################################################
 ## Coturn configuration
 ## #############################################################################
 # Currently, it supports only STUN and TURN over UDP-TCP/3478.
@@ -191,6 +234,7 @@ coturn:
   enabled: false
 
   replicaCount: 1
+
   image:
     repository: coturn/coturn
     tag: 4.7
@@ -238,6 +282,7 @@ coturn:
 prosody:
   # Always one replica, hardcoded in prosody/statefulset.yaml
   # replicaCount: 1
+
   image:
     repository: jitsi/prosody
 
@@ -335,6 +380,7 @@ prosody:
 jicofo:
   # Always one replica, hardcoded in jicofo/deployment.yaml
   # replicaCount: 1
+
   image:
     repository: jitsi/jicofo
 
@@ -385,6 +431,7 @@ jicofo:
 ## #############################################################################
 jvb:
   replicaCount: 1
+
   image:
     repository: jitsi/jvb
 
@@ -523,6 +570,7 @@ jigasi:
 
   # Always one replica, hardcoded in jigasi/deployment.yaml
   # replicaCount: 1
+
   image:
     repository: jitsi/jigasi
 
@@ -577,6 +625,7 @@ transcriber:
 
   # Always one replica, hardcoded in transcriber/deployment.yaml
   # replicaCount: 1
+
   image:
     repository: jitsi/jigasi
 
