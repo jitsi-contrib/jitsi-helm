@@ -89,19 +89,25 @@ spec:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.jibri.fullname" . }}
+            {{- range .Values.jibri.extraSecretsFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
-          {{- if (gt (int .Values.jibri.replicaCount) 1) }}
-          # Set Jibri Instance ID based on pod name:
           env:
-          - name: JIBRI_INSTANCE_ID
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          {{- end }}
+            {{- if (gt (int .Values.jibri.replicaCount) 1) }}
+            # Set Jibri Instance ID based on pod name:
+            - name: JIBRI_INSTANCE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- end }}
+            {{- range .Values.jibri.extraSecrets }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            {{- end }}
           {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
           ports:
             - name: http-internal
