@@ -27,7 +27,7 @@ image:
   pullPolicy: IfNotPresent
 
 # Where Jitsi Web UI is made available
-# such as jitsi.example.com
+# such as https://jitsi.example.com
 publicURL: ""
 
 # Where TURN service is made available
