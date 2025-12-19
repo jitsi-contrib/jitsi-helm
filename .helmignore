@@ -2,29 +2,30 @@
 # This supports shell glob matching, relative path matching, and
 # negation (prefixed with !). Only one pattern per line.
 .DS_Store
+Thumbs.db
+
 # Common VCS dirs
 .git/
 .gitignore
+.gitattributes
+.github/
 .bzr/
 .bzrignore
 .hg/
 .hgignore
 .svn/
-# Common backup files
+
+# Development tools and IDEs
+.idea/
+.vscode/
+.project
+.settings/
 *.swp
 *.bak
 *.tmp
-*.orig
 *~
-# Various IDEs
-.project
-.idea/
-*.tmproj
-.vscode/
-# GitHub Pages
+
+# Project specific
 docs/
-# Built Helm charts
 *.tgz
-#
-example-configurations/
-Makefile
+*.tgz.prov
