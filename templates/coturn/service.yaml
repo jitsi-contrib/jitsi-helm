@@ -5,15 +5,21 @@ metadata:
   name: {{ include "jitsi-meet.coturn.fullname" . }}
   labels:
     {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+  {{- with .Values.coturn.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.coturn.service.type }}
   {{- with .Values.coturn.service.loadBalancerClass }}
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
+    {{- if .Values.coturn.service.enableTCP }}
     - name: tcp-turn
       protocol: TCP
       port: {{ index .Values.coturn.service.ports "turn" }}
+    {{- end }}
     - name: udp-turn
       protocol: UDP
       port: {{ index .Values.coturn.service.ports "turn" }}
