@@ -5,6 +5,10 @@ metadata:
   name: {{ include "jitsi-meet.coturn.fullname" . }}
   labels:
     {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+  {{- with .Values.coturn.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.coturn.service.type }}
   {{- with .Values.coturn.service.loadBalancerClass }}
