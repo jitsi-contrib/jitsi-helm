@@ -10,5 +10,9 @@ data:
   STUN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_HOST: {{ .Values.turnHost | quote }}
   TURN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
+  {{- if .Values.coturn.service.enableTCP }}
   TURN_TRANSPORT: "udp,tcp"
+  {{- else }}
+  TURN_TRANSPORT: "udp"
+  {{- end }}
 {{- end }}
