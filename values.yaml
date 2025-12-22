@@ -250,6 +250,9 @@ coturn:
     type: LoadBalancer
     ports:
       turn: 3478
+    # STUN and TURN works over UDP by default.
+    # Set this setting to enable also TCP listener (UDP will be still enabled)
+    enableTCP: false
     # Optional: Specifies the LoadBalancer controller to use (since K8s v1.24).
     # If left empty (null), the default cluster controller will be used.
     # Example values: "service.k8s.aws/nlb", "loxilb.io/loxilb"
