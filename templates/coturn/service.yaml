@@ -15,11 +15,6 @@ spec:
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
-    {{- if .Values.coturn.service.enableTCP }}
-    - name: tcp-turn
-      protocol: TCP
-      port: {{ index .Values.coturn.service.ports "turn" }}
-    {{- end }}
     - name: udp-turn
       protocol: UDP
       port: {{ index .Values.coturn.service.ports "turn" }}
