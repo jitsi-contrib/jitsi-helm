@@ -26,7 +26,7 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/prosody/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum | quote }}
-        {{- if and 
+        {{- if and
             .Values.coturn.enabled
             (not .Values.coturn.staticAuth.existingSecretName)
         }}
@@ -143,13 +143,13 @@ spec:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.prosody.fullname" . }}
+            {{- range .Values.prosody.extraEnvFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
-            {{- end }}
-            {{- range .Values.prosody.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}
           env:
             {{- range .Values.prosody.extraSecrets }}

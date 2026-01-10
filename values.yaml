@@ -169,8 +169,8 @@ web:
 
   affinity: {}
   annotations: {}
-  hostAliases: []
   extraEnvs: {}
+  hostAliases: []
   nodeSelector: {}
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a
@@ -389,8 +389,8 @@ prosody:
 
   affinity: {}
   annotations: {}
-  hostAliases: []
   extraEnvs: {}
+  hostAliases: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -624,16 +624,11 @@ jigasi:
         - name: Accept
           value: application/json
 
-  extraEnvFrom: []
-  #  - secretRef:
-  #      name: "my-application-secrets"
-  #  - configMapRef:
-  #      name: "my-application-configmap"
-
   affinity: {}
   annotations: {}
-  hostAliases: []
+  extraEnvFrom: []
   extraEnvs: {}
+  hostAliases: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -687,12 +682,6 @@ transcriber:
         - name: Accept
           value: application/json
 
-  extraEnvFrom: []
-  #  - secretRef:
-  #      name: "my-application-secrets"
-  #  - configMapRef:
-  #      name: "my-application-configmap"
-
   persistence:
     enabled: false
     #storageClass: ""
@@ -705,8 +694,9 @@ transcriber:
 
   affinity: {}
   annotations: {}
-  hostAliases: []
+  extraEnvFrom: []
   extraEnvs: {}
+  hostAliases: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -847,10 +837,10 @@ jibri:
 
   affinity: {}
   annotations: {}
-  hostAliases: []
   extraEnvs: {}
   extraSecrets: []
   extraSecretsFrom: []
+  hostAliases: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}

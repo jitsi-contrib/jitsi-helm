@@ -67,13 +67,13 @@ spec:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.jigasi.fullname" . }}
+            {{- range .Values.jigasi.extraEnvFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
-            {{- end }}
-            {{- range .Values.jigasi.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}
           {{- with .Values.jigasi.livenessProbe }}
           livenessProbe:

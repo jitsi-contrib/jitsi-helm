@@ -165,9 +165,11 @@ spec:
             {{- with .Values.web.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+
         {{- with .Values.web.extraContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+
       {{- with .Values.web.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
