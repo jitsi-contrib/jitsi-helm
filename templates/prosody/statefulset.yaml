@@ -26,10 +26,13 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/prosody/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum | quote }}
-        {{- if .Values.coturn.enabled }}
+        {{- if and 
+            .Values.coturn.enabled
+            (not .Values.coturn.staticAuth.existingSecretName)
+        }}
         checksum/secret-coturn: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
         {{- else }}
-        checksum/secret-coturn: {{ printf "disabled" | sha256sum | quote }}
+        checksum/secret-coturn: {{ printf "disabled-or-existing" | sha256sum | quote }}
         {{- end }}
         {{- if and
             .Values.jibri.enabled
@@ -63,6 +66,10 @@ spec:
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.prosody.hostAliases }}
+      hostAliases:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
@@ -118,26 +125,17 @@ spec:
             - configMapRef:
                 name: {{ include "jitsi-meet.prosody.fullname" . }}-coturn
             {{- end }}
-            {{- if and
-                .Values.jibri.enabled
-                (not .Values.jibri.xmpp.existingSecretName)
-            }}
+            {{- if .Values.jibri.enabled }}
             - secretRef:
                 name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
             - secretRef:
                 name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
             {{- end }}
-            {{- if and
-                .Values.jigasi.enabled
-                (not .Values.jigasi.xmpp.existingSecretName)
-            }}
+            {{- if .Values.jigasi.enabled }}
             - secretRef:
                 name: {{ include "jitsi-meet.jigasi.secretName" . }}
             {{- end }}
-            {{- if and
-                .Values.transcriber.enabled
-                (not .Values.transcriber.xmpp.existingSecretName)
-            }}
+            {{- if .Values.transcriber.enabled }}
             - secretRef:
                 name: {{ include "jitsi-meet.transcriber.secretName" . }}
             {{- end }}
@@ -149,6 +147,9 @@ spec:
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
+            {{- end }}
+            {{- range .Values.prosody.extraEnvFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}
           env:
             {{- range .Values.prosody.extraSecrets }}

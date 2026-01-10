@@ -36,6 +36,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.transcriber.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.transcriber.podSecurityContext | nindent 8 }}
@@ -78,6 +82,9 @@ spec:
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
             - {{    tpl (toYaml .) $ | indent 14 | trim }}
             {{-   end }}
+            {{- end }}
+            {{- range .Values.transcriber.extraEnvFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}
           {{- with .Values.transcriber.livenessProbe }}
           livenessProbe:
