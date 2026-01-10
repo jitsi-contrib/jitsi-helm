@@ -143,6 +143,21 @@ web:
   # Use this option if you want to override the nameserver IP.
   #resolverIP: 10.43.0.10
 
+  extraContainers: []
+  #  - name: jitsi-keycloak-adapter
+  #    image: ghcr.io/nordeck/jitsi-keycloak-adapter-v2
+  #    imagePullPolicy: IfNotPresent
+  #    ports:
+  #      - name: http
+  #        containerPort: 9000
+  #    resources:
+  #      requests:
+  #        cpu: 50m
+  #        memory: 64Mi
+  #      limits:
+  #        cpu: 200m
+  #        memory: 256Mi
+
   livenessProbe:
     httpGet:
       path: /
@@ -154,6 +169,7 @@ web:
 
   affinity: {}
   annotations: {}
+  hostAliases: []
   extraEnvs: {}
   nodeSelector: {}
   resources: {}
@@ -351,6 +367,12 @@ prosody:
   #        name: "my-application-secrets"
   #        key: "JITSI_JWT_SECRET"
 
+  extraEnvFrom: []
+  #  - secretRef:
+  #      name: "my-application-secrets"
+  #  - configMapRef:
+  #      name: "my-application-configmap"
+
   metrics:
     enabled: false
     allowed_cidr: "0.0.0.0/0" # change to cluster pod ip cidr
@@ -367,6 +389,7 @@ prosody:
 
   affinity: {}
   annotations: {}
+  hostAliases: []
   extraEnvs: {}
   nodeSelector: {}
   resources: {}
@@ -601,8 +624,15 @@ jigasi:
         - name: Accept
           value: application/json
 
+  extraEnvFrom: []
+  #  - secretRef:
+  #      name: "my-application-secrets"
+  #  - configMapRef:
+  #      name: "my-application-configmap"
+
   affinity: {}
   annotations: {}
+  hostAliases: []
   extraEnvs: {}
   nodeSelector: {}
   resources: {}
@@ -657,6 +687,12 @@ transcriber:
         - name: Accept
           value: application/json
 
+  extraEnvFrom: []
+  #  - secretRef:
+  #      name: "my-application-secrets"
+  #  - configMapRef:
+  #      name: "my-application-configmap"
+
   persistence:
     enabled: false
     #storageClass: ""
@@ -669,6 +705,7 @@ transcriber:
 
   affinity: {}
   annotations: {}
+  hostAliases: []
   extraEnvs: {}
   nodeSelector: {}
   resources: {}
@@ -810,6 +847,7 @@ jibri:
 
   affinity: {}
   annotations: {}
+  hostAliases: []
   extraEnvs: {}
   extraSecrets: []
   extraSecretsFrom: []
