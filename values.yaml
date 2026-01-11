@@ -209,7 +209,7 @@ excalidraw:
 
   image:
     repository: jitsi/excalidraw-backend
-    tag: 2025.2.2
+    tag: 2025.8.2
 
   livenessProbe:
     httpGet:
@@ -253,7 +253,7 @@ coturn:
 
   image:
     repository: coturn/coturn
-    tag: 4.7
+    tag: 4.8
 
   staticAuth:
     secret:
