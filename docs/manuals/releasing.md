@@ -3,6 +3,8 @@
 Overall, the release process looks like this:
 
 - Add some changes to the chart.
+- Upgrade image versions in [values.yaml](/values.yaml) if needed. Don't forget
+  external components such as `coturn`, `excalidraw-backend`, etc.
 - Test these changes on a test installation.
 - Test again on production installation.
 - Update `version` in [Chart.yaml](/Chart.yaml).
