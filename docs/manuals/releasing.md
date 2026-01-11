@@ -8,6 +8,7 @@ Overall, the release process looks like this:
 - Test these changes on a test installation.
 - Test again on production installation.
 - Update `version` in [Chart.yaml](/Chart.yaml).
+- Update `appVersion` in [Chart.yaml](/Chart.yaml) if Jitsi images are upgraded.
 - Create the package:
   ```bash
   # List keys
