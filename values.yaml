@@ -474,10 +474,6 @@ jvb:
   # You can specify your nodes' IP addresses,
   # or IP addresses of proxies/LoadBalancers used for your
   # Jitsi Meet installation. Or both!
-  #
-  # Note that only the first IP address will be used for legacy
-  # `DOCKER_HOST_ADDRESS` environment variable.
-  #
   #publicIPs:
   #  - 1.2.3.4
   #  - 5.6.7.8
