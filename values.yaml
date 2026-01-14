@@ -82,6 +82,8 @@ web:
 
   image:
     repository: jitsi/web
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/web/rootfs
@@ -303,6 +305,8 @@ prosody:
 
   image:
     repository: jitsi/prosody
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/prosody/rootfs
@@ -408,6 +412,8 @@ jicofo:
 
   image:
     repository: jitsi/jicofo
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jicofo/rootfs
@@ -459,6 +465,8 @@ jvb:
 
   image:
     repository: jitsi/jvb
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   breweryMuc: jvbbrewery
 
@@ -594,6 +602,8 @@ jigasi:
 
   image:
     repository: jitsi/jigasi
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   breweryMuc: jigasibrewery
 
@@ -651,6 +661,8 @@ transcriber:
 
   image:
     repository: jitsi/jigasi
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   breweryMuc: jigasibrewery
 
@@ -724,6 +736,8 @@ jibri:
 
   image:
     repository: jitsi/jibri
+    # If the tag is not set here then it is retrieved from Chart.yaml
+    #tag:
 
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs

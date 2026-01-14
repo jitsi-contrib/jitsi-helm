@@ -7,13 +7,12 @@ icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
 # This is the *chart* version.
 # This version number should be incremented each time you make
 # changes to the chart and its templates, including the app version.
-version: 2.2.1
+version: 2.3.0
 
 # This is the *application* version.
-# Make sure to bump application version in 2 places:
-#   - Here
-#   - values.yaml
-appVersion: stable-10655
+# If tags are not set explicitly in values.yaml then appVersion is used as
+# the default tag for Jitsi images.
+appVersion: stable-10710
 
 ## Chart annotations (for ArtifactHub):
 annotations:
