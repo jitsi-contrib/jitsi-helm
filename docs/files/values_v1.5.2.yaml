@@ -1,0 +1,425 @@
+# v1.5.2
+
+global:
+  clusterDomain: cluster.local
+  podLabels: {}
+  podAnnotations: {}
+  releaseSecretsOverride:
+    enabled: false
+
+nameOverride: ""
+fullnameOverride: ""
+tz: Europe/Amsterdam
+imagePullSecrets: []
+image:
+  pullPolicy: IfNotPresent
+publicURL: ""
+enableAuth: false
+enableGuests: true
+
+websockets:
+  colibri:
+    enabled: false
+  xmpp:
+    enabled: false
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name:
+
+xmpp:
+  domain: meet.jitsi
+  authDomain:
+  mucDomain:
+  internalMucDomain:
+  guestDomain:
+  hiddenDomain:
+
+extraCommonEnvs: {}
+
+web:
+  replicaCount: 1
+  image:
+    repository: jitsi/web
+
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _default: ""
+      _ffdhe2048_txt: ""
+      _interface_config_js: ""
+      _meet_conf: ""
+      _nginx_conf: ""
+      _settings_config_js: ""
+      _ssl_conf: ""
+      _system_config_js: ""
+    configs:
+      _custom_interface_config_js: ""
+      _custom_config_js: ""
+
+  service:
+    type: ClusterIP
+    port: 80
+    #type: NodePort
+    #nodePort: 30580
+    #port: 80
+    externalIPs: []
+    annotations: {}
+
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts:
+      - host: jitsi.local
+        paths: ["/"]
+    tls: []
+
+  httpRedirect: false
+  httpsEnabled: false
+  #resolverIP: 10.43.0.10
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 80
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 80
+
+  affinity: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+  # -
+
+prosody:
+  enabled: true
+  useExternalProsody: false
+  server:
+  image:
+    repository: jitsi/prosody
+    tag: stable-10590
+
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _prosody_cfg_lua: ""
+      _saslauthd_conf: ""
+      _jitsi_meet_cfg_lua: ""
+
+  # service:
+  #   ports:
+  #     xmppc2snodePort: 30522
+
+  extraVolumes: []
+  extraVolumeMounts: []
+  extraEnvFrom:
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jibri'
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jicofo'
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jigasi'
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-transcriber'
+  - secretRef:
+      name: '{{ include "prosody.fullname" . }}-jvb'
+  - configMapRef:
+      name: '{{ include "prosody.fullname" . }}-common'
+
+jicofo:
+  replicaCount: 1
+  image:
+    repository: jitsi/jicofo
+
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _jicofo_conf: ""
+      _logging_properties: ""
+
+  xmpp:
+    password:
+    componentSecret:
+
+  livenessProbe:
+    tcpSocket:
+      port: 8888
+  readinessProbe:
+    tcpSocket:
+      port: 8888
+
+  metrics:
+    enabled: false
+    image:
+      repository: prayagsingh/prometheus-jicofo-exporter
+      tag: "1.3.2"
+    resources: {}
+
+  affinity: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+jvb:
+  replicaCount: 1
+  image:
+    repository: jitsi/jvb
+
+  breweryMuc: jvbbrewery
+
+  xmpp:
+    user: jvb
+    password:
+
+  #publicIPs:
+  #  - 1.2.3.4
+  #  - 5.6.7.8
+  useNodeIP: false
+  stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
+  useHostPort: false
+  useHostNetwork: false
+  UDPPort: 10000
+  #nodePort: 10000
+
+  service:
+    enabled:
+    type: ClusterIP
+    externalTrafficPolicy: Cluster
+    externalIPs: []
+    #loadBalancerClass: null
+    #ipFamilyPolicy: PreferDualStack
+    annotations: {}
+    extraPorts: []
+
+  livenessProbe:
+    httpGet:
+      path: /about/health
+      port: 8080
+  readinessProbe:
+    httpGet:
+      path: /about/health
+      port: 8080
+
+  metrics:
+    enabled: false
+    image:
+      repository: docker.io/systemli/prometheus-jitsi-meet-exporter
+      tag: 1.2.3
+      pullPolicy: IfNotPresent
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 20m
+        memory: 32Mi
+
+    prometheusAnnotations: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false
+
+    grafanaDashboards:
+      enabled: false
+      labels:
+        grafana_dashboard: "1"
+      annotations: {}
+
+  affinity: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+octo:
+  enabled: false
+
+jigasi:
+  enabled: false
+  useExternalJigasi: false
+
+  replicaCount: 1
+  image:
+    repository: jitsi/jigasi
+
+  breweryMuc: jigasibrewery
+
+  xmpp:
+    user: jigasi
+    password:
+
+  livenessProbe:
+    httpGet:
+      path: /about/health
+      port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
+  readinessProbe:
+    httpGet:
+      path: /about/health
+      port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
+
+  affinity: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+transcriber:
+  enabled: false
+  useExternalTranscriber: false
+
+  replicaCount: 1
+  image:
+    repository: jitsi/jigasi
+
+  breweryMuc: jigasibrewery
+
+  xmpp:
+    user: transcriber
+    password: ""
+
+  livenessProbe:
+    httpGet:
+      path: /about/health
+      port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
+  readinessProbe:
+    httpGet:
+      path: /about/health
+      port: 8788
+      httpHeaders:
+        - name: Accept
+          value: application/json
+
+  persistence:
+    enabled: false
+    #storageClass: ""
+    #size: 10Gi
+    #existingClaim: ""
+
+  whisper:
+    customService: ""
+    url: ""
+
+  affinity: {}
+  extraEnvs: {}
+  resources: {}
+  nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+jibri:
+  enabled: false
+  useExternalJibri: false
+
+  replicaCount: 1
+  image:
+    repository: jitsi/jibri
+
+  custom:
+    contInit:
+      _10_config: ""
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _jibri_conf: ""
+      _logging_properties: ""
+      _xorg_video_dummy_conf: ""
+    other:
+      _finalize_sh: ""
+
+  breweryMuc: jibribrewery
+  timeout: 90
+
+  xmpp:
+    user: jibri
+    password:
+  recorder:
+    user: recorder
+    password:
+
+  livenessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+    exec:
+      command:
+        - /bin/bash
+        - "-c"
+        - >-
+            curl -sq localhost:2222/jibri/api/v1.0/health
+            | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
+            | grep -qP 'HEALTHY (IDLE|BUSY)'
+
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+    exec:
+      command:
+        - /bin/bash
+        - "-c"
+        - >-
+            curl -sq localhost:2222/jibri/api/v1.0/health
+            | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
+            | grep -qP 'HEALTHY (IDLE|BUSY)'
+
+  singleUseMode: false
+  recording: true
+  livestreaming: false
+  persistence:
+    enabled: false
+    size: 4Gi
+    existingClaim:
+    storageClassName:
+  shm:
+    enabled: false
+    #useHost: false
+    #size: 2Gi
+  #strategy:
+  #  type: RollingUpdate
+
+  affinity: {}
+  extraEnvs: {}
+  nodeSelector: {}
+  resources: {}
+  podLabels: {}
+  podAnnotations: {}
+  tolerations: []
