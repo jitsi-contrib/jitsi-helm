@@ -113,7 +113,7 @@ jvb:
 ```
 
 This is similar to option 3, but it creates multiple JVB pods using consecutive
-ports. For example, these settings creates 3 JVB pods, each using `UDP-10000`,
+ports. For example, these settings create 3 JVB pods, each using `UDP-10000`,
 `UDP-10001` and `UDP-10002` respectively.
 
 If `replicaCount` is greater than 1 then it creates
