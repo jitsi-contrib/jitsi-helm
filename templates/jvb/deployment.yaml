@@ -1,84 +1,99 @@
+{{- $basePort := .Values.UDPPort }}
+
+{{- $rangeSize := 1 }}
+{{- if .Values.jvb.useHostPort }}
+{{-   $rangeSize = .Values.portRangeSize | default 1 }}
+{{- end }}
+
+{{- range $i := until (int $rangeSize) }}
+{{- $udpPort := add $basePort $i }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "jitsi-meet.jvb.fullname" . }}
+  name: {{ include "jitsi-meet.jvb.fullname" $ }}-{{ $i }}
   labels:
-    {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
-  {{- with .Values.jvb.annotations }}
+    {{- include "jitsi-meet.jvb.labels" $ | nindent 4 }}
+    instance: {{ $i | quote }}
+  {{- with $.Values.jvb.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.jvb.replicaCount }}
+  replicas: {{ $.Values.jvb.replicaCount }}
   selector:
     matchLabels:
-      {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 6 }}
-  {{- if .Values.jvb.useHostPort }}
+      {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 6 }}
+      instance: {{ $i | quote }}
+  {{- if $.Values.jvb.useHostPort }}
   strategy:
     type: Recreate
   {{- end }}
   template:
     metadata:
       labels:
-        {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.jvb.podLabels) }}
+        {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 8 }}
+        instance: {{ $i | quote }}
+        {{- with (mergeOverwrite $.Values.global.podLabels $.Values.jvb.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") . | sha256sum | quote }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum | quote }}
+        checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") $ | sha256sum | quote }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") $ | sha256sum | quote }}
         {{- if and
-            .Values.jvb.metrics.enabled
-            .Values.jvb.metrics.prometheusAnnotations
+            $.Values.jvb.metrics.enabled
+            $.Values.jvb.metrics.prometheusAnnotations
         }}
         prometheus.io/port: "9888"
         prometheus.io/scrape: "true"
         {{- end }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jvb.podAnnotations) }}
+        {{- with (mergeOverwrite $.Values.global.podAnnotations $.Values.jvb.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with $.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" $ }}
       securityContext:
-        {{- toYaml .Values.jvb.podSecurityContext | nindent 8 }}
-      {{- if .Values.jvb.useHostNetwork }}
+        {{- toYaml $.Values.jvb.podSecurityContext | nindent 8 }}
+      {{- if $.Values.jvb.useHostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
-      {{- with .Values.jvb.extraVolumes }}
+      {{- with $.Values.jvb.extraVolumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.jvb.image.repository }}:{{ .Values.jvb.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ pluck "pullPolicy" .Values.jvb.image .Values.image | first }}
+        - name: {{ $.Chart.Name }}
+          image: "{{ $.Values.jvb.image.repository }}:{{ $.Values.jvb.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ pluck "pullPolicy" $.Values.jvb.image $.Values.image | first }}
           securityContext:
-            {{- toYaml .Values.jvb.securityContext | nindent 12 }}
+            {{- toYaml $.Values.jvb.securityContext | nindent 12 }}
           envFrom:
             - secretRef:
-                name: {{ include "jitsi-meet.jvb.secretName" . }}
+                name: {{ include "jitsi-meet.jvb.secretName" $ }}
             - configMapRef:
-                name: {{ include "jitsi-meet.common" . }}
+                name: {{ include "jitsi-meet.common" $ }}
             - configMapRef:
-                name: {{ include "jitsi-meet.jvb.fullname" . }}
-            {{- if .Values.global.releaseSecretsOverride.enabled }}
-            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+                name: {{ include "jitsi-meet.jvb.fullname" $ }}
+            {{- if $.Values.global.releaseSecretsOverride.enabled }}
+            {{-   range $.Values.global.releaseSecretsOverride.extraEnvFrom }}
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
           env:
+            - name: JVB_PORT
+              value: {{ $udpPort | quote }}
             {{- if or
-                .Values.jvb.useNodeIP
-                .Values.jvb.publicIPs
+                $.Values.jvb.useNodeIP
+                $.Values.jvb.publicIPs
             }}
             - name: JVB_ADVERTISE_IPS
-              {{- if .Values.jvb.publicIPs }}
-              value: {{ .Values.jvb.publicIPs | join "," | quote }}
+              {{- if $.Values.jvb.publicIPs }}
+              value: {{ $.Values.jvb.publicIPs | join "," | quote }}
               {{- else }}
               valueFrom:
                 fieldRef:
@@ -87,13 +102,13 @@ spec:
             {{- else }}
               {{- fail "(jvb.publicIPs | jvb.useNodeIP) Please set an external IP addresses for JVB(s) or enable the Node IP autodetection!" }}
             {{- end }}
-            {{- if .Values.websockets.colibri.enabled }}
+            {{- if $.Values.websockets.colibri.enabled }}
             - name: JVB_WS_SERVER_ID
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
             {{- end }}
-            {{- if  .Values.octo.enabled }}
+            {{- if  $.Values.octo.enabled }}
             - name: JVB_OCTO_BIND_ADDRESS
               valueFrom:
                 fieldRef:
@@ -105,40 +120,40 @@ spec:
             {{- end }}
           ports:
             - name: rtp-udp
-              containerPort: {{ .Values.jvb.UDPPort }}
-              {{- if .Values.jvb.useHostPort }}
-              hostPort: {{ .Values.jvb.UDPPort }}
+              containerPort: {{ $udpPort }}
+              {{- if $.Values.jvb.useHostPort }}
+              hostPort: {{ $udpPort }}
               {{- end }}
               protocol: UDP
-            {{- if .Values.websockets.colibri.enabled }}
+            {{- if $.Values.websockets.colibri.enabled }}
             - name: colibri-ws-tcp
               containerPort: 9090
               protocol: TCP
             {{- end }}
-            {{- if .Values.octo.enabled }}
+            {{- if $.Values.octo.enabled }}
             - name: octo
               containerPort: 4096
               protocol: TCP
             {{- end }}
-          {{- with .Values.jvb.livenessProbe }}
+          {{- with $.Values.jvb.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.jvb.readinessProbe }}
+          {{- with $.Values.jvb.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
-            {{- toYaml .Values.jvb.resources | nindent 12 }}
-          {{- with .Values.jvb.extraVolumeMounts }}
+            {{- toYaml $.Values.jvb.resources | nindent 12 }}
+          {{- with $.Values.jvb.extraVolumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
 
-        {{- if .Values.jvb.metrics.enabled }}
+        {{- if $.Values.jvb.metrics.enabled }}
         - name: metrics
-          image: {{ .Values.jvb.metrics.image.repository }}:{{ .Values.jvb.metrics.image.tag }}
-          imagePullPolicy: {{ .Values.jvb.metrics.image.pullPolicy }}
+          image: {{ $.Values.jvb.metrics.image.repository }}:{{ $.Values.jvb.metrics.image.tag }}
+          imagePullPolicy: {{ $.Values.jvb.metrics.image.pullPolicy }}
           securityContext:
             runAsUser: 10001
           command:
@@ -156,33 +171,19 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 5
           resources:
-            {{- toYaml .Values.jvb.metrics.resources | nindent 12 }}
+            {{- toYaml $.Values.jvb.metrics.resources | nindent 12 }}
             {{- end }}
 
-      {{- if or
-          .Values.jvb.useHostPort
-          .Values.jvb.affinity
-      }}
+      {{- with $.Values.jvb.affinity }}
       affinity:
-        {{- if .Values.jvb.affinity }}
-        {{- toYaml .Values.jvb.affinity | nindent 8 }}
-        {{- else }}
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - jvb
-            topologyKey: "kubernetes.io/hostname"
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.jvb.nodeSelector }}
+      {{- with $.Values.jvb.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.jvb.tolerations }}
+      {{- with $.Values.jvb.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
