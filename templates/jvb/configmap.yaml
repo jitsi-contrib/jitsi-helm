@@ -12,7 +12,6 @@ data:
 
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
-  JVB_OCTO_BIND_PORT: "4096"
   JVB_OCTO_REGION: "all"
   {{- end }}
 
