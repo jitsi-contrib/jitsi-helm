@@ -490,8 +490,7 @@ jvb:
   # or hostPort enabled) where every JVB pod should announce it's
   # own IP address only.
   useNodeIP: false
-  # Use a STUN server to help some users punch through some
-  # especially nasty NAT setups. Usually makes sense for P2P calls.
+  # Use a STUN server to help JVB to find its own external IP.
   stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
   # Try to use the hostPort feature:
   # (might not be supported by some clouds or CNI engines)
@@ -501,6 +500,11 @@ jvb:
   useHostNetwork: false
   # UDP transport port:
   UDPPort: 10000
+  # Number of consecutive ports to allocate.
+  # If set to 1, only UDPPort is used (legacy behavior).
+  # If > 1, UDPPort acts as the base for the port range.
+  # This range logic is only valid if useHostPort is enabled.
+  portRangeSize: 1
   # Use a pre-defined external port for NodePort or LoadBalancer service,
   # if needed. Will allocate a random port from allowed range if unset.
   # (Default NodePort range for K8s is 30000-32767)

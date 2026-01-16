@@ -7,14 +7,11 @@ metadata:
 data:
   COLIBRI_REST_ENABLED: "true"
   JVB_BREWERY_MUC: {{ .Values.jvb.breweryMuc | quote }}
-  JVB_PORT: {{ .Values.jvb.UDPPort | quote }}
   JVB_STUN_SERVERS: {{.Values.jvb.stunServers | quote }}
-  JVB_TCP_HARVESTER_DISABLED: "1"
   XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
-  JVB_OCTO_BIND_PORT: "4096"
   JVB_OCTO_REGION: "all"
   {{- end }}
 

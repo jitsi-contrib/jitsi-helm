@@ -38,9 +38,12 @@ jvb:
   service:
     type: LoadBalancer
 
-  # Depending on the cloud, LB's public IP cannot be known in advance, so deploy first, without the next option.
-  # Next: redeploy with the following option set to the public IP you retrieved from the API.
-  # Additionally, you can add your cluster's public IPs if you want to use direct connection as a fallback.
+  # Depending on the cloud, LB's public IP cannot be known in advances.
+  # So, deploy first, without the next option.
+  # Next: redeploy with the following option, set to the public IP you retrieved
+  # from the API.
+  # Additionally, you can add your cluster's public IPs if you want to use
+  # direct connection as a fallback.
   publicIPs:
     - 1.2.3.4
     # - 30.10.10.1
@@ -57,8 +60,9 @@ working video setup.
 jvb:
   service:
     type: NodePort
-  # Set the following variable if you want to use a specific external port for the service.
-  # The default is to select a random port from Kubelet's allowed NodePort range (30000-32767).
+  # Set the following variable if you want to use a specific external port for
+  # the service. The default is to select a random port from Kubelet's allowed
+  # NodePort range (30000-32767).
 
   # nodePort: 10000
 
@@ -83,7 +87,7 @@ jvb:
     - 30.10.10.1
 ```
 
-In this case you can have more the one `jvb` but you're putting you cluster at
+In this case you can have more the one `jvb` but you're putting your cluster at
 risk by having the nodes IPs and JVB ports directly exposed on the Internet.
 
 #### Option 3.1: hostPort and auto-detected Node IP
@@ -97,6 +101,23 @@ jvb:
 This is similar to option 3, but every JVB pod will auto-detect it's own
 external IP address based on the node it's running on. This option might be
 better suited for installations that use OCTO.
+
+#### Option 3.2: hostPort with a port range
+
+```yaml
+jvb:
+  useHostPort: true
+  useNodeIP: true
+  UDPPort: 10000
+  portRangeSize: 3
+```
+
+This is similar to option 3, but it creates multiple JVB pods using consecutive
+ports. For example, these settings create 3 JVB pods, each using `UDP-10000`,
+`UDP-10001` and `UDP-10002` respectively.
+
+If `replicaCount` is greater than 1 then it creates
+`replicaCount * portRangeSize` JVB pods in total.
 
 ### Option 4: hostNetwork
 
