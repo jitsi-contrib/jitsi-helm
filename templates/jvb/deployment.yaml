@@ -130,11 +130,6 @@ spec:
               containerPort: 9090
               protocol: TCP
             {{- end }}
-            {{- if $.Values.octo.enabled }}
-            - name: octo
-              containerPort: 4096
-              protocol: TCP
-            {{- end }}
           {{- with $.Values.jvb.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
