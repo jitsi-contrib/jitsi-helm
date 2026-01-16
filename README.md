@@ -102,6 +102,23 @@ This is similar to option 3, but every JVB pod will auto-detect it's own
 external IP address based on the node it's running on. This option might be
 better suited for installations that use OCTO.
 
+#### Option 3.2: hostPort with a port range
+
+```yaml
+jvb:
+  useHostPort: true
+  useNodeIP: true
+  UDPPort: 10000
+  portRangeSize: 3
+```
+
+This is similar to option 3, but it creates multiple JVB pods using consecutive
+ports. For example, these settings creates 3 JVB pods, each using `UDP-10000`,
+`UDP-10001` and `UDP-10002` respectively.
+
+If `replicaCount` is greater than 1 then it creates
+`replicaCount * portRangeSize` JVB pods in total.
+
 ### Option 4: hostNetwork
 
 ```yaml
