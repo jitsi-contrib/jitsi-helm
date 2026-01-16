@@ -1,8 +1,8 @@
-{{- $basePort := .Values.UDPPort }}
+{{- $basePort := .Values.jvb.UDPPort }}
 
 {{- $rangeSize := 1 }}
 {{- if .Values.jvb.useHostPort }}
-{{-   $rangeSize = .Values.portRangeSize | default 1 }}
+{{-   $rangeSize = .Values.jvb.portRangeSize | default 1 }}
 {{- end }}
 
 {{- range $i := until (int $rangeSize) }}
