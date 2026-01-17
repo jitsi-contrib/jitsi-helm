@@ -253,6 +253,10 @@ prosody:
       mountPath: /prosody-plugins-custom/mod_measure_client_presence.lua
 ```
 
+No need to add a module from
+[jitsi-contrib/prosody-plugins](https://github.com/jitsi-contrib/prosody-plugins)
+manually since they are available in the official `jitsi/prosody` container.
+
 ## Configuration
 
 Please check [values.yaml](/values.yaml)
