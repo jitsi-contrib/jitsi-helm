@@ -48,7 +48,7 @@ spec:
       volumes:
         - name: config
           emptyDir: {}
-        - name: custom-continits
+        - name: custom-continit
           configMap:
             defaultMode: 493
             name: {{ include "jitsi-meet.jibri.fullname" . }}-continit
@@ -131,7 +131,7 @@ spec:
             - name: config
               mountPath: /config
             {{- if .Values.jibri.custom.contInit._10_config }}
-            - name: custom-continits
+            - name: custom-continit
               mountPath: /etc/cont-init.d/10-config
               subPath: 10-config
             {{- end }}
