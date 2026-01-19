@@ -4,20 +4,18 @@
 ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
 
-[jitsi-meet](https://jitsi.org/jitsi-meet/) Secure, Simple and Scalable Video
-Conferences that you use as a standalone app or embed in your web application.
+[Jitsi-Meet](https://jitsi.org/jitsi-meet/): Secure, simple and scalable video
+conferences that you can use as a standalone app or embed in your web
+application.
 
-## TL;DR;
+This chart bootstraps a Jitsi Meet stack on Kubernetes.
+
+## Quick start
 
 ```bash
 helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
 helm install myjitsi jitsi/jitsi-meet
 ```
-
-## Introduction
-
-This chart bootstraps a jitsi-meet deployment, like the official
-[one](https://meet.jit.si).
 
 ## Exposing your Jitsi Meet installation
 
@@ -28,10 +26,10 @@ cases. Kubernetes offers multiple possibilities to work around the problem. Not
 all options are available depending on the Kubernetes cluster setup. The chart
 tries to make all options available without enforcing one.
 
-### Option 1: service of type `LoadBalancer`
+### Option 1: Using a LoadBalancer service
 
-This requires a cloud setup that enables a Loadbalancer attachement. This could
-be enabled via values:
+This requires a cloud environment that supports LoadBalancer provisioning. It
+can be enabled in the values:
 
 ```yaml
 jvb:
@@ -50,47 +48,47 @@ jvb:
     # - 30.10.10.2
 ```
 
-In this case you're not allowed to change the `jvb.replicaCount` to more than
-`1`, UDP packets will be routed to random `jvb`, which would not allow for a
-working video setup.
+In this configuration, `jvb.replicaCount` must remain at 1. Increasing the
+replicas will cause UDP packets to be routed to random JVB instances, breaking
+the video connection.
 
-### Option 2: NodePort and node with Public IP or external loadbalancer
+### Option 2: Using a NodePort service (public node IP or external LB)
 
 ```yaml
 jvb:
   service:
     type: NodePort
-  # Set the following variable if you want to use a specific external port for
+
+  # Set the following variables if you want to use a specific external port for
   # the service. The default is to select a random port from Kubelet's allowed
   # NodePort range (30000-32767).
+  #UDPPort: 32000
+  #nodePort: 32000
 
-  # nodePort: 10000
-
-  # Use public IP of one (or more) of your nodes,
-  # or the public IP of an external LB:
+  # Use public IP of the node or the external LB:
   publicIPs:
     - 30.10.10.1
 ```
 
-In this case you're not allowed to change the `jvb.replicaCount` to more than
-`1`, UDP packets will be routed to random `jvb`, which would not allow for a
-working video setup.
+In this configuration, `jvb.replicaCount` must remain at 1. Increasing the
+replicas will cause UDP packets to be routed to random JVB instances, breaking
+the video connection.
 
-### Option 3: hostPort and node with Public IP
+### Option 3: Using hostPort (public node IP)
 
 ```yaml
 jvb:
   useHostPort: true
-  # Use public IP of one (or more) of your nodes,
-  # or the public IP of an external LB:
+
+  # Use public IPs of the nodes:
   publicIPs:
     - 30.10.10.1
 ```
 
-In this case you can have more the one `jvb` but you're putting your cluster at
-risk by having the nodes IPs and JVB ports directly exposed on the Internet.
+While this allows `jvb.replicaCount` to be greater than 1, it requires exposing
+Node IPs and JVB ports directly to Internet.
 
-#### Option 3.1: hostPort and auto-detected Node IP
+#### Option 3.1: Using hostPort (auto-detected public node IP)
 
 ```yaml
 jvb:
@@ -98,11 +96,11 @@ jvb:
   useNodeIP: true
 ```
 
-This is similar to option 3, but every JVB pod will auto-detect it's own
-external IP address based on the node it's running on. This option might be
-better suited for installations that use OCTO.
+This is similar to Option 3, but every JVB pod will auto-detect its own external
+IP address based on the node it is running on. This option might be better
+suited for installations that use OCTO.
 
-#### Option 3.2: hostPort with a port range
+#### Option 3.2: Using hostPort with a port range
 
 ```yaml
 jvb:
@@ -112,14 +110,14 @@ jvb:
   portRangeSize: 3
 ```
 
-This is similar to option 3, but it creates multiple JVB pods using consecutive
-ports. For example, these settings create 3 JVB pods, each using `UDP-10000`,
-`UDP-10001` and `UDP-10002` respectively.
+This is similar to Option 3, but it creates multiple JVB pods using a range of
+consecutive ports. For example, these settings create 3 JVB pods using ports
+`10000/UDP`, `10001/UDP` and `10002/UDP` respectively.
 
-If `replicaCount` is greater than 1 then it creates
-`replicaCount * portRangeSize` JVB pods in total.
+If `replicaCount` is greater than 1, it creates a total of
+`replicaCount * portRangeSize` JVB pods.
 
-### Option 4: hostNetwork
+### Option 4: Using hostNetwork
 
 ```yaml
 jvb:
@@ -130,9 +128,9 @@ Similar to Option 3, this way you expose JVB "as is" on the node, without any
 additional protection. This is not recommended, but might be useful in some rare
 cases.
 
-### Option 4: Use ingress TCP/UDP forward capabilities
+### Option 4: Using Ingress TCP/UDP forward capabilities
 
-In case of an ingress capable of doing tcp/udp forwarding (like nginx-ingress),
+In case of an ingress capable of doing TCP/UDP forwarding (like nginx-ingress),
 it can be setup to forward the video streams.
 
 ```yaml
@@ -143,7 +141,7 @@ jvb:
     - 1.2.3.4
 ```
 
-Again in this case, only one jvb will work in this case.
+Again in this case, only one JVB will work.
 
 ### Option 5: Bring your own setup
 
