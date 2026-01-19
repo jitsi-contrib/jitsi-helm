@@ -81,7 +81,7 @@ spec:
             - name: config
               mountPath: /config
             {{- if .Values.jicofo.custom.contInit._10_config }}
-            - name: custom-continits
+            - name: custom-continit
               mountPath: /etc/cont-init.d/10-config
               subPath: 10-config
             {{- end }}
