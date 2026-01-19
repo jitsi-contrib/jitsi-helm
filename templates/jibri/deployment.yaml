@@ -51,7 +51,7 @@ spec:
         - name: custom-continits
           configMap:
             defaultMode: 493
-            name: {{ include "jitsi-meet.jibri.fullname" . }}-continits
+            name: {{ include "jitsi-meet.jibri.fullname" . }}-continit
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jibri.fullname" . }}-defaults
