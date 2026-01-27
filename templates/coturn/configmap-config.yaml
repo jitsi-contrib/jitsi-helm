@@ -23,9 +23,6 @@ data:
     {{- if not $udpEnabled }}
     no-udp
     {{- end }}
-    {{- if not $tcpEnabled }}
-    no-tcp
-    {{- end }}
     no-tcp-relay
     no-tls
     no-dtls
