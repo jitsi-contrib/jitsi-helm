@@ -31,6 +31,7 @@ data:
     config.useTurnUdp=true;
     {{- else }}
     config.useTurnUdp=false;
+    config.webrtcIceUdpDisable=true;
     {{- end }}
     {{- end }}
   {{- else if .Values.coturn.enabled }}
@@ -39,6 +40,7 @@ data:
     config.useTurnUdp=true;
     {{- else }}
     config.useTurnUdp=false;
+    config.webrtcIceUdpDisable=true;
     {{- end }}
   {{- end }}
 
