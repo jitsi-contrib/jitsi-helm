@@ -1,4 +1,9 @@
 {{- if .Values.coturn.enabled }}
+{{- $udpEnabled := .Values.coturn.transport.udp | default true -}}
+{{- $tcpEnabled := .Values.coturn.transport.tcp | default false -}}
+{{- if and (not $udpEnabled) (not $tcpEnabled) -}}
+{{- $udpEnabled = true -}}
+{{- end }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,9 +20,16 @@ spec:
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
+    {{- if $udpEnabled }}
     - name: udp-turn
       protocol: UDP
       port: {{ index .Values.coturn.service.ports "turn" }}
+    {{- end }}
+    {{- if $tcpEnabled }}
+    - name: tcp-turn
+      protocol: TCP
+      port: {{ index .Values.coturn.service.ports "turn" }}
+    {{- end }}
   selector:
     {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
 {{- end }}

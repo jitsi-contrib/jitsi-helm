@@ -11,6 +11,11 @@
     .Values.web.custom.defaults._system_config_js
     .Values.coturn.enabled
 }}
+{{- $udpEnabled := .Values.coturn.transport.udp | default true -}}
+{{- $tcpEnabled := .Values.coturn.transport.tcp | default false -}}
+{{- if and (not $udpEnabled) (not $tcpEnabled) -}}
+{{- $udpEnabled = true -}}
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,11 +27,19 @@ data:
   custom-config.js: |
     {{- .Values.web.custom.configs._custom_config_js | nindent 4 }}
     {{- if .Values.coturn.enabled }}
+    {{- if $udpEnabled }}
     config.useTurnUdp=true;
+    {{- else }}
+    config.useTurnUdp=false;
+    {{- end }}
     {{- end }}
   {{- else if .Values.coturn.enabled }}
   custom-config.js: |
+    {{- if $udpEnabled }}
     config.useTurnUdp=true;
+    {{- else }}
+    config.useTurnUdp=false;
+    {{- end }}
   {{- end }}
 
   {{- with .Values.web.custom.configs._custom_interface_config_js }}

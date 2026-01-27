@@ -245,11 +245,11 @@ excalidraw:
 ## #############################################################################
 ## Coturn configuration
 ## #############################################################################
-# Currently, it supports only STUN and TURN over UDP/3478.
-# No support for TURNS over TCP/5349.
-# Media packages are still encrypted with DTLS-SRTP.
 coturn:
   enabled: false
+  transport:
+    udp: true
+    tcp: false
 
   replicaCount: 1
 
