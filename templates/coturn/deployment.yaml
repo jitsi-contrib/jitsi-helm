@@ -24,6 +24,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
+        {{- if .Values.coturn.turns.enabled }}
+        secret.reloader.stakater.com/reload: {{ if .Values.coturn.turns.certificate.create }}{{ include "jitsi-meet.coturn.fullname" . }}-tls{{ else }}{{ .Values.coturn.turns.certificate.existingSecretName }}{{ end }}
+        {{- end }}
         {{- with (mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
