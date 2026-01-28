@@ -47,7 +47,7 @@ spec:
             {{- if .Values.coturn.turns.certificate.create }}
             secretName: {{ include "jitsi-meet.coturn.fullname" . }}-tls
             {{- else }}
-            secretName: {{ .Values.coturn.turns.certificate.existingSecretName }}
+            secretName: {{ required "coturn.turns.certificate.existingSecretName is required when coturn.turns.certificate.create is false" .Values.coturn.turns.certificate.existingSecretName }}
             {{- end }}
         {{- end }}
       initContainers:
@@ -57,6 +57,20 @@ spec:
             - sh
             - -c
             - |
+              {{- if .Values.coturn.turns.enabled }}
+              echo "Validating TLS certificate..."
+              if [ ! -f /etc/coturn/tls/tls.crt ]; then
+                echo "ERROR: TLS certificate file (tls.crt) not found in secret"
+                echo "Secret must contain 'tls.crt' key"
+                exit 1
+              fi
+              if [ ! -f /etc/coturn/tls/tls.key ]; then
+                echo "ERROR: TLS private key file (tls.key) not found in secret"
+                echo "Secret must contain 'tls.key' key"
+                exit 1
+              fi
+              echo "TLS certificate validation passed"
+              {{- end }}
               chmod 755 /config-dir && \
               cp /turnserver.conf /config-dir/ && \
               echo >>/config-dir/turnserver.conf && \
@@ -70,6 +84,11 @@ spec:
             - name: config
               mountPath: /turnserver.conf
               subPath: turnserver.conf
+            {{- if .Values.coturn.turns.enabled }}
+            - name: tls
+              mountPath: /etc/coturn/tls
+              readOnly: true
+            {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
