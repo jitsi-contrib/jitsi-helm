@@ -41,6 +41,15 @@ spec:
         - name: config
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-config
+        {{- if .Values.coturn.turns.enabled }}
+        - name: tls
+          secret:
+            {{- if .Values.coturn.turns.certificate.create }}
+            secretName: {{ include "jitsi-meet.coturn.fullname" . }}-tls
+            {{- else }}
+            secretName: {{ .Values.coturn.turns.certificate.existingSecretName }}
+            {{- end }}
+        {{- end }}
       initContainers:
         - name: init-coturn
           image: busybox:1.36
@@ -88,13 +97,20 @@ spec:
             - name: udp-turn
               protocol: UDP
               containerPort: {{ index .Values.coturn.service.ports "turn" }}
+            {{- if .Values.coturn.turns.enabled }}
+            - name: tcp-turns
+              protocol: TCP
+              containerPort: {{ .Values.coturn.turns.port }}
+            {{- end }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12 }}
+            tcpSocket:
+              port: {{ if $.Values.coturn.turns.enabled }}{{ $.Values.coturn.turns.port }}{{ else }}{{ index $.Values.coturn.service.ports "turn" }}{{ end }}
           {{- end }}
           {{- with .Values.coturn.readinessProbe }}
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
+            tcpSocket:
+              port: {{ if $.Values.coturn.turns.enabled }}{{ $.Values.coturn.turns.port }}{{ else }}{{ index $.Values.coturn.service.ports "turn" }}{{ end }}
           {{- end }}
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
@@ -102,6 +118,11 @@ spec:
             - name: config-dir
               mountPath: /etc/coturn
               readOnly: true
+            {{- if .Values.coturn.turns.enabled }}
+            - name: tls
+              mountPath: /etc/coturn/tls
+              readOnly: true
+            {{- end }}
 
       {{- with .Values.coturn.affinity }}
       affinity:

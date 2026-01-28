@@ -245,13 +245,27 @@ excalidraw:
 ## #############################################################################
 ## Coturn configuration
 ## #############################################################################
-# Currently, it supports only STUN and TURN over UDP/3478.
-# No support for TURNS over TCP/5349.
+# Supports STUN and TURN over UDP/3478.
+# Optional TURNS (TURN over TLS/TCP/443) support.
 # Media packages are still encrypted with DTLS-SRTP.
 coturn:
   enabled: false
 
   replicaCount: 1
+
+  # TURNS (TURN over TLS) configuration
+  turns:
+    enabled: false
+    port: 443
+    certificate:
+      # Create Certificate resource using cert-manager
+      create: true
+      # ClusterIssuer or Issuer to use
+      issuerRef:
+        name: letsencrypt-prod
+        kind: ClusterIssuer
+      # Or use existing TLS secret (requires tls.crt and tls.key)
+      existingSecretName: ""
 
   image:
     repository: coturn/coturn

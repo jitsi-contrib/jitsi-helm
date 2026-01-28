@@ -18,6 +18,11 @@ spec:
     - name: udp-turn
       protocol: UDP
       port: {{ index .Values.coturn.service.ports "turn" }}
+    {{- if .Values.coturn.turns.enabled }}
+    - name: tcp-turns
+      protocol: TCP
+      port: {{ .Values.coturn.turns.port }}
+    {{- end }}
   selector:
     {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
 {{- end }}

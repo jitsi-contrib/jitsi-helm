@@ -16,7 +16,13 @@ data:
     no-cli
     no-loopback-peers
     no-tcp-relay
+    {{- if .Values.coturn.turns.enabled }}
+    tls-listening-port={{ .Values.coturn.turns.port }}
+    cert=/etc/coturn/tls/tls.crt
+    pkey=/etc/coturn/tls/tls.key
+    {{- else }}
     no-tls
+    {{- end }}
     no-dtls
     denied-peer-ip=0.0.0.0-0.255.255.255
     denied-peer-ip=127.0.0.0-127.255.255.255

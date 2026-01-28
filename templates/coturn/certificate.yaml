@@ -1,0 +1,15 @@
+{{- if and .Values.coturn.enabled .Values.coturn.turns.enabled .Values.coturn.turns.certificate.create }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}-tls
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+spec:
+  secretName: {{ include "jitsi-meet.coturn.fullname" . }}-tls
+  issuerRef:
+    name: {{ .Values.coturn.turns.certificate.issuerRef.name }}
+    kind: {{ .Values.coturn.turns.certificate.issuerRef.kind }}
+  dnsNames:
+    - {{ required "turnHost is required for TURNS" .Values.turnHost }}
+{{- end }}
