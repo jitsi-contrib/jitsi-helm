@@ -298,6 +298,9 @@ coturn:
 
   service:
     type: LoadBalancer
+    # Disable NodePort allocation to avoid exhausting the nodePort range
+    # when exposing large TURN relay port ranges.
+    allocateLoadBalancerNodePorts: false
     ports:
       turn: 3478
     # Optional: Specifies the LoadBalancer controller to use (since K8s v1.24).
