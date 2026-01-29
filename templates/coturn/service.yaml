@@ -11,8 +11,8 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.coturn.service.type }}
-  {{- with .Values.coturn.service.allocateLoadBalancerNodePorts }}
-  allocateLoadBalancerNodePorts: {{ . }}
+  {{- if eq .Values.coturn.service.type "LoadBalancer" }}
+  allocateLoadBalancerNodePorts: {{ .Values.coturn.service.allocateLoadBalancerNodePorts }}
   {{- end }}
   {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
   publishNotReadyAddresses: true
