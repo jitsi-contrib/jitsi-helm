@@ -20,8 +20,8 @@ data:
     no-tcp-relay
     {{- if .Values.coturn.turns.enabled }}
     tls-listening-port={{ .Values.coturn.turns.port }}
-    cert=/etc/coturn/tls/tls.crt
-    pkey=/etc/coturn/tls/tls.key
+    cert=/tls/tls.crt
+    pkey=/tls/tls.key
     {{- else }}
     no-tls
     {{- end }}

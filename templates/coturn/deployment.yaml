@@ -107,7 +107,7 @@ spec:
             - -c
             - |
               echo "Waiting for TLS certificate..."
-              while [ ! -f /etc/coturn/tls/tls.crt ] || [ ! -f /etc/coturn/tls/tls.key ]; do
+              while [ ! -f /tls/tls.crt ] || [ ! -f /tls/tls.key ]; do
                 sleep 5
               done
               echo "TLS certificate found, starting coturn"
@@ -157,12 +157,10 @@ spec:
           volumeMounts:
             - name: config-dir
               mountPath: /etc/coturn
-              {{- if not .Values.coturn.turns.enabled }}
               readOnly: true
-              {{- end }}
             {{- if .Values.coturn.turns.enabled }}
             - name: tls
-              mountPath: /etc/coturn/tls
+              mountPath: /tls
               readOnly: true
             {{- end }}
 
