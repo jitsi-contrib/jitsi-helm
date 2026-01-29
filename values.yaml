@@ -267,6 +267,16 @@ coturn:
       # Or use existing TLS secret (requires tls.crt and tls.key)
       existingSecretName: ""
 
+      # ACME challenge proxy - enables certificate validation when
+      # TURN runs on separate IP from ingress controller
+      # This will proxy ACME challenges to the specified ingress
+      acmeProxy:
+        enabled: false
+        # Internal cluster address of ingress controller
+        # Defaults to traefik service in "traefik" namespace
+        target: traefik.traefik.svc.cluster.local
+        targetPort: 80
+
   image:
     repository: coturn/coturn
     tag: 4.8

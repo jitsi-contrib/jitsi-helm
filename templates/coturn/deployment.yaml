@@ -53,6 +53,11 @@ spec:
             secretName: {{ required "coturn.turns.certificate.existingSecretName is required when coturn.turns.certificate.create is false" .Values.coturn.turns.certificate.existingSecretName }}
             {{- end }}
         {{- end }}
+        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        - name: acme-proxy-config
+          configMap:
+            name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
+        {{- end }}
       initContainers:
         - name: init-coturn
           image: busybox:1.36
@@ -146,6 +151,27 @@ spec:
               mountPath: /etc/coturn/tls
               readOnly: true
             {{- end }}
+        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        - name: acme-proxy
+          image: nginx:alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http-acme
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: acme-proxy-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+        {{- end }}
 
       {{- with .Values.coturn.affinity }}
       affinity:

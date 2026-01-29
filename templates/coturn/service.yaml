@@ -25,6 +25,11 @@ spec:
       protocol: TCP
       port: {{ .Values.coturn.turns.port }}
     {{- end }}
+    {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+    - name: http-acme
+      protocol: TCP
+      port: 80
+    {{- end }}
   selector:
     {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
 {{- end }}
