@@ -113,13 +113,14 @@ spec:
             {{-   end }}
             {{- end }}
           ports:
+            {{- if not .Values.coturn.turns.enabled }}
             - name: tcp-turn
               protocol: TCP
               containerPort: {{ index .Values.coturn.service.ports "turn" }}
             - name: udp-turn
               protocol: UDP
               containerPort: {{ index .Values.coturn.service.ports "turn" }}
-            {{- if .Values.coturn.turns.enabled }}
+            {{- else }}
             - name: tcp-turns
               protocol: TCP
               containerPort: {{ .Values.coturn.turns.port }}

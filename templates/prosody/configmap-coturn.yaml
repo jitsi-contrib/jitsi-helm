@@ -6,12 +6,13 @@ metadata:
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
+  {{- if not .Values.coturn.turns.enabled }}
   STUN_HOST: {{ .Values.turnHost | quote }}
   STUN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_HOST: {{ .Values.turnHost | quote }}
   TURN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_TRANSPORT: "udp"
-  {{- if .Values.coturn.turns.enabled }}
+  {{- else }}
   TURNS_HOST: {{ .Values.turnHost | quote }}
   TURNS_PORT: {{ .Values.coturn.turns.port | quote }}
   {{- end }}
