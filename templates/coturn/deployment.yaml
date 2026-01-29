@@ -63,33 +63,14 @@ spec:
         {{- end }}
       initContainers:
         {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
-        - name: init-acme
+        - name: acme-proxy
           image: nginx:alpine
-          command:
-            - /bin/sh
-            - -c
-            - |
-              # start nginx in background to handle challenges
-              echo "Starting ACME challenge proxy..."
-              nginx &
-              NGINX_PID=$!
-
-              # wait for cert-manager to issue cert
-              echo "Waiting for TLS certificate from cert-manager..."
-              while [ ! -f /etc/coturn/tls/tls.crt ] || [ ! -f /etc/coturn/tls/tls.key ]; do
-                sleep 5
-                echo "Certificate not available, waiting..."
-              done
-
-              echo "Certificate found, stopping proxy and proceeding..."
-              kill $NGINX_PID 2>/dev/null || true
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
           volumeMounts:
             - name: acme-proxy-config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
-              readOnly: true
-            - name: tls
-              mountPath: /etc/coturn/tls
               readOnly: true
         {{- end }}
         - name: init-coturn
@@ -98,20 +79,6 @@ spec:
             - sh
             - -c
             - |
-              {{- if .Values.coturn.turns.enabled }}
-              echo "Validating TLS certificate..."
-              if [ ! -f /etc/coturn/tls/tls.crt ]; then
-                echo "ERROR: TLS certificate file (tls.crt) not found in secret"
-                echo "Secret must contain 'tls.crt' key"
-                exit 1
-              fi
-              if [ ! -f /etc/coturn/tls/tls.key ]; then
-                echo "ERROR: TLS private key file (tls.key) not found in secret"
-                echo "Secret must contain 'tls.key' key"
-                exit 1
-              fi
-              echo "TLS certificate validation passed"
-              {{- end }}
               chmod 755 /config-dir && \
               cp /turnserver.conf /config-dir/ && \
               echo >>/config-dir/turnserver.conf && \
@@ -134,6 +101,18 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.coturn.image .Values.image | first }}
+          {{- if .Values.coturn.turns.enabled }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for TLS certificate..."
+              while [ ! -f /etc/coturn/tls/tls.crt ] || [ ! -f /etc/coturn/tls/tls.key ]; do
+                sleep 5
+              done
+              echo "TLS certificate found, starting coturn"
+              exec turnserver -c /etc/coturn/turnserver.conf
+          {{- end }}
           securityContext:
             {{- toYaml .Values.coturn.securityContext | nindent 12 }}
           envFrom:
@@ -178,33 +157,14 @@ spec:
           volumeMounts:
             - name: config-dir
               mountPath: /etc/coturn
+              {{- if not .Values.coturn.turns.enabled }}
               readOnly: true
+              {{- end }}
             {{- if .Values.coturn.turns.enabled }}
             - name: tls
               mountPath: /etc/coturn/tls
               readOnly: true
             {{- end }}
-        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
-        - name: acme-proxy
-          image: nginx:alpine
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http-acme
-              containerPort: 80
-              protocol: TCP
-          volumeMounts:
-            - name: acme-proxy-config
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-              readOnly: true
-          resources:
-            requests:
-              cpu: 10m
-              memory: 16Mi
-            limits:
-              cpu: 50m
-              memory: 32Mi
-        {{- end }}
 
       {{- with .Values.coturn.affinity }}
       affinity:

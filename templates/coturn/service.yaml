@@ -11,6 +11,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.coturn.service.type }}
+  {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+  publishNotReadyAddresses: true
+  {{- end }}
   {{- with .Values.coturn.service.loadBalancerClass }}
   loadBalancerClass: {{ . }}
   {{- end }}

@@ -271,6 +271,7 @@ coturn:
       # ACME challenge proxy - enables certificate validation when
       # TURN runs on separate IP from ingress controller
       # This will proxy ACME challenges to the specified ingress
+      # Requires Kubernetes native sidecar containers support
       acmeProxy:
         enabled: false
         # Internal cluster address of ingress controller
