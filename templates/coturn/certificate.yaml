@@ -10,6 +10,7 @@ spec:
   issuerRef:
     name: {{ .Values.coturn.turns.certificate.issuerRef.name }}
     kind: {{ .Values.coturn.turns.certificate.issuerRef.kind }}
+    group: {{ .Values.coturn.turns.certificate.issuerRef.group | default "cert-manager.io" }}
   dnsNames:
     - {{ required "turnHost is required for TURNS" .Values.turnHost }}
 {{- end }}

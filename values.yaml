@@ -264,6 +264,7 @@ coturn:
       issuerRef:
         name: letsencrypt-prod
         kind: ClusterIssuer
+        group: cert-manager.io
       # Or use existing TLS secret (requires tls.crt and tls.key)
       existingSecretName: ""
 
