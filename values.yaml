@@ -257,6 +257,13 @@ coturn:
   turns:
     enabled: false
     port: 443
+    # Relay port range for media. JVB sends UDP to these ports.
+    # The Service exposes every UDP port in this range.
+    # Below is the default range - about 16k ports, close to the max.
+    # Large ranges can exceed apiserver/etcd object size limits (1.5MB).
+    relayPortRange:
+      min: 49152
+      max: 65535
     certificate:
       # Create Certificate resource using cert-manager
       create: true

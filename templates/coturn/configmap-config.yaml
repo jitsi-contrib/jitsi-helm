@@ -18,6 +18,8 @@ data:
     tls-listening-port={{ .Values.coturn.turns.port }}
     cert=/tls/tls.crt
     pkey=/tls/tls.key
+    min-port={{ .Values.coturn.turns.relayPortRange.min }}
+    max-port={{ .Values.coturn.turns.relayPortRange.max }}
     {{- else }}
     no-tls
     listening-port={{ .Values.coturn.service.ports.turn }}

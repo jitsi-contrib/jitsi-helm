@@ -28,6 +28,19 @@ spec:
       protocol: TCP
       port: {{ .Values.coturn.turns.port }}
     {{- end }}
+    {{- if .Values.coturn.turns.enabled }}
+    {{- $min := int .Values.coturn.turns.relayPortRange.min }}
+    {{- $max := int .Values.coturn.turns.relayPortRange.max }}
+    {{- if gt $min $max }}
+    {{- fail "coturn.turns.relayPortRange.min must be <= coturn.turns.relayPortRange.max" }}
+    {{- end }}
+    {{- range $port := untilStep $min (add $max 1) 1 }}
+    - name: relay-udp-{{ $port }}
+      protocol: UDP
+      port: {{ $port }}
+      targetPort: {{ $port }}
+    {{- end }}
+    {{- end }}
     {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
     - name: http-acme
       protocol: TCP
