@@ -9,21 +9,19 @@ data:
   turnserver.conf: |-
     realm={{ .Values.turnHost }}
     listening-ip=0.0.0.0
-    {{- if not .Values.coturn.turns.enabled }}
-    listening-port={{ .Values.coturn.service.ports.turn }}
-    {{- end }}
     log-file=stdout
     use-auth-secret
     no-multicast-peers
     no-cli
     no-loopback-peers
-    no-tcp-relay
     {{- if .Values.coturn.turns.enabled }}
     tls-listening-port={{ .Values.coturn.turns.port }}
     cert=/tls/tls.crt
     pkey=/tls/tls.key
     {{- else }}
     no-tls
+    listening-port={{ .Values.coturn.service.ports.turn }}
+    no-tcp-relay
     {{- end }}
     no-dtls
     denied-peer-ip=0.0.0.0-0.255.255.255
