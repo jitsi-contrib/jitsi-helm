@@ -34,7 +34,8 @@ spec:
     {{- if gt $min $max }}
     {{- fail "coturn.turns.relayPortRange.min must be <= coturn.turns.relayPortRange.max" }}
     {{- end }}
-    {{- range $port := untilStep $min (add $max 1) 1 }}
+    {{- $maxPlus := add $max 1 | int }}
+    {{- range $port := untilStep $min $maxPlus 1 }}
     - name: relay-udp-{{ $port }}
       protocol: UDP
       port: {{ $port }}
