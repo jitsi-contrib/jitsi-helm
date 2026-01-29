@@ -49,6 +49,9 @@ spec:
           secret:
             {{- if .Values.coturn.turns.certificate.create }}
             secretName: {{ include "jitsi-meet.coturn.fullname" . }}-tls
+            {{- if .Values.coturn.turns.certificate.acmeProxy.enabled }}
+            optional: true
+            {{- end }}
             {{- else }}
             secretName: {{ required "coturn.turns.certificate.existingSecretName is required when coturn.turns.certificate.create is false" .Values.coturn.turns.certificate.existingSecretName }}
             {{- end }}
@@ -59,6 +62,36 @@ spec:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
         {{- end }}
       initContainers:
+        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        - name: init-acme
+          image: nginx:alpine
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # start nginx in background to handle challenges
+              echo "Starting ACME challenge proxy..."
+              nginx &
+              NGINX_PID=$!
+
+              # wait for cert-manager to issue cert
+              echo "Waiting for TLS certificate from cert-manager..."
+              while [ ! -f /etc/coturn/tls/tls.crt ] || [ ! -f /etc/coturn/tls/tls.key ]; do
+                sleep 5
+                echo "Certificate not available, waiting..."
+              done
+
+              echo "Certificate found, stopping proxy and proceeding..."
+              kill $NGINX_PID 2>/dev/null || true
+          volumeMounts:
+            - name: acme-proxy-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: tls
+              mountPath: /etc/coturn/tls
+              readOnly: true
+        {{- end }}
         - name: init-coturn
           image: busybox:1.36
           command:
