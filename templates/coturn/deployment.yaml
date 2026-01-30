@@ -37,10 +37,6 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       enableServiceLinks: {{ not .Values.coturn.turns.enabled }}
-      {{- if .Values.coturn.turns.enabled }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
       securityContext:
         {{- toYaml .Values.coturn.podSecurityContext | nindent 8 }}
       volumes:
@@ -89,23 +85,22 @@ spec:
               echo >>/config-dir/turnserver.conf
               echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
               {{- if .Values.coturn.turns.enabled }}
-              if [ -z "$COTURN_PUBLIC_IP" ]; then
-                echo "[!] Failed to discover node IP"
+              if [ -z "$COTURN_RELAY_IP" ]; then
+                echo "[!] Failed to discover pod IP"
                 exit 1
               fi
-              echo "[+] Discovered node IP: $COTURN_PUBLIC_IP"
-              echo "external-ip=$COTURN_PUBLIC_IP" >>/config-dir/turnserver.conf
-              echo "relay-ip=$COTURN_PUBLIC_IP" >>/config-dir/turnserver.conf
+              echo "[+] Discovered pod IP: $COTURN_RELAY_IP"
+              echo "relay-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
               {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "jitsi-meet.coturn.secretName" . }}
           {{- if .Values.coturn.turns.enabled }}
           env:
-            - name: COTURN_PUBLIC_IP
+            - name: COTURN_RELAY_IP
               valueFrom:
                 fieldRef:
-                  fieldPath: status.hostIP
+                  fieldPath: status.podIP
           {{- end }}
           volumeMounts:
             - name: config-dir
@@ -152,10 +147,10 @@ spec:
             {{- end }}
           {{- if .Values.coturn.turns.enabled }}
           env:
-            - name: COTURN_PUBLIC_IP
+            - name: COTURN_RELAY_IP
               valueFrom:
                 fieldRef:
-                  fieldPath: status.hostIP
+                  fieldPath: status.podIP
           {{- end }}
           ports:
             {{- if not .Values.coturn.turns.enabled }}
@@ -192,17 +187,9 @@ spec:
               readOnly: true
             {{- end }}
 
-      {{- if .Values.coturn.affinity }}
+      {{- with .Values.coturn.affinity }}
       affinity:
-        {{- toYaml .Values.coturn.affinity | nindent 8 }}
-      {{- else if .Values.coturn.turns.enabled }}
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 18 }}
-              topologyKey: kubernetes.io/hostname
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.coturn.nodeSelector }}
       nodeSelector:

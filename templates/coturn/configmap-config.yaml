@@ -50,5 +50,7 @@ data:
     denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     {{- if .Values.coturn.allowedPeerIp }}
     allowed-peer-ip={{ .Values.coturn.allowedPeerIp }}
+    {{- else if .Values.coturn.turns.enabled }}
+    allowed-peer-ip=10.244.0.0/16
     {{- end }}
 {{- end }}

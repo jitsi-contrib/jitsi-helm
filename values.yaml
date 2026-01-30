@@ -254,11 +254,11 @@ coturn:
   replicaCount: 1
 
   # TURNS (TURN over TLS) configuration
-  # When enabled, coturn uses hostNetwork for relay ports:
-  # - UDP relay ports bind directly to the nodes network interface
-  # - TCP/443 is exposed via the LoadBalancer Service
-  # - Node public IP is auto-discovered for relay address advertisement
-  # - Pod anti-affinity ensures replicas spread across pods
+  # Relay ports use pod networking (internal cluster access only).
+  # - TCP/443 is exposed via LoadBalancer Service for TURNS control connection
+  # - UDP relay ports remain internal on pod IP
+  # - JVB sends media to relay via internal pod-to-pod UDP
+  # - Requires coturn.allowedPeerIp set to pod/node CIDR for relay to JVB
   turns:
     enabled: false
     port: 443
@@ -310,8 +310,11 @@ coturn:
     # Annotations to be added to the service (if LoadBalancer is used)
     annotations: {}
 
-  # This is only for testing in a local cluster. Dont set this in production.
-  #allowedPeerIp: 10.244.0.0-10.244.255.255
+  # Required when JVB advertises private IPs (jvb.useNodeIP: true).
+  # Set to your cluster's node/pod CIDR to allow coturn to relay to JVB.
+  # Without this, coturn's denied-peer-ip rules block relay to private IPs.
+  # Defaults to 10.244.0.0/16 when TURNS is enabled (common kubeadm/Flannel CIDR).
+  #allowedPeerIp: 10.0.0.0/8
 
   livenessProbe:
     tcpSocket:
