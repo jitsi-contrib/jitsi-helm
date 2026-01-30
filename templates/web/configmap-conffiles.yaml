@@ -22,21 +22,11 @@ data:
   custom-config.js: |
     {{- .Values.web.custom.configs._custom_config_js | nindent 4 }}
     {{- if .Values.coturn.enabled }}
-    {{-   if .Values.coturn.turns.enabled }}
-    config.useTurnUdp=false;
-    config.webrtcIceUdpDisable=true;
-    {{-   else }}
-    config.useTurnUdp=true;
-    {{-   end }}
+    config.useTurnUdp={{ not .Values.coturn.turns.enabled }};
     {{- end }}
   {{- else if .Values.coturn.enabled }}
   custom-config.js: |
-    {{- if .Values.coturn.turns.enabled }}
-    config.useTurnUdp=false;
-    config.webrtcIceUdpDisable=true;
-    {{- else }}
-    config.useTurnUdp=true;
-    {{- end }}
+    config.useTurnUdp={{ not .Values.coturn.turns.enabled }};
   {{- end }}
 
   {{- with .Values.web.custom.configs._custom_interface_config_js }}
