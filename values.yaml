@@ -311,10 +311,13 @@ coturn:
     annotations: {}
 
   # Required when JVB advertises private IPs (jvb.useNodeIP: true).
-  # Set to your cluster's node/pod CIDR to allow coturn to relay to JVB.
-  # Without this, coturn's denied-peer-ip rules block relay to private IPs.
-  # Defaults to 10.244.0.0/16 when TURNS is enabled (common kubeadm/Flannel CIDR).
-  #allowedPeerIp: 10.0.0.0/8
+  # Set to your cluster's node/pod range to allow coturn to relay to JVB
+  # Defaults to 10.244.0.0-10.244.255.255 when TURNS is enabled
+  # fx:
+  #allowedPeerIp: "10.244.0.0-10.244.255.255"
+  #allowedPeerIp:
+  #  - "10.244.0.0-10.244.255.255"
+  #  - "100.64.0.0-100.127.255.255"
 
   livenessProbe:
     tcpSocket:
