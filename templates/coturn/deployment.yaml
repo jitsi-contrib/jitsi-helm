@@ -90,6 +90,7 @@ spec:
                 exit 1
               fi
               echo "[+] Discovered pod IP: $COTURN_RELAY_IP"
+              echo "listening-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
               echo "relay-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
               {{- end }}
           envFrom:

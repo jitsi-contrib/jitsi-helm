@@ -8,7 +8,11 @@ metadata:
 data:
   turnserver.conf: |-
     realm={{ .Values.turnHost }}
+    {{- if .Values.coturn.turns.enabled }}
+    # TURNS mode: listening-ip will be set to pod IP via init container
+    {{- else }}
     listening-ip=0.0.0.0
+    {{- end }}
     log-file=stdout
     use-auth-secret
     no-multicast-peers
