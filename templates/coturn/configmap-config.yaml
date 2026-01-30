@@ -26,7 +26,6 @@ data:
     max-port={{ .Values.coturn.turns.relayPortRange.max }}
     verbose
     no-udp
-    no-dtls
     {{- else }}
     no-tls
     listening-port={{ .Values.coturn.service.ports.turn }}
