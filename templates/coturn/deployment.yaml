@@ -192,9 +192,17 @@ spec:
               readOnly: true
             {{- end }}
 
-      {{- with .Values.coturn.affinity }}
+      {{- if .Values.coturn.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml .Values.coturn.affinity | nindent 8 }}
+      {{- else if .Values.coturn.turns.enabled }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 18 }}
+              topologyKey: kubernetes.io/hostname
       {{- end }}
       {{- with .Values.coturn.nodeSelector }}
       nodeSelector:
