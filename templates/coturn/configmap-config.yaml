@@ -24,6 +24,9 @@ data:
     pkey=/tls/tls.key
     min-port={{ .Values.coturn.turns.relayPortRange.min }}
     max-port={{ .Values.coturn.turns.relayPortRange.max }}
+    verbose
+    no-udp
+    no-dtls
     {{- else }}
     no-tls
     listening-port={{ .Values.coturn.service.ports.turn }}
