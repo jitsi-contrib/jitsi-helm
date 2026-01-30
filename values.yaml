@@ -254,12 +254,14 @@ coturn:
   replicaCount: 1
 
   # TURNS (TURN over TLS) configuration
+  # When enabled, coturn uses hostNetwork for relay ports:
+  # - UDP relay ports bind directly to the nodes network interface
+  # - TCP/443 is exposed via the LoadBalancer Service
+  # - Node public IP is auto-discovered for relay address advertisement
+  # - Pod anti-affinity ensures replicas spread across pods
   turns:
     enabled: false
     port: 443
-    # Relay port range for media. JVB sends UDP to these ports.
-    # The Service exposes every UDP port in this range.
-    # Large ranges can exceed apiserver/etcd object size limits (1.5MB).
     relayPortRange:
       min: 50000
       max: 54999
@@ -297,8 +299,7 @@ coturn:
 
   service:
     type: LoadBalancer
-    # Disable NodePort allocation to avoid exhausting the nodePort range
-    # when exposing large TURN relay port ranges.
+    # Disable NodePort allocation when using LoadBalancer svc
     allocateLoadBalancerNodePorts: false
     ports:
       turn: 3478

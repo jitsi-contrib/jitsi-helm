@@ -37,6 +37,10 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       enableServiceLinks: {{ not .Values.coturn.turns.enabled }}
+      {{- if .Values.coturn.turns.enabled }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
       securityContext:
         {{- toYaml .Values.coturn.podSecurityContext | nindent 8 }}
       volumes:
@@ -80,13 +84,29 @@ spec:
             - sh
             - -c
             - |
-              chmod 755 /config-dir && \
-              cp /turnserver.conf /config-dir/ && \
-              echo >>/config-dir/turnserver.conf && \
+              chmod 755 /config-dir
+              cp /turnserver.conf /config-dir/
+              echo >>/config-dir/turnserver.conf
               echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
+              {{- if .Values.coturn.turns.enabled }}
+              if [ -z "$COTURN_PUBLIC_IP" ]; then
+                echo "[!] Failed to discover node IP"
+                exit 1
+              fi
+              echo "[+] Discovered node IP: $COTURN_PUBLIC_IP"
+              echo "external-ip=$COTURN_PUBLIC_IP" >>/config-dir/turnserver.conf
+              echo "relay-ip=$COTURN_PUBLIC_IP" >>/config-dir/turnserver.conf
+              {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "jitsi-meet.coturn.secretName" . }}
+          {{- if .Values.coturn.turns.enabled }}
+          env:
+            - name: COTURN_PUBLIC_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          {{- end }}
           volumeMounts:
             - name: config-dir
               mountPath: /config-dir
@@ -130,6 +150,13 @@ spec:
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
+          {{- if .Values.coturn.turns.enabled }}
+          env:
+            - name: COTURN_PUBLIC_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          {{- end }}
           ports:
             {{- if not .Values.coturn.turns.enabled }}
             - name: tcp-turn
