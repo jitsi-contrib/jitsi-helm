@@ -310,11 +310,12 @@ coturn:
     # Annotations to be added to the service (if LoadBalancer is used)
     annotations: {}
 
-  # Required when JVB advertises private IPs (jvb.useNodeIP: true).
-  # Set to your cluster's node/pod range to allow coturn to relay to JVB
-  # Defaults to 10.244.0.0-10.244.255.255 when TURNS is enabled
-  # fx:
-  #allowedPeerIp: "10.244.0.0-10.244.255.255"
+  # The JVB's public IP addresses are expected to be directly accessible by
+  # Coturn in the production environment.
+  # allowedPeerIp is required when Coturn cannot directly access JVBs through
+  # their public IPs. In this case, set to your cluster's node/pod range to
+  # allow coturn to relay to JVB
+  allowedPeerIp: []
   #allowedPeerIp:
   #  - "10.244.0.0-10.244.255.255"
   #  - "100.64.0.0-100.127.255.255"

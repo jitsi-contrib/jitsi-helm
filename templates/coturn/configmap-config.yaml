@@ -54,14 +54,8 @@ data:
     denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     {{- if .Values.coturn.allowedPeerIp }}
-    {{- if kindIs "slice" .Values.coturn.allowedPeerIp }}
-    {{- range .Values.coturn.allowedPeerIp }}
+    {{-   range .Values.coturn.allowedPeerIp }}
     allowed-peer-ip={{ . }}
-    {{- end }}
-    {{- else }}
-    allowed-peer-ip={{ .Values.coturn.allowedPeerIp }}
-    {{- end }}
-    {{- else if .Values.coturn.turns.enabled }}
-    allowed-peer-ip=10.244.0.0-10.244.255.255
+    {{-   end }}
     {{- end }}
 {{- end }}
