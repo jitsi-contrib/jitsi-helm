@@ -245,13 +245,47 @@ excalidraw:
 ## #############################################################################
 ## Coturn configuration
 ## #############################################################################
-# Currently, it supports only STUN and TURN over UDP/3478.
-# No support for TURNS over TCP/5349.
+# Supports STUN and TURN over UDP/3478.
+# Optional TURNS (TURN over TLS/TCP/443) support.
 # Media packages are still encrypted with DTLS-SRTP.
 coturn:
   enabled: false
 
   replicaCount: 1
+
+  # TURNS (TURN over TLS) configuration
+  # Relay ports use pod networking (internal cluster access only).
+  # - TCP/443 is exposed via LoadBalancer Service for TURNS control connection
+  # - UDP relay ports remain internal on pod IP
+  # - JVB sends media to relay via internal pod-to-pod UDP
+  # - Requires coturn.allowedPeerIp set to pod/node CIDR for relay to JVB
+  turns:
+    enabled: false
+    port: 443
+    relayPortRange:
+      min: 50000
+      max: 54999
+    certificate:
+      # Create Certificate resource using cert-manager
+      create: true
+      # ClusterIssuer or Issuer to use
+      issuerRef:
+        name: letsencrypt-prod
+        kind: ClusterIssuer
+        group: cert-manager.io
+      # Or use existing TLS secret (requires tls.crt and tls.key)
+      existingSecretName: ""
+
+      # ACME challenge proxy - enables certificate validation when
+      # TURN runs on separate IP from ingress controller
+      # This will proxy ACME challenges to the specified ingress
+      # Requires Kubernetes native sidecar containers support
+      acmeProxy:
+        enabled: false
+        # Internal cluster address of ingress controller
+        # Defaults to traefik service in "traefik" namespace
+        target: traefik.traefik.svc.cluster.local
+        targetPort: 80
 
   image:
     repository: coturn/coturn
@@ -265,6 +299,8 @@ coturn:
 
   service:
     type: LoadBalancer
+    # Disable NodePort allocation when using LoadBalancer svc
+    allocateLoadBalancerNodePorts: false
     ports:
       turn: 3478
     # Optional: Specifies the LoadBalancer controller to use (since K8s v1.24).
@@ -274,8 +310,14 @@ coturn:
     # Annotations to be added to the service (if LoadBalancer is used)
     annotations: {}
 
-  # This is only for testing in a local cluster. Dont set this in production.
-  #allowedPeerIp: 10.244.0.0-10.244.255.255
+  # Required when JVB advertises private IPs (jvb.useNodeIP: true).
+  # Set to your cluster's node/pod range to allow coturn to relay to JVB
+  # Defaults to 10.244.0.0-10.244.255.255 when TURNS is enabled
+  # fx:
+  #allowedPeerIp: "10.244.0.0-10.244.255.255"
+  #allowedPeerIp:
+  #  - "10.244.0.0-10.244.255.255"
+  #  - "100.64.0.0-100.127.255.255"
 
   livenessProbe:
     tcpSocket:

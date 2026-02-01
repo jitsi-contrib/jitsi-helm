@@ -24,6 +24,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
+        {{- if .Values.coturn.turns.enabled }}
+        secret.reloader.stakater.com/reload: {{ if .Values.coturn.turns.certificate.create }}{{ include "jitsi-meet.coturn.fullname" . }}-tls{{ else }}{{ .Values.coturn.turns.certificate.existingSecretName }}{{ end }}
+        {{- end }}
         {{- with (mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
@@ -41,30 +44,91 @@ spec:
         - name: config
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-config
+        {{- if .Values.coturn.turns.enabled }}
+        - name: tls
+          secret:
+            {{- if .Values.coturn.turns.certificate.create }}
+            secretName: {{ include "jitsi-meet.coturn.fullname" . }}-tls
+            {{- if .Values.coturn.turns.certificate.acmeProxy.enabled }}
+            optional: true
+            {{- end }}
+            {{- else }}
+            secretName: {{ required "coturn.turns.certificate.existingSecretName is required when coturn.turns.certificate.create is false" .Values.coturn.turns.certificate.existingSecretName }}
+            {{- end }}
+        {{- end }}
+        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        - name: acme-proxy-config
+          configMap:
+            name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
+        {{- end }}
       initContainers:
+        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        - name: acme-proxy
+          image: nginx:alpine
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          volumeMounts:
+            - name: acme-proxy-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+        {{- end }}
         - name: init-coturn
           image: busybox:1.36
           command:
             - sh
             - -c
             - |
-              chmod 755 /config-dir && \
-              cp /turnserver.conf /config-dir/ && \
-              echo >>/config-dir/turnserver.conf && \
+              chmod 755 /config-dir
+              cp /turnserver.conf /config-dir/
+              echo >>/config-dir/turnserver.conf
               echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
+              {{- if .Values.coturn.turns.enabled }}
+              if [ -z "$COTURN_RELAY_IP" ]; then
+                echo "[!] Failed to discover pod IP"
+                exit 1
+              fi
+              echo "[+] Discovered pod IP: $COTURN_RELAY_IP"
+              echo "listening-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
+              echo "relay-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
+              {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "jitsi-meet.coturn.secretName" . }}
+          {{- if .Values.coturn.turns.enabled }}
+          env:
+            - name: COTURN_RELAY_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          {{- end }}
           volumeMounts:
             - name: config-dir
               mountPath: /config-dir
             - name: config
               mountPath: /turnserver.conf
               subPath: turnserver.conf
+            {{- if .Values.coturn.turns.enabled }}
+            - name: tls
+              mountPath: /etc/coturn/tls
+              readOnly: true
+            {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.coturn.image .Values.image | first }}
+          {{- if .Values.coturn.turns.enabled }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for TLS certificate..."
+              while [ ! -f /tls/tls.crt ] || [ ! -f /tls/tls.key ]; do
+                sleep 5
+              done
+              echo "TLS certificate found, starting coturn"
+              exec turnserver -c /etc/coturn/turnserver.conf
+          {{- end }}
           securityContext:
             {{- toYaml .Values.coturn.securityContext | nindent 12 }}
           envFrom:
@@ -81,20 +145,35 @@ spec:
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
+          {{- if .Values.coturn.turns.enabled }}
+          env:
+            - name: COTURN_RELAY_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          {{- end }}
           ports:
+            {{- if not .Values.coturn.turns.enabled }}
             - name: tcp-turn
               protocol: TCP
               containerPort: {{ index .Values.coturn.service.ports "turn" }}
             - name: udp-turn
               protocol: UDP
               containerPort: {{ index .Values.coturn.service.ports "turn" }}
+            {{- else }}
+            - name: tcp-turns
+              protocol: TCP
+              containerPort: {{ .Values.coturn.turns.port }}
+            {{- end }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 12 }}
+            tcpSocket:
+              port: {{ if $.Values.coturn.turns.enabled }}{{ $.Values.coturn.turns.port }}{{ else }}{{ index $.Values.coturn.service.ports "turn" }}{{ end }}
           {{- end }}
           {{- with .Values.coturn.readinessProbe }}
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
+            tcpSocket:
+              port: {{ if $.Values.coturn.turns.enabled }}{{ $.Values.coturn.turns.port }}{{ else }}{{ index $.Values.coturn.service.ports "turn" }}{{ end }}
           {{- end }}
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
@@ -102,6 +181,11 @@ spec:
             - name: config-dir
               mountPath: /etc/coturn
               readOnly: true
+            {{- if .Values.coturn.turns.enabled }}
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            {{- end }}
 
       {{- with .Values.coturn.affinity }}
       affinity:
