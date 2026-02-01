@@ -1,11 +1,10 @@
-# TURNS (TURN over TLS/TCP/443)
+# TURNS (TURN over TLS on TCP/443)
 
-Optionally, TURN can be replaced by TURNS. This enables clients in restricted
-networks, fx. behind tight NAT's, to connect to meetings over TCP/443 with TLS,
-when they would otherwise fail to connect over UDP. Note that enabling TURNS
-automatically disables TURN over UDP. Clients with working UDP connections will
-not be affected - TURNS is provided as a fallback when P2P or Direct-to-JVB is
-unavailable/fails.
+Optionally, TURNS can be activated. This enables clients in restricted networks,
+for example behind tight NAT's, to connect to meetings over TCP/443 with TLS,
+when they would otherwise fail to connect over UDP. Clients with working UDP
+connections will not be affected. TURNS is provided as a fallback when P2P or
+Direct-to-JVB is unavailable/fails.
 
 ## Prerequisites
 
@@ -27,7 +26,7 @@ coturn:
   replicaCount: 3
 
   turns:
-    enabled: true # replace standard TURN with TURNS
+    enabled: true # activate TURNS
     certificate:
 
       # create TLS certificates using cert-manager
@@ -39,17 +38,18 @@ coturn:
         kind: ClusterIssuer
         group: cert-manager.io
 
-      # enable proxying of ACME challenge requests back to the `traefik` service in the `traefik` namespace
+      # enable proxying of ACME challenge requests back to the `traefik` service
+      # in the `traefik` namespace
       acmeProxy:
         enabled: true
         target: traefik.traefik.svc.cluster.local
 ```
 
-The above configuration will disable TURN over UDP in favor of TURNS. It will
-extend coTURN with a small sidecar that proxies ACME challenge requests to the
-defined ingress - in this case, Traefik - to enable certificate validation. If
-you have Reloader available in the cluster, the coTURN pods will automatically
-reload when the certificate changes.
+The above configuration will activate TURNS. It will extend coTURN with a small
+sidecar that proxies ACME challenge requests to the defined ingress - in this
+case, Traefik - to enable certificate validation. If you have Reloader available
+in the cluster, the coTURN pods will automatically reload when the certificate
+changes.
 
 ## Architecture
 
