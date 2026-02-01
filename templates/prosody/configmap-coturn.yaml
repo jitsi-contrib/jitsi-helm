@@ -7,13 +7,12 @@ metadata:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
   STUN_HOST: {{ .Values.turnHost | quote }}
-  STUN_PORT: {{ if .Values.coturn.turns.enabled }}{{ .Values.coturn.turns.port | quote }}{{ else }}{{ .Values.coturn.service.ports.turn | quote }}{{ end }}
-  {{- if not .Values.coturn.turns.enabled }}
+  STUN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_HOST: {{ .Values.turnHost | quote }}
   TURN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_TRANSPORT: "udp"
-  {{- else }}
+  {{- if .Values.coturn.turns.enabled }}
   TURNS_HOST: {{ .Values.turnHost | quote }}
-  TURNS_PORT: {{ .Values.coturn.turns.port | quote }}
+  TURNS_PORT: {{ .Values.coturn.service.ports.turns | quote }}
   {{- end }}
 {{- end }}

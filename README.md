@@ -262,7 +262,8 @@ Feature-specific documentation can be found here:
 - [Octo](/docs/manuals/testing-octo.md)
 - [TURNS](/docs/manuals/turns.md)
 
-For further documentation on all available configuration, refer to [values.yaml](/values.yaml).
+For further documentation on all available configuration, refer to
+[values.yaml](/values.yaml).
 
 ## Package
 

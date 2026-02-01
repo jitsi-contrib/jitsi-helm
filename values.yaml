@@ -246,22 +246,31 @@ excalidraw:
 ## Coturn configuration
 ## #############################################################################
 # Supports STUN and TURN over UDP/3478.
-# Optional TURNS (TURN over TLS/TCP/443) support.
+# Optional TURNS (TURN over TLS on TCP/443) support.
 # Media packages are still encrypted with DTLS-SRTP.
 coturn:
   enabled: false
 
   replicaCount: 1
 
+  image:
+    repository: coturn/coturn
+    tag: 4.8
+
+  staticAuth:
+    secret:
+    # Alternatively provide a name for an externally managed secret containing
+    # the value for TURN_CREDENTIALS
+    existingSecretName:
+
   # TURNS (TURN over TLS) configuration
   # Relay ports use pod networking (internal cluster access only).
-  # - TCP/443 is exposed via LoadBalancer Service for TURNS control connection
+  # - TCP/443 is exposed via LoadBalancer service for TURNS control connection
   # - UDP relay ports remain internal on pod IP
   # - JVB sends media to relay via internal pod-to-pod UDP
   # - Requires coturn.allowedPeerIp set to pod/node CIDR for relay to JVB
   turns:
     enabled: false
-    port: 443
     relayPortRange:
       min: 50000
       max: 54999
@@ -287,22 +296,13 @@ coturn:
         target: traefik.traefik.svc.cluster.local
         targetPort: 80
 
-  image:
-    repository: coturn/coturn
-    tag: 4.8
-
-  staticAuth:
-    secret:
-    # Alternatively provide a name for an externally managed secret containing
-    # the value for TURN_CREDENTIALS
-    existingSecretName:
-
   service:
     type: LoadBalancer
-    # Disable NodePort allocation when using LoadBalancer svc
+    # Disable NodePort allocation when using LoadBalancer service
     allocateLoadBalancerNodePorts: false
     ports:
       turn: 3478
+      turns: 443
     # Optional: Specifies the LoadBalancer controller to use (since K8s v1.24).
     # If left empty (null), the default cluster controller will be used.
     # Example values: "service.k8s.aws/nlb", "loxilb.io/loxilb"
@@ -310,11 +310,12 @@ coturn:
     # Annotations to be added to the service (if LoadBalancer is used)
     annotations: {}
 
-  # Required when JVB advertises private IPs (jvb.useNodeIP: true).
-  # Set to your cluster's node/pod range to allow coturn to relay to JVB
-  # Defaults to 10.244.0.0-10.244.255.255 when TURNS is enabled
-  # fx:
-  #allowedPeerIp: "10.244.0.0-10.244.255.255"
+  # The JVB's public IP addresses are expected to be directly accessible by
+  # Coturn in the production environment.
+  # allowedPeerIp is required when Coturn cannot directly access JVBs through
+  # their public IPs. In this case, set to your cluster's node/pod range to
+  # allow coturn to relay to JVB
+  allowedPeerIp: []
   #allowedPeerIp:
   #  - "10.244.0.0-10.244.255.255"
   #  - "100.64.0.0-100.127.255.255"

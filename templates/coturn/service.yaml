@@ -14,24 +14,28 @@ spec:
   {{- if eq .Values.coturn.service.type "LoadBalancer" }}
   allocateLoadBalancerNodePorts: {{ .Values.coturn.service.allocateLoadBalancerNodePorts }}
   {{- end }}
-  {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+  {{- if and
+      .Values.coturn.turns.enabled
+      .Values.coturn.turns.certificate.acmeProxy.enabled
+  }}
   publishNotReadyAddresses: true
   {{- end }}
   {{- with .Values.coturn.service.loadBalancerClass }}
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
-    {{- if not .Values.coturn.turns.enabled }}
     - name: udp-turn
       protocol: UDP
-      port: {{ index .Values.coturn.service.ports "turn" }}
-    {{- end }}
+      port: {{ .Values.coturn.service.ports.turn }}
     {{- if .Values.coturn.turns.enabled }}
     - name: tcp-turns
       protocol: TCP
-      port: {{ .Values.coturn.turns.port }}
+      port: {{ .Values.coturn.service.ports.turns }}
     {{- end }}
-    {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+    {{- if and
+        .Values.coturn.turns.enabled
+        .Values.coturn.turns.certificate.acmeProxy.enabled
+    }}
     - name: http-acme
       protocol: TCP
       port: 80

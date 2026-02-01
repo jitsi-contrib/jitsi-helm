@@ -8,29 +8,24 @@ metadata:
 data:
   turnserver.conf: |-
     realm={{ .Values.turnHost }}
-    {{- if .Values.coturn.turns.enabled }}
-    # TURNS mode: listening-ip will be set to pod IP via init container
-    {{- else }}
+    listening-port={{ .Values.coturn.service.ports.turn }}
     listening-ip=0.0.0.0
-    {{- end }}
     log-file=stdout
     use-auth-secret
     no-multicast-peers
     no-cli
     no-loopback-peers
+    no-tcp-relay
+    no-dtls
     {{- if .Values.coturn.turns.enabled }}
-    tls-listening-port={{ .Values.coturn.turns.port }}
+    tls-listening-port={{ .Values.coturn.service.ports.turns }}
     cert=/tls/tls.crt
     pkey=/tls/tls.key
     min-port={{ .Values.coturn.turns.relayPortRange.min }}
     max-port={{ .Values.coturn.turns.relayPortRange.max }}
-    no-udp
     {{- else }}
     no-tls
-    listening-port={{ .Values.coturn.service.ports.turn }}
-    no-tcp-relay
     {{- end }}
-    no-dtls
     denied-peer-ip=0.0.0.0-0.255.255.255
     denied-peer-ip=127.0.0.0-127.255.255.255
     denied-peer-ip=::1
@@ -54,14 +49,8 @@ data:
     denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     {{- if .Values.coturn.allowedPeerIp }}
-    {{- if kindIs "slice" .Values.coturn.allowedPeerIp }}
-    {{- range .Values.coturn.allowedPeerIp }}
+    {{-   range .Values.coturn.allowedPeerIp }}
     allowed-peer-ip={{ . }}
-    {{- end }}
-    {{- else }}
-    allowed-peer-ip={{ .Values.coturn.allowedPeerIp }}
-    {{- end }}
-    {{- else if .Values.coturn.turns.enabled }}
-    allowed-peer-ip=10.244.0.0-10.244.255.255
+    {{-   end }}
     {{- end }}
 {{- end }}
