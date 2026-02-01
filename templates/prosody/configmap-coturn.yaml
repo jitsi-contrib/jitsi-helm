@@ -13,6 +13,6 @@ data:
   TURN_TRANSPORT: "udp"
   {{- if .Values.coturn.turns.enabled }}
   TURNS_HOST: {{ .Values.turnHost | quote }}
-  TURNS_PORT: {{ .Values.coturn.turns.port | quote }}
+  TURNS_PORT: {{ .Values.coturn.service.ports.turns | quote }}
   {{- end }}
 {{- end }}

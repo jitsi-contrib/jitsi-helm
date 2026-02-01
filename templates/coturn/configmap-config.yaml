@@ -19,7 +19,7 @@ data:
     no-cli
     no-loopback-peers
     {{- if .Values.coturn.turns.enabled }}
-    tls-listening-port={{ .Values.coturn.turns.port }}
+    tls-listening-port={{ .Values.coturn.service.ports.turns }}
     cert=/tls/tls.crt
     pkey=/tls/tls.key
     min-port={{ .Values.coturn.turns.relayPortRange.min }}

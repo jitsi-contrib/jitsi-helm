@@ -29,7 +29,7 @@ spec:
     {{- if .Values.coturn.turns.enabled }}
     - name: tcp-turns
       protocol: TCP
-      port: {{ .Values.coturn.turns.port }}
+      port: {{ .Values.coturn.service.ports.turns }}
     {{- end }}
     {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
     - name: http-acme
