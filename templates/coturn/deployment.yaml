@@ -49,20 +49,26 @@ spec:
           secret:
             {{- if .Values.coturn.turns.certificate.create }}
             secretName: {{ include "jitsi-meet.coturn.fullname" . }}-tls
-            {{- if .Values.coturn.turns.certificate.acmeProxy.enabled }}
+            {{-   if .Values.coturn.turns.certificate.acmeProxy.enabled }}
             optional: true
-            {{- end }}
+            {{-   end }}
             {{- else }}
             secretName: {{ required "coturn.turns.certificate.existingSecretName is required when coturn.turns.certificate.create is false" .Values.coturn.turns.certificate.existingSecretName }}
             {{- end }}
         {{- end }}
-        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        {{- if and
+            .Values.coturn.turns.enabled
+            .Values.coturn.turns.certificate.acmeProxy.enabled
+        }}
         - name: acme-proxy-config
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
         {{- end }}
       initContainers:
-        {{- if and .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+        {{- if and
+            .Values.coturn.turns.enabled
+            .Values.coturn.turns.certificate.acmeProxy.enabled
+        }}
         - name: acme-proxy
           image: nginx:alpine
           imagePullPolicy: IfNotPresent
@@ -79,29 +85,13 @@ spec:
             - sh
             - -c
             - |
-              chmod 755 /config-dir
-              cp /turnserver.conf /config-dir/
-              echo >>/config-dir/turnserver.conf
+              chmod 755 /config-dir && \
+              cp /turnserver.conf /config-dir/ && \
+              echo >>/config-dir/turnserver.conf && \
               echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
-              {{- if .Values.coturn.turns.enabled }}
-              if [ -z "$COTURN_RELAY_IP" ]; then
-                echo "[!] Failed to discover pod IP"
-                exit 1
-              fi
-              echo "[+] Discovered pod IP: $COTURN_RELAY_IP"
-              echo "listening-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
-              echo "relay-ip=$COTURN_RELAY_IP" >>/config-dir/turnserver.conf
-              {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "jitsi-meet.coturn.secretName" . }}
-          {{- if .Values.coturn.turns.enabled }}
-          env:
-            - name: COTURN_RELAY_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-          {{- end }}
           volumeMounts:
             - name: config-dir
               mountPath: /config-dir
@@ -145,35 +135,25 @@ spec:
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
-          {{- if .Values.coturn.turns.enabled }}
-          env:
-            - name: COTURN_RELAY_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-          {{- end }}
           ports:
-            {{- if not .Values.coturn.turns.enabled }}
             - name: tcp-turn
               protocol: TCP
               containerPort: {{ .Values.coturn.service.ports.turn }}
             - name: udp-turn
               protocol: UDP
               containerPort: {{ .Values.coturn.service.ports.turn }}
-            {{- else }}
+            {{- if .Values.coturn.turns.enabled }}
             - name: tcp-turns
               protocol: TCP
               containerPort: {{ .Values.coturn.service.ports.turns }}
             {{- end }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
-            tcpSocket:
-              port: {{ if $.Values.coturn.turns.enabled }}{{ $.Values.coturn.service.ports.turns }}{{ else }}{{ $.Values.coturn.service.ports.turn }}{{ end }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- with .Values.coturn.readinessProbe }}
           readinessProbe:
-            tcpSocket:
-              port: {{ if $.Values.coturn.turns.enabled }}{{ $.Values.coturn.service.ports.turns }}{{ else }}{{ $.Values.coturn.service.ports.turn }}{{ end }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.coturn.resources | nindent 12 }}
