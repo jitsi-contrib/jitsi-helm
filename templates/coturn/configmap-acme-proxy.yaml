@@ -1,4 +1,8 @@
-{{- if and .Values.coturn.enabled .Values.coturn.turns.enabled .Values.coturn.turns.certificate.acmeProxy.enabled }}
+{{- if and
+    .Values.coturn.enabled
+    .Values.coturn.turns.enabled
+    .Values.coturn.turns.certificate.acmeProxy.enabled
+}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

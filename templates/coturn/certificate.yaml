@@ -1,4 +1,8 @@
-{{- if and .Values.coturn.enabled .Values.coturn.turns.enabled .Values.coturn.turns.certificate.create }}
+{{- if and
+    .Values.coturn.enabled
+    .Values.coturn.turns.enabled
+    .Values.coturn.turns.certificate.create
+}}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
