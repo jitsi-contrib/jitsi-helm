@@ -8,29 +8,24 @@ metadata:
 data:
   turnserver.conf: |-
     realm={{ .Values.turnHost }}
-    {{- if .Values.coturn.turns.enabled }}
-    # TURNS mode: listening-ip will be set to pod IP via init container
-    {{- else }}
+    listening-port={{ .Values.coturn.service.ports.turn }}
     listening-ip=0.0.0.0
-    {{- end }}
     log-file=stdout
     use-auth-secret
     no-multicast-peers
     no-cli
     no-loopback-peers
+    no-tcp-relay
+    no-dtls
     {{- if .Values.coturn.turns.enabled }}
     tls-listening-port={{ .Values.coturn.service.ports.turns }}
     cert=/tls/tls.crt
     pkey=/tls/tls.key
     min-port={{ .Values.coturn.turns.relayPortRange.min }}
     max-port={{ .Values.coturn.turns.relayPortRange.max }}
-    no-udp
     {{- else }}
     no-tls
-    listening-port={{ .Values.coturn.service.ports.turn }}
-    no-tcp-relay
     {{- end }}
-    no-dtls
     denied-peer-ip=0.0.0.0-0.255.255.255
     denied-peer-ip=127.0.0.0-127.255.255.255
     denied-peer-ip=::1
