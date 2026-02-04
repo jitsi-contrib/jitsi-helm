@@ -1,9 +1,10 @@
 # -----------------------------------------------------------------------------
 # This is a sample config. Assumed that:
 # - Jitsi domain is meet.example.com
-# - There are 3 JVBs using UDP/10000, UDP/10001 and UDP/10002 of the host
-# - OCTO is enabled to allow big meetings
-# - Excalidraw (whiteboard) is enabled
+# - There are 3 JVBs using UDP/10000, UDP/10001 and UDP/10002 of the host.
+#   So, these ports must be publicly accessible through the node IP.
+# - OCTO is enabled to allow big meetings.
+# - Excalidraw (whiteboard) is enabled.
 # -----------------------------------------------------------------------------
 #publicURL: ""
 publicURL: "https://meet.example.com"
