@@ -1,0 +1,49 @@
+# -----------------------------------------------------------------------------
+# This is a sample config. Assumed that:
+# - Jitsi domain is meet.example.com
+# - There are 3 JVBs using UDP/10000, UDP/10001 and UDP/10002 of the host
+# - OCTO is enabled to allow big meetings
+# - Excalidraw (whiteboard) is enabled
+# -----------------------------------------------------------------------------
+#publicURL: ""
+publicURL: "https://meet.example.com"
+
+enableAuth: false
+enableGuests: true
+
+websockets:
+  colibri:
+    enabled: false
+  xmpp:
+    #enabled: false
+    enabled: true
+
+web:
+  ingress:
+    #enabled: false
+    enabled: true
+    hosts:
+      - host: meet.example.com
+        paths: ["/"]
+
+excalidraw:
+  #enabled: false
+  enabled: true
+
+jvb:
+  replicaCount: 1
+
+  #useNodeIP: false
+  useNodeIP: true
+  #useHostPort: false
+  useHostPort: true
+  UDPPort: 10000
+  portRangeSize: 3
+
+  service:
+    #enabled: true
+    enabled: false
+
+octo:
+  #enabled: false
+  enabled: true
