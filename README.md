@@ -117,7 +117,7 @@ consecutive ports. For example, these settings create 3 JVB pods using ports
 If `replicaCount` is greater than 1, it creates a total of
 `replicaCount * portRangeSize` JVB pods.
 
-See [the sample config](/docs/samples/values-hostport.yaml)
+See [the sample config](/docs/samples/values-hostport-range.yaml)
 
 ### Option 4: Using hostNetwork
 
