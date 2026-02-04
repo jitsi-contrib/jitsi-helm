@@ -9,9 +9,6 @@
 #publicURL: ""
 publicURL: "https://meet.example.com"
 
-enableAuth: false
-enableGuests: true
-
 websockets:
   colibri:
     enabled: false
@@ -39,6 +36,7 @@ jvb:
   #useHostPort: false
   useHostPort: true
   UDPPort: 10000
+  #portRangeSize: 1
   portRangeSize: 3
 
   service:
