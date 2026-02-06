@@ -20,9 +20,16 @@ web:
   ingress:
     #enabled: false
     enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
       - host: meet.example.com
         paths: ["/"]
+    tls:
+      - secretName: jitsi-tls
+        hosts:
+          - meet.example.com
 
 excalidraw:
   #enabled: false
