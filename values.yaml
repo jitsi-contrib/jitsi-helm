@@ -539,7 +539,8 @@ jvb:
   #
   # If you want to completely disable STUN for JVB then set this value to false
   # and remove stunServers (use an empty string, ""). You might want to do this
-  # if there is a publicly available IP address for JVB.
+  # if publicIPs is already explicitly set and there is no need to discover IP
+  # address via STUN.
   useInternalStun: true
   # Try to use the hostPort feature:
   # (might not be supported by some clouds or CNI engines)
