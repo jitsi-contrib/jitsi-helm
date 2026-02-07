@@ -245,9 +245,8 @@ excalidraw:
 ## #############################################################################
 ## Coturn configuration
 ## #############################################################################
-# Supports STUN and TURN over UDP/3478.
+# STUN and TURN over UDP/3478. Media packages are still encrypted with DTLS-SRTP
 # Optional TURNS (TURN over TLS on TCP/443) support.
-# Media packages are still encrypted with DTLS-SRTP.
 coturn:
   enabled: false
 
@@ -535,6 +534,14 @@ jvb:
   useNodeIP: false
   # Use a STUN server to help JVB to find its own external IP.
   stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
+  # Use the internal STUN if coturn is enabled. In this case, it will overwrite
+  # stunServers and will use STUN installed by this chart.
+  #
+  # If you want to completely disable STUN for JVB then set this value to false
+  # and remove stunServers (use an empty string, ""). You might want to do this
+  # if publicIPs is already explicitly set and there is no need to discover IP
+  # address via STUN.
+  useInternalStun: true
   # Try to use the hostPort feature:
   # (might not be supported by some clouds or CNI engines)
   useHostPort: false

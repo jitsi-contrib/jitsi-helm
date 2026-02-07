@@ -87,20 +87,14 @@ spec:
           env:
             - name: JVB_PORT
               value: {{ $udpPort | quote }}
-            {{- if or
-                $.Values.jvb.useNodeIP
-                $.Values.jvb.publicIPs
-            }}
+            {{- if $.Values.jvb.publicIPs }}
             - name: JVB_ADVERTISE_IPS
-              {{- if $.Values.jvb.publicIPs }}
               value: {{ $.Values.jvb.publicIPs | join "," | quote }}
-              {{- else }}
+            {{- else if $.Values.jvb.useNodeIP }}
+            - name: JVB_ADVERTISE_IPS
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-              {{- end }}
-            {{- else }}
-              {{- fail "(jvb.publicIPs | jvb.useNodeIP) Please set an external IP addresses for JVB(s) or enable the Node IP autodetection!" }}
             {{- end }}
             {{- if $.Values.websockets.colibri.enabled }}
             - name: JVB_WS_SERVER_ID

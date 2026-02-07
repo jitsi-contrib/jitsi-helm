@@ -7,7 +7,17 @@ metadata:
 data:
   COLIBRI_REST_ENABLED: "true"
   JVB_BREWERY_MUC: {{ .Values.jvb.breweryMuc | quote }}
-  JVB_STUN_SERVERS: {{.Values.jvb.stunServers | quote }}
+  {{- if and
+         .Values.turnHost
+         .Values.coturn.enabled
+         .Values.jvb.useInternalStun
+  }}
+  JVB_STUN_SERVERS: {{ printf "%s:%v" .Values.turnHost .Values.coturn.service.ports.turn | quote }}
+  {{- else if .Values.jvb.stunServers }}
+  JVB_STUN_SERVERS: {{ .Values.jvb.stunServers | quote }}
+  {{- else }}
+  JVB_DISABLE_STUN: "true"
+  {{- end }}
   XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
   {{- if .Values.octo.enabled }}
