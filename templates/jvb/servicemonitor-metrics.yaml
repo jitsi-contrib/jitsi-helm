@@ -1,6 +1,6 @@
 {{- if and
-    .Values.jvb.metrics.enabled
-    .Values.jvb.metrics.serviceMonitor.enabled
+       .Values.jvb.metrics.enabled
+       .Values.jvb.metrics.serviceMonitor.enabled
 }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

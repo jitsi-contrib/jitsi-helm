@@ -1,12 +1,12 @@
 {{- if and
-    .Values.jibri.enabled
-    (not .Values.jibri.useExternalJibri)
-    (or
-       .Values.jibri.custom.defaults._jibri_conf
-       .Values.jibri.custom.defaults._logging_properties
-       .Values.jibri.custom.defaults._jibri_autoscaler_sidecar_config
-       .Values.jibri.custom.defaults._xorg_video_dummy_conf
-    )
+       .Values.jibri.enabled
+       (not .Values.jibri.useExternalJibri)
+       (or
+          .Values.jibri.custom.defaults._jibri_conf
+          .Values.jibri.custom.defaults._logging_properties
+          .Values.jibri.custom.defaults._jibri_autoscaler_sidecar_config
+          .Values.jibri.custom.defaults._xorg_video_dummy_conf
+       )
 }}
 apiVersion: v1
 kind: ConfigMap

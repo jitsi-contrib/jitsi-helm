@@ -41,8 +41,8 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") $ | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") $ | sha256sum | quote }}
         {{- if and
-            $.Values.jvb.metrics.enabled
-            $.Values.jvb.metrics.prometheusAnnotations
+               $.Values.jvb.metrics.enabled
+               $.Values.jvb.metrics.prometheusAnnotations
         }}
         prometheus.io/port: "9888"
         prometheus.io/scrape: "true"

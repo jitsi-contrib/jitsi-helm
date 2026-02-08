@@ -1,8 +1,8 @@
 {{- if and
-    .Values.transcriber.enabled
-    (not .Values.transcriber.useExternalTranscriber)
-    .Values.transcriber.persistence.enabled
-    (not .Values.transcriber.persistence.existingClaim)
+       .Values.transcriber.enabled
+       (not .Values.transcriber.useExternalTranscriber)
+       .Values.transcriber.persistence.enabled
+       (not .Values.transcriber.persistence.existingClaim)
 }}
 apiVersion: v1
 kind: PersistentVolumeClaim

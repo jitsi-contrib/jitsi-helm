@@ -1,7 +1,7 @@
 {{- if and
-    .Values.jibri.enabled
-    (not .Values.jibri.useExternalJibri)
-    .Values.jibri.custom.contInit._10_config
+       .Values.jibri.enabled
+       (not .Values.jibri.useExternalJibri)
+       .Values.jibri.custom.contInit._10_config
 }}
 apiVersion: v1
 kind: ConfigMap

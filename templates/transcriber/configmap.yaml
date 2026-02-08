@@ -1,6 +1,6 @@
 {{- if and
-    .Values.transcriber.enabled
-    (not .Values.transcriber.useExternalTranscriber)
+       .Values.transcriber.enabled
+       (not .Values.transcriber.useExternalTranscriber)
 }}
 apiVersion: v1
 kind: ConfigMap

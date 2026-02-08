@@ -1,6 +1,6 @@
 {{- if and
-    .Values.jibri.enabled
-    (not .Values.jibri.useExternalJibri)
+       .Values.jibri.enabled
+       (not .Values.jibri.useExternalJibri)
 }}
 apiVersion: v1
 kind: ConfigMap

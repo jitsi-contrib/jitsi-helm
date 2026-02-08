@@ -1,6 +1,6 @@
 {{- if and
-    .Values.prosody.metrics.enabled
-    .Values.prosody.metrics.serviceMonitor.enabled
+       .Values.prosody.metrics.enabled
+       .Values.prosody.metrics.serviceMonitor.enabled
 }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

@@ -1,7 +1,7 @@
 {{- if or
-    .Values.prosody.custom.defaults._prosody_cfg_lua
-    .Values.prosody.custom.defaults._saslauthd_conf
-    .Values.prosody.custom.defaults._jitsi_meet_cfg_lua
+       .Values.prosody.custom.defaults._prosody_cfg_lua
+       .Values.prosody.custom.defaults._saslauthd_conf
+       .Values.prosody.custom.defaults._jitsi_meet_cfg_lua
 }}
 apiVersion: v1
 kind: ConfigMap

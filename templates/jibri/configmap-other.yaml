@@ -1,7 +1,7 @@
 {{- if and
-    .Values.jibri.enabled
-    (not .Values.jibri.useExternalJibri)
-    .Values.jibri.custom.other._finalize_sh
+       .Values.jibri.enabled
+       (not .Values.jibri.useExternalJibri)
+       .Values.jibri.custom.other._finalize_sh
 }}
 apiVersion: v1
 kind: ConfigMap

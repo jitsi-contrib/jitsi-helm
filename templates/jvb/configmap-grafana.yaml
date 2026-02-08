@@ -1,6 +1,6 @@
 {{- if and
-    .Values.jvb.metrics.enabled
-    .Values.jvb.metrics.grafanaDashboards.enabled
+       .Values.jvb.metrics.enabled
+       .Values.jvb.metrics.grafanaDashboards.enabled
 }}
 apiVersion: v1
 kind: ConfigMap

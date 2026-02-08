@@ -1,6 +1,6 @@
 {{- if or
-    .Values.jicofo.custom.defaults._jicofo_conf
-    .Values.jicofo.custom.defaults._logging_properties
+       .Values.jicofo.custom.defaults._jicofo_conf
+       .Values.jicofo.custom.defaults._logging_properties
 }}
 apiVersion: v1
 kind: ConfigMap

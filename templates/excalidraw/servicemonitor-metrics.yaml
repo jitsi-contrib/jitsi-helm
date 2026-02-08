@@ -1,7 +1,7 @@
 {{- if and
-    .Values.excalidraw.enabled
-    .Values.excalidraw.metrics.enabled
-    .Values.excalidraw.metrics.serviceMonitor.enabled
+       .Values.excalidraw.enabled
+       .Values.excalidraw.metrics.enabled
+       .Values.excalidraw.metrics.serviceMonitor.enabled
 }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

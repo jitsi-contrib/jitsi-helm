@@ -1,6 +1,6 @@
 {{- if and
-    .Values.jigasi.enabled
-    (not .Values.jigasi.useExternalJigasi)
+       .Values.jigasi.enabled
+       (not .Values.jigasi.useExternalJigasi)
 }}
 apiVersion: apps/v1
 kind: Deployment
