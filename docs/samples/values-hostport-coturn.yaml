@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # This is a sample config. Assumed that:
 # - Jitsi domain is meet.example.com
+# - TURN domain is turn.example.com
 # - There are 3 JVBs using UDP/10000.
 #   But JVB's port is not publicly accessible in this scenario.
 #   So, Coturn will forward media traffic to JVBs.
@@ -9,6 +10,9 @@
 # -----------------------------------------------------------------------------
 #publicURL: ""
 publicURL: "https://meet.example.com"
+
+#turnHost: ""
+turnHost: "turn.example.com"
 
 websockets:
   colibri:
