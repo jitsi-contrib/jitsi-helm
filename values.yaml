@@ -561,6 +561,8 @@ jvb:
   #nodePort: 10000
 
   service:
+    # When the service is enabled, JVB's replicaCount and portRangeSize must be
+    # 1. This means that there can only be one JVB in this case.
     enabled: true
     type: ClusterIP
     externalTrafficPolicy: Cluster
