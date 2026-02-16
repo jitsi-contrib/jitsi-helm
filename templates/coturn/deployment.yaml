@@ -147,6 +147,11 @@ spec:
               protocol: TCP
               containerPort: {{ .Values.coturn.service.ports.turns }}
             {{- end }}
+            {{- if .Values.coturn.metrics.enabled }}
+            - name: tcp-metrics
+              protocol: TCP
+              containerPort: 9641
+            {{- end }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

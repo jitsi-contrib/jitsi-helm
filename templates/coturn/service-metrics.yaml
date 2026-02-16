@@ -1,0 +1,16 @@
+{{- if and .Values.coturn.enabled .Values.coturn.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}-metrics
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9641
+      protocol: TCP
+      name: tcp-metrics
+  selector:
+    {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 4 }}
+{{- end }}
