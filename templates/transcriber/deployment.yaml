@@ -51,6 +51,9 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- with .Values.transcriber.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       initContainers:
         - name: init-prosody
           image: busybox:1.36
@@ -100,6 +103,9 @@ spec:
             {{- if .Values.transcriber.persistence.enabled }}
             - name: transcriber-data
               mountPath: /tmp/transcripts
+            {{- end }}
+            {{- with .Values.transcriber.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
       {{- with .Values.transcriber.affinity }}
