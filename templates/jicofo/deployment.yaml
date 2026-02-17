@@ -44,6 +44,9 @@ spec:
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
+        {{- with .Values.jicofo.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.jicofo.image.repository }}:{{ .Values.jicofo.image.tag | default .Chart.AppVersion }}"
@@ -94,6 +97,9 @@ spec:
             - name: custom-defaults
               mountPath: /defaults/logging.properties
               subPath: logging.properties
+            {{- end }}
+            {{- with .Values.jicofo.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
         {{- if .Values.jicofo.metrics.enabled }}
