@@ -1,4 +1,7 @@
-{{- if and .Values.coturn.enabled .Values.coturn.metrics.enabled }}
+{{- if and
+       .Values.coturn.enabled
+       .Values.coturn.metrics.enabled
+}}
 apiVersion: v1
 kind: Service
 metadata:
