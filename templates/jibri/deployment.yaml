@@ -77,6 +77,9 @@ spec:
             sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
           {{- end }}
         {{- end }}
+        {{- with .Values.jibri.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.jibri.image.repository }}:{{ .Values.jibri.image.tag | default .Chart.AppVersion }}"
@@ -165,6 +168,9 @@ spec:
             {{- if .Values.jibri.shm.enabled }}
             - name: dev-shm
               mountPath: /dev/shm
+            {{- end }}
+            {{- with .Values.jibri.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
       {{- with .Values.jibri.affinity }}

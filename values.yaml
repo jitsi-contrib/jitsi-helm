@@ -172,6 +172,8 @@ web:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
   nodeSelector: {}
   resources: {}
@@ -234,6 +236,8 @@ excalidraw:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -340,6 +344,8 @@ coturn:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -501,6 +507,8 @@ jicofo:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -639,6 +647,8 @@ jvb:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -700,6 +710,8 @@ jigasi:
   annotations: {}
   extraEnvFrom: []
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
   nodeSelector: {}
   resources: {}
@@ -770,6 +782,8 @@ transcriber:
   annotations: {}
   extraEnvFrom: []
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
   nodeSelector: {}
   resources: {}
@@ -916,6 +930,8 @@ jibri:
   extraEnvs: {}
   extraSecrets: []
   extraSecretsFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
   nodeSelector: {}
   resources: {}

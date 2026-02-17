@@ -64,6 +64,9 @@ spec:
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
         {{- end }}
+        {{- with .Values.coturn.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       initContainers:
         {{- if and
                .Values.coturn.turns.enabled
@@ -170,6 +173,9 @@ spec:
             - name: tls
               mountPath: /tls
               readOnly: true
+            {{- end }}
+            {{- with .Values.coturn.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
       {{- with .Values.coturn.affinity }}

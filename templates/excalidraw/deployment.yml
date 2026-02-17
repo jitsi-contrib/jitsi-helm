@@ -33,6 +33,10 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.excalidraw.podSecurityContext | nindent 8 }}
+      {{- with .Values.excalidraw.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.excalidraw.image.repository }}:{{ .Values.excalidraw.image.tag }}"
@@ -56,6 +60,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.excalidraw.resources | nindent 12 }}
+          {{- with .Values.excalidraw.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
 
       {{- with .Values.excalidraw.affinity }}
       affinity:

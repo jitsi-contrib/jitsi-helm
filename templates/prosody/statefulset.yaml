@@ -99,7 +99,7 @@ spec:
             defaultMode: 420
         {{- end }}
         {{- with .Values.prosody.extraVolumes }}
-        {{-   toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
