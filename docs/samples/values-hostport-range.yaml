@@ -40,9 +40,11 @@ jvb:
 
   #useNodeIP: false
   useNodeIP: true
+
   #useHostPort: false
   useHostPort: true
   UDPPort: 10000
+
   #portRangeSize: 1
   portRangeSize: 3
 

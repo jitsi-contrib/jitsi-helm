@@ -54,6 +54,9 @@ jvb:
   #replicaCount: 1
   replicaCount: 3
 
+  #useNodeIP: false
+  useNodeIP: true
+
   #useHostPort: false
   useHostPort: true
   UDPPort: 10000
