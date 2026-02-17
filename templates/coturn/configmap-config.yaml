@@ -53,4 +53,7 @@ data:
     allowed-peer-ip={{ . }}
     {{-   end }}
     {{- end }}
+    {{- if .Values.coturn.metrics.enabled }}
+    prometheus
+    {{- end }}
 {{- end }}

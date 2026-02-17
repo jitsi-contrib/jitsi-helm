@@ -1,0 +1,33 @@
+{{- if and
+       .Values.coturn.enabled
+       .Values.coturn.metrics.enabled
+       .Values.coturn.metrics.serviceMonitor.enabled
+}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "jitsi-meet.coturn.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+    {{- with .Values.coturn.metrics.serviceMonitor.selector }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+    - port: tcp-metrics
+      path: /metrics
+
+      {{- with .Values.coturn.metrics.serviceMonitor.honorLabels }}
+      honorLabels: {{ . }}
+      {{- end }}
+
+      {{- with .Values.coturn.metrics.serviceMonitor.interval }}
+      interval: {{ . }}
+      {{- end }}
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}

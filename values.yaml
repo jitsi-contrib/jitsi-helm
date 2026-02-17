@@ -327,6 +327,16 @@ coturn:
     tcpSocket:
       port: 3478
 
+  # native coturn prometheus metrics (port 9641)
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false
+
   affinity: {}
   annotations: {}
   extraEnvs: {}
