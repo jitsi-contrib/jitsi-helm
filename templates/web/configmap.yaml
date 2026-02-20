@@ -13,6 +13,10 @@ data:
   WHITEBOARD_COLLAB_SERVER_URL_BASE: 'http://{{ include "jitsi-meet.excalidraw.server" . }}'
   {{- end }}
 
+  {{- if .Values.transcriber.enabled }}
+  ENABLE_TRANSCRIPTIONS: "1"
+  {{- end }}
+
   {{- with .Values.web.resolverIP }}
   NGINX_RESOLVER: {{ . }}
   {{- end }}
