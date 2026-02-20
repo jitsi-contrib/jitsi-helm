@@ -56,4 +56,7 @@ data:
     {{- if .Values.coturn.metrics.enabled }}
     prometheus
     {{- end }}
+    {{- with .Values.coturn.custom.configs._turnserver_conf }}
+    {{- . | nindent 4 }}
+    {{- end }}
 {{- end }}
