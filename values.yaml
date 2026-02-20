@@ -260,6 +260,10 @@ coturn:
     repository: coturn/coturn
     tag: 4.8
 
+  custom:
+    configs:
+      _turnserver_conf: ""
+
   staticAuth:
     secret:
     # Alternatively provide a name for an externally managed secret containing
