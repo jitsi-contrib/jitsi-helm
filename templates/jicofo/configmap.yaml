@@ -19,6 +19,10 @@ data:
   JIGASI_SIP_URI: "available"
   {{- end }}
 
+  {{- if .Values.transcriber.enabled }}
+  ENABLE_TRANSCRIPTIONS: "1"
+  {{- end }}
+
   {{- if .Values.octo.enabled }}
   ENABLE_OCTO: "1"
   OCTO_BRIDGE_SELECTION_STRATEGY: "RegionBasedBridgeSelectionStrategy"

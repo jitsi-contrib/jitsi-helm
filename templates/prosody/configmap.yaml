@@ -5,6 +5,10 @@ metadata:
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
+  {{- if .Values.transcriber.enabled }}
+  ENABLE_TRANSCRIPTIONS: "1"
+  {{- end }}
+
   {{- range $key, $value := .Values.prosody.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
   {{      $key }}: {{ tpl $value $ | quote }}
