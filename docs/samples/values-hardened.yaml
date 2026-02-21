@@ -1,0 +1,139 @@
+# -----------------------------------------------------------------------------
+# This is a sample config. Assumed that:
+# - Jitsi domain is meet.example.com
+# - It uses hardened containers from
+#   https://github.com/jitsi-contrib/hardened-images
+# - Read-only filesystems
+# - Non-root containers
+# -----------------------------------------------------------------------------
+#publicURL: ""
+publicURL: "https://meet.example.com"
+
+websockets:
+  colibri:
+    enabled: false
+  xmpp:
+    #enabled: false
+    enabled: true
+
+web:
+  image:
+    repository: ghcr.io/jitsi-contrib/hardened-images/web
+
+  securityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  extraVolumes:
+    - name: run
+      emptyDir:
+        sizeLimit: 32Mi
+    - name: tmp
+      emptyDir:
+        sizeLimit: 32Mi
+
+  extraVolumeMounts:
+    - name: run
+      mountPath: /run
+    - name: tmp
+      mountPath: /tmp
+
+  ingress:
+    #enabled: false
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: meet.example.com
+        paths: ["/"]
+    tls:
+      - secretName: jitsi-tls
+        hosts:
+          - meet.example.com
+
+prosody:
+  image:
+    repository: ghcr.io/jitsi-contrib/hardened-images/prosody
+
+  securityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  extraVolumes:
+    - name: run
+      emptyDir:
+        sizeLimit: 32Mi
+    - name: tmp
+      emptyDir:
+        sizeLimit: 32Mi
+    - name: storage
+      emptyDir:
+        sizeLimit: 32Mi
+
+  extraVolumeMounts:
+    - name: run
+      mountPath: /run
+    - name: tmp
+      mountPath: /tmp
+    - name: storage
+      mountPath: /var/lib/prosody
+
+jicofo:
+  image:
+    repository: ghcr.io/jitsi-contrib/hardened-images/jicofo
+
+  securityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  extraVolumes:
+    - name: run
+      emptyDir:
+        sizeLimit: 32Mi
+    - name: tmp
+      emptyDir:
+        sizeLimit: 32Mi
+
+  extraVolumeMounts:
+    - name: run
+      mountPath: /run
+    - name: tmp
+      mountPath: /tmp
+
+jvb:
+  image:
+    repository: ghcr.io/jitsi-contrib/hardened-images/jvb
+
+  securityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  extraVolumes:
+    - name: run
+      emptyDir:
+        sizeLimit: 32Mi
+    - name: tmp
+      emptyDir:
+        sizeLimit: 32Mi
+
+  extraVolumeMounts:
+    - name: run
+      mountPath: /run
+    - name: tmp
+      mountPath: /tmp
+
+  #useNodeIP: false
+  useNodeIP: true
+
+  #useHostPort: false
+  useHostPort: true
+  UDPPort: 10000
+
+  service:
+    #enabled: true
+    enabled: false
