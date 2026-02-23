@@ -4,12 +4,6 @@
 ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
 
-[Jitsi-Meet](https://jitsi.org/jitsi-meet/): Secure, simple and scalable video
-conferences that you can use as a standalone app or embed in your web
-application.
-
-This chart bootstraps a Jitsi Meet stack on Kubernetes.
-
 - [Quick start](#quick-start)
 - [Exposing your Jitsi Meet installation](#exposing-your-jitsi-meet-installation)
   - [Option 1: Using a LoadBalancer service](#option-1-using-a-loadbalancer-service)
@@ -23,6 +17,12 @@ This chart bootstraps a Jitsi Meet stack on Kubernetes.
 - [Scaling your installation](#scaling-your-installation)
 - [Adding custom Prosody plugins](#adding-custom-prosody-plugins)
 - [References](#references)
+
+[Jitsi-Meet](https://jitsi.org/jitsi-meet/): Secure, simple and scalable video
+conferences that you can use as a standalone app or embed in your web
+application.
+
+This chart bootstraps a Jitsi Meet stack on Kubernetes.
 
 ## Quick start
 

@@ -8,8 +8,8 @@ octo:
   enabled: true
 ```
 
-The default threshold is 80. You can lower this value for a
-quick test in a test deployment.
+The default threshold is 80. You can lower this value for a quick test in a test
+deployment.
 
 ```
 jicofo:
