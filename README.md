@@ -28,7 +28,7 @@ This chart bootstraps a Jitsi Meet stack on Kubernetes.
 
 ```bash
 helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
-helm install myjitsi jitsi/jitsi-meet
+helm install myjitsi jitsi/jitsi-meet --set publicURL=https://meet.mydomain.com
 ```
 
 ## Exposing your Jitsi Meet installation
