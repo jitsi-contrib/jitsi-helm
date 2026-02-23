@@ -78,14 +78,15 @@ the video connection.
 
 ```yaml
 jvb:
-  useHostPort: true
+  service:
+    enabled: false
 
   # Use public IPs of the nodes:
   publicIPs:
     - 30.10.10.1
 
-  service:
-    enabled: false
+  useHostPort: true
+  UDPPort: 10000
 ```
 
 While this allows `jvb.replicaCount` to be greater than 1, it requires exposing
@@ -95,11 +96,13 @@ Node IPs and JVB ports directly to Internet.
 
 ```yaml
 jvb:
-  useHostPort: true
-  useNodeIP: true
-
   service:
     enabled: false
+
+  useNodeIP: true
+
+  useHostPort: true
+  UDPPort: 10000
 ```
 
 This is similar to Option 3, but every JVB pod will auto-detect its own external
@@ -110,13 +113,14 @@ suited for installations that use OCTO.
 
 ```yaml
 jvb:
-  useHostPort: true
-  useNodeIP: true
-  UDPPort: 10000
-  portRangeSize: 3
-
   service:
     enabled: false
+
+  useNodeIP: true
+
+  useHostPort: true
+  UDPPort: 10000
+  portRangeSize: 3
 ```
 
 This is similar to Option 3, but it creates multiple JVB pods using a range of
