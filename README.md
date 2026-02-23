@@ -270,19 +270,13 @@ No need to add a module from
 [jitsi-contrib/prosody-plugins](https://github.com/jitsi-contrib/prosody-plugins)
 manually since they are available in the official `jitsi/prosody` container.
 
-## Configuration
+## References
 
 Feature-specific documentation can be found here:
 
 - [Octo](/docs/manuals/testing-octo.md)
 - [TURNS](/docs/manuals/turns.md)
+- [Sample values files](/docs/samples/)
 
 For further documentation on all available configuration, refer to
 [values.yaml](/values.yaml).
-
-## Package
-
-```bash
-helm package . -d docs
-helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
-```
