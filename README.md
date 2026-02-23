@@ -10,6 +10,20 @@ application.
 
 This chart bootstraps a Jitsi Meet stack on Kubernetes.
 
+- [Quick start](#quick-start)
+- [Exposing your Jitsi Meet installation](#exposing-your-jitsi-meet-installation)
+  - [Option 1: Using a LoadBalancer service](#option-1-using-a-loadbalancer-service)
+  - [Option 2: Using a NodePort service (public node IP or external LB)](#option-2-using-a-nodeport-service-public-node-ip-or-external-lb)
+  - [Option 3: Using hostPort (public node IP)](#option-3-using-hostport-public-node-ip)
+  - [Option 3.1: Using hostPort (auto-detected public node IP)](#option-31-using-hostport-auto-detected-public-node-ip)
+  - [Option 3.2: Using hostPort with a port range](#option-32-using-hostport-with-a-port-range)
+  - [Option 4: Using hostNetwork](#option-4-using-hostnetwork)
+  - [Option 5: Bring your own setup](#option-5-bring-your-own-setup)
+- [Recording and streaming support](#recording-and-streaming-support)
+- [Scaling your installation](#scaling-your-installation)
+- [Adding custom Prosody plugins](#adding-custom-prosody-plugins)
+- [References](#references)
+
 ## Quick start
 
 ```bash
