@@ -224,12 +224,15 @@ as live streams of their meetings.
 
 ## Scaling your installation
 
-At the moment you can freely scale Jitsi Web and Jibri pods, as they're
+At the moment you can freely scale Jitsi Web, Jibri and Coturn pods, as they're
 stateless and require zero special configuration to work in multi-instance
 setup:
 
 ```yaml
 web:
+  replicaCount: 3
+
+coturn:
   replicaCount: 3
 
 jibri:
@@ -243,24 +246,28 @@ based on the Option 3.1 mentioned above:
 
 ```yaml
 jvb:
-  ## Set JVB instance count:
+  # Set JVB instance count:
   replicaCount: 3
-  ## Expose JVB interface port to the outside world
-  #  only on nodes that actually have it:
+
+  service:
+    enabled: false
+
+  # Expose JVB interface port to the outside world
+  # only on nodes that actually have it:
   useHostPort: true
-  ## Make every JVB pod announce its Node's external
-  #  IP address and nothing more:
+
+  # Make every JVB pod announce its Node's external
+  # IP address and nothing more:
   useNodeIP: true
 
 octo:
-  ## Enable OCTO support for both JVB and Jicofo:
+  # Enable OCTO support for both JVB and Jicofo:
   enabled: true
 ```
 
-Please note that the JVB scaling feature is currently under-tested and thus
-considered _experimental_. Also note that this chart doesn't allow to scale JVB
-into multiple zones/regions yet: all JVB pods will be part of the single OCTO
-region named `all`.
+Please note that this chart doesn't allow to scale JVB into multiple
+zones/regions yet: all JVB pods will be part of the single OCTO region named
+`all`.
 
 ## Adding custom Prosody plugins
 
@@ -274,6 +281,7 @@ prosody:
     - name: prosody-modules
       configMap:
         name: prosody-modules
+
   extraVolumeMounts:
     - name: prosody-modules
       subPath: mod_measure_client_presence.lua
