@@ -83,6 +83,9 @@ jvb:
   # Use public IPs of the nodes:
   publicIPs:
     - 30.10.10.1
+
+  service:
+    enabled: false
 ```
 
 While this allows `jvb.replicaCount` to be greater than 1, it requires exposing
@@ -94,6 +97,9 @@ Node IPs and JVB ports directly to Internet.
 jvb:
   useHostPort: true
   useNodeIP: true
+
+  service:
+    enabled: false
 ```
 
 This is similar to Option 3, but every JVB pod will auto-detect its own external
@@ -108,6 +114,9 @@ jvb:
   useNodeIP: true
   UDPPort: 10000
   portRangeSize: 3
+
+  service:
+    enabled: false
 ```
 
 This is similar to Option 3, but it creates multiple JVB pods using a range of
