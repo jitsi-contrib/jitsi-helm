@@ -134,7 +134,10 @@ spec:
             - secretRef:
                 name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
             {{- end }}
-            {{- if or (.Values.jigasi.enabled) (.Values.transcriber.enabled) }}
+            {{- if or
+                   .Values.jigasi.enabled
+                   .Values.transcriber.enabled
+            }}
             - secretRef:
                 name: {{ include "jitsi-meet.jigasi.secretName" . }}
             {{- end }}
