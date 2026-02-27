@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.prosody.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.prosody.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
@@ -63,7 +63,7 @@ spec:
         {{- else }}
         checksum/secret-transcriber: {{ printf "disabled-or-existing" | sha256sum | quote }}
         {{- end }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.prosody.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.prosody.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:

@@ -18,7 +18,7 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.coturn.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.coturn.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
@@ -27,7 +27,7 @@ spec:
         {{- if .Values.coturn.turns.enabled }}
         secret.reloader.stakater.com/reload: {{ if .Values.coturn.turns.certificate.create }}{{ include "jitsi-meet.coturn.fullname" . }}-tls{{ else }}{{ .Values.coturn.turns.certificate.existingSecretName }}{{ end }}
         {{- end }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:

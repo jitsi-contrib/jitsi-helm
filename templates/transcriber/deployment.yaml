@@ -21,14 +21,14 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.transcriber.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.transcriber.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/transcriber/configmap.yaml") . | sha256sum | quote }}
         checksum/secret-jigasi: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
         checksum/secret-transcriber: {{ include (print $.Template.BasePath "/transcriber/secret.yaml") . | sha256sum | quote }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.transcriber.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:

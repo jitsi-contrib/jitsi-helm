@@ -21,13 +21,13 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jigasi.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.jigasi.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.jigasi.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jigasi/configmap.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jigasi.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jigasi.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:

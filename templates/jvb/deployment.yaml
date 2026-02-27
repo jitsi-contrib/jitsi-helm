@@ -34,7 +34,7 @@ spec:
       labels:
         {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 8 }}
         instance: {{ $i | quote }}
-        {{- with (mergeOverwrite $.Values.global.podLabels $.Values.jvb.podLabels) }}
+        {{- with (mergeOverwrite (dict) $.Values.global.podLabels $.Values.jvb.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
@@ -47,7 +47,7 @@ spec:
         prometheus.io/port: "9888"
         prometheus.io/scrape: "true"
         {{- end }}
-        {{- with (mergeOverwrite $.Values.global.podAnnotations $.Values.jvb.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) $.Values.global.podAnnotations $.Values.jvb.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
