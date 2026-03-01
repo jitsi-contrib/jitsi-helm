@@ -9,8 +9,8 @@ metadata:
   labels:
     {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
 data:
-  ENABLE_TRANSCRIPTIONS: "1"
-  JIGASI_ENABLE_REST: "1"
+  ENABLE_TRANSCRIPTIONS: "true"
+  JIGASI_ENABLE_REST: "true"
   JIGASI_MODE: "transcriber"
   XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 

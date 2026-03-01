@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "jitsi-meet.labels" . | nindent 4 }}
 data:
-  ENABLE_AUTH: {{ .Values.enableAuth | ternary "1" "0" | quote }}
-  ENABLE_GUESTS: {{ .Values.enableGuests | ternary "1" "0" | quote }}
+  ENABLE_AUTH: {{ .Values.enableAuth | ternary "true" "false" | quote }}
+  ENABLE_GUESTS: {{ .Values.enableGuests | ternary "true" "false" | quote }}
   PUBLIC_URL: {{ include "jitsi-meet.publicURL" . | quote }}
   TZ: {{ .Values.tz | quote}}
   XMPP_DOMAIN: {{ include "jitsi-meet.xmpp.domain" . | quote }}
@@ -33,7 +33,7 @@ data:
   {{- end }}
 
   {{- if .Values.octo.enabled }}
-  ENABLE_OCTO: "1"
+  ENABLE_OCTO: "true"
   DEPLOYMENTINFO_REGION: "all"
   {{- end }}
 

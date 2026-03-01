@@ -21,7 +21,7 @@ data:
   XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
   {{- if .Values.octo.enabled }}
-  ENABLE_OCTO: "1"
+  ENABLE_OCTO: "true"
   JVB_OCTO_REGION: "all"
   {{- end }}
 

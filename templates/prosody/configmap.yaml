@@ -6,7 +6,7 @@ metadata:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
   {{- if .Values.transcriber.enabled }}
-  ENABLE_TRANSCRIPTIONS: "1"
+  ENABLE_TRANSCRIPTIONS: "true"
   {{- end }}
 
   {{- range $key, $value := .Values.prosody.extraEnvs }}
