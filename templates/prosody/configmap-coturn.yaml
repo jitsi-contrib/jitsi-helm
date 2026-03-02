@@ -10,7 +10,7 @@ data:
   STUN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
   TURN_HOST: {{ .Values.turnHost | quote }}
   TURN_PORT: {{ .Values.coturn.service.ports.turn | quote }}
-  TURN_TRANSPORT: "udp"
+  TURN_TRANSPORT: {{ .Values.coturn.turn.transport | quote }}
   {{- if .Values.coturn.turns.enabled }}
   TURNS_HOST: {{ .Values.turnHost | quote }}
   TURNS_PORT: {{ .Values.coturn.service.ports.turns | quote }}

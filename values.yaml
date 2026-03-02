@@ -258,7 +258,7 @@ coturn:
 
   image:
     repository: coturn/coturn
-    tag: 4.8
+    tag: 4.9
 
   custom:
     configs:
@@ -269,6 +269,9 @@ coturn:
     # Alternatively provide a name for an externally managed secret containing
     # the value for TURN_CREDENTIALS
     existingSecretName:
+
+  turn:
+    transport: "udp"
 
   # TURNS (TURN over TLS) configuration
   # Relay ports use pod networking (internal cluster access only).
@@ -305,8 +308,8 @@ coturn:
 
   service:
     type: LoadBalancer
-    # Disable NodePort allocation when using LoadBalancer service
-    allocateLoadBalancerNodePorts: false
+    # NodePort allocation when using LoadBalancer service
+    allocateLoadBalancerNodePorts: true
     ports:
       turn: 3478
       turns: 443
