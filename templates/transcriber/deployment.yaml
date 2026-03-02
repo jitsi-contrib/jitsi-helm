@@ -8,6 +8,9 @@ metadata:
   name: {{ include "jitsi-meet.transcriber.fullname" . }}
   labels:
     {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
+    {{- with .Values.transcriber.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.transcriber.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

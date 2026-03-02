@@ -175,6 +175,7 @@ web:
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a
@@ -238,6 +239,7 @@ excalidraw:
   extraEnvs: {}
   extraVolumes: []
   extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -353,6 +355,7 @@ coturn:
   extraEnvs: {}
   extraVolumes: []
   extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -460,6 +463,7 @@ prosody:
   annotations: {}
   extraEnvs: {}
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -516,6 +520,7 @@ jicofo:
   extraEnvs: {}
   extraVolumes: []
   extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -656,6 +661,7 @@ jvb:
   extraEnvs: {}
   extraVolumes: []
   extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -720,6 +726,7 @@ jigasi:
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -792,6 +799,7 @@ transcriber:
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -940,6 +948,7 @@ jibri:
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}

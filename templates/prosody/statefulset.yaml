@@ -4,6 +4,9 @@ metadata:
   name: {{ include "jitsi-meet.prosody.fullname" . }}
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
+    {{- with .Values.prosody.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.prosody.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

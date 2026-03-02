@@ -5,6 +5,9 @@ metadata:
   name: {{ include "jitsi-meet.coturn.fullname" . }}
   labels:
     {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+    {{- with .Values.coturn.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.coturn.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
