@@ -139,11 +139,11 @@ spec:
             {{-   end }}
             {{- end }}
           ports:
-            - name: udp-turn
-              protocol: UDP
-              containerPort: {{ .Values.coturn.service.ports.turn }}
             - name: tcp-turn
               protocol: TCP
+              containerPort: {{ .Values.coturn.service.ports.turn }}
+            - name: udp-turn
+              protocol: UDP
               containerPort: {{ .Values.coturn.service.ports.turn }}
             {{- if .Values.coturn.turns.enabled }}
             - name: tcp-turns
