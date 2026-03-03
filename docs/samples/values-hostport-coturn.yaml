@@ -56,7 +56,7 @@ coturn:
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "tcp"
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "3478"
 
-  allowedPeerIp:
+  allowedPeerIPs:
     # JVBs are not publicly accessible. So, Coturn can only connect to them
     # through their internal IPs. Therefore, allow the internal IP block used by
     # JVBs. Coturn will only forward UDP traffic.

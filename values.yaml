@@ -280,7 +280,7 @@ coturn:
   # - TCP/443 is exposed via LoadBalancer service for TURNS control connection
   # - UDP relay ports remain internal on pod IP
   # - JVB sends media to relay via internal pod-to-pod UDP
-  # - Requires coturn.allowedPeerIp set to pod/node CIDR for relay to JVB
+  # - Requires coturn.allowedPeerIPs set to pod/node CIDR for relay to JVB
   turns:
     enabled: false
     relayPortRange:
@@ -324,11 +324,11 @@ coturn:
 
   # The JVB's public IP addresses are expected to be directly accessible by
   # Coturn in the production environment.
-  # allowedPeerIp is required when Coturn cannot directly access JVBs through
+  # allowedPeerIPs is required when Coturn cannot directly access JVBs through
   # their public IPs. In this case, set to your cluster's node/pod range to
   # allow coturn to relay to JVB
-  allowedPeerIp: []
-  #allowedPeerIp:
+  allowedPeerIPs: []
+  #allowedPeerIPs:
   #  - "10.244.0.0-10.244.255.255"
   #  - "100.64.0.0-100.127.255.255"
 
