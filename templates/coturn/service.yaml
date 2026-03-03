@@ -24,10 +24,11 @@ spec:
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
-    # Always keep tcp-turn for LB healtcheck
+    {{- if eq .Values.coturn.turn.transport "tcp" }}
     - name: tcp-turn
       protocol: TCP
       port: {{ .Values.coturn.service.ports.turn }}
+    {{- end }}
     {{- if eq .Values.coturn.turn.transport "udp" }}
     - name: udp-turn
       protocol: UDP
