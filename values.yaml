@@ -571,7 +571,7 @@ jvb:
   # and remove stunServers (use an empty string, ""). You might want to do this
   # if publicIPs is already explicitly set and there is no need to discover IP
   # address via STUN.
-  useInternalStun: true
+  useInternalStun: false
   # Try to use the hostPort feature:
   # (might not be supported by some clouds or CNI engines)
   useHostPort: false
