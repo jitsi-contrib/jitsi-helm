@@ -146,8 +146,8 @@ web:
   #resolverIP: 10.43.0.10
 
   extraContainers: []
-  #  - name: jitsi-keycloak-adapter
-  #    image: ghcr.io/nordeck/jitsi-keycloak-adapter-v2
+  #  - name: jitsi-oidc-adapter
+  #    image: ghcr.io/jitsi-contrib/jitsi-oidc-adapter
   #    imagePullPolicy: IfNotPresent
   #    ports:
   #      - name: http
@@ -740,6 +740,10 @@ jigasi:
         - name: Accept
           value: application/json
 
+  initContainers:
+    busybox:
+      securityContext: { }
+
   affinity: {}
   annotations: {}
   extraEnvFrom: []
@@ -755,10 +759,6 @@ jigasi:
   podSecurityContext: {}
   securityContext: {}
   tolerations: []
-
-  initContainers:
-    busybox:
-      securityContext: { }
 
 ## #############################################################################
 ## Transcriber configuration
@@ -818,6 +818,10 @@ transcriber:
     customService: ""
     url: ""
 
+  initContainers:
+    busybox:
+      securityContext: {}
+
   affinity: {}
   annotations: {}
   extraEnvFrom: []
@@ -833,10 +837,6 @@ transcriber:
   podSecurityContext: {}
   securityContext: {}
   tolerations: []
-
-  initContainers:
-    busybox:
-      securityContext: {}
 
 ## #############################################################################
 ## Jibri configuration
