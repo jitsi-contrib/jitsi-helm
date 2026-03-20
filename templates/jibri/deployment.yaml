@@ -88,8 +88,7 @@ spec:
           image: "{{ .Values.jibri.image.repository }}:{{ .Values.jibri.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.jibri.image .Values.image | first }}
           securityContext:
-            capabilities:
-              add: ["SYS_ADMIN"]
+            {{- toYaml .Values.jibri.securityContext | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ include "jitsi-meet.jibri.xmppSecretName" . }}
@@ -188,4 +187,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      securityContext:
+        {{- toYaml .Values.jibri.podSecurityContext | nindent 8 }}
+
 {{- end }}

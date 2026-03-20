@@ -10,7 +10,7 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: 80
+      port: {{ .Values.excalidraw.service.port }}
     - name: metrics
       protocol: TCP
       port: 9090
