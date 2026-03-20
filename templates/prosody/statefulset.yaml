@@ -230,6 +230,8 @@ spec:
           image: "{{ .Values.prosody.metrics.image.repository }}:{{ .Values.prosody.metrics.image.tag }}"
           imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.metrics.image .Values.image | first }}
           args: [--config=/etc/otel-collector-config.yaml]
+          securityContext:
+            {{- toYaml .Values.prosody.metrics.securityContext | nindent 12 }}
           ports:
             - name: metrics
               containerPort: 8889
