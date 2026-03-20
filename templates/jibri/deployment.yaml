@@ -48,6 +48,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.jibri.podSecurityContext | nindent 8 }}
       volumes:
         - name: config
           emptyDir: {}
@@ -187,7 +189,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      securityContext:
-        {{- toYaml .Values.jibri.podSecurityContext | nindent 8 }}
-
 {{- end }}

@@ -164,6 +164,7 @@ web:
     httpGet:
       path: /
       port: 80
+
   readinessProbe:
     httpGet:
       path: /
@@ -216,17 +217,18 @@ excalidraw:
     repository: jitsi/excalidraw-backend
     tag: 2025.8.2
 
+  service:
+    port: 80
+
   livenessProbe:
     httpGet:
       path: /
       port: 80
+
   readinessProbe:
     httpGet:
       path: /
       port: 80
-
-  service:
-    port: 80
 
   metrics:
     enabled: false
@@ -461,15 +463,14 @@ prosody:
         release: prometheus-operator
       interval: 10s
       #honorLabels: false
-    # allow configuration for securityContext
     securityContext: {}
+      #allowPrivilegeEscalation: false
       #capabilities:
       #  drop:
       #    - ALL
       #readOnlyRootFilesystem: true
       #runAsNonRoot: true
       #runAsUser: 1000
-      #allowPrivilegeEscalation: false
       #seccompProfile:
       #  type: RuntimeDefault
 
@@ -637,6 +638,7 @@ jvb:
     httpGet:
       path: /about/health
       port: 8080
+
   readinessProbe:
     httpGet:
       path: /about/health
@@ -649,6 +651,8 @@ jvb:
       tag: 1.2.3
       pullPolicy: IfNotPresent
     securityContext: {}
+      # is this needed?
+      #runAsUser: 10001
 
     resources:
       requests:
@@ -727,6 +731,7 @@ jigasi:
       httpHeaders:
         - name: Accept
           value: application/json
+
   readinessProbe:
     httpGet:
       path: /about/health
@@ -794,6 +799,7 @@ transcriber:
       httpHeaders:
         - name: Accept
           value: application/json
+
   readinessProbe:
     httpGet:
       path: /about/health
