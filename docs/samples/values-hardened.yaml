@@ -21,15 +21,19 @@ web:
     repository: ghcr.io/jitsi-contrib/hardened-images/web
 
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
+
+  extraEnvs:
+    # https://github.com/just-containers/s6-overlay/issues/600
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
 
   extraVolumes:
     - name: run
@@ -61,18 +65,16 @@ web:
 
   service:
     port: 8000
+
   livenessProbe:
     httpGet:
       path: /
       port: 8000
+
   readinessProbe:
     httpGet:
       path: /
       port: 8000
-
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
 
 prosody:
   image:
@@ -80,29 +82,21 @@ prosody:
 
   podSecurityContext:
     fsGroup: 1000
+
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
 
-  metrics:
-    enabled: false
-    securityContext:
-      capabilities:
-        drop:
-          - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-      runAsUser: 1000
-      allowPrivilegeEscalation: false
-      seccompProfile:
-        type: RuntimeDefault
+  extraEnvs:
+    # https://github.com/just-containers/s6-overlay/issues/600
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
 
   extraVolumes:
     - name: run
@@ -123,9 +117,18 @@ prosody:
     - name: storage
       mountPath: /var/lib/prosody
 
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+  metrics:
+    enabled: false
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
 
 jicofo:
   image:
@@ -133,27 +136,21 @@ jicofo:
 
   podSecurityContext:
     fsGroup: 1000
+
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
 
-  metrics:
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    allowPrivilegeEscalation: false
-    seccompProfile:
-      type: RuntimeDefault
+  extraEnvs:
+    # https://github.com/just-containers/s6-overlay/issues/600
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
 
   extraVolumes:
     - name: run
@@ -169,36 +166,35 @@ jicofo:
     - name: tmp
       mountPath: /tmp
 
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-jvb:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/jvb
-
-  securityContext:
+  metrics:
+    allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
 
-  metrics:
-    securityContext:
-      capabilities:
-        drop:
-          - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-      runAsUser: 1000
-      allowPrivilegeEscalation: false
-      seccompProfile:
-        type: RuntimeDefault
+jvb:
+  image:
+    repository: ghcr.io/jitsi-contrib/hardened-images/jvb
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
+
+  extraEnvs:
+    # https://github.com/just-containers/s6-overlay/issues/600
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
 
   extraVolumes:
     - name: run
@@ -225,17 +221,28 @@ jvb:
     #enabled: true
     enabled: false
 
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+  metrics:
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
 
 jibri:
   enabled: true
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jibri
+
   podSecurityContext:
     fsGroup: 1000
+
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       # overwrite default added capability
       add: null
@@ -244,17 +251,22 @@ jibri:
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-  # mount writable volumes to allow running with readOnlyRootFilesystem (https://github.com/jitsi-contrib/hardened-images)
+
+  extraEnvs:
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+
+  # mount writable volumes to allow running with readOnlyRootFilesystem
+  # https://github.com/jitsi-contrib/hardened-images
   extraVolumes:
     - name: tmp
-      emptyDir: { }
+      emptyDir: {}
     - name: run
-      emptyDir: { }
+      emptyDir: {}
     - name: storage
-      emptyDir: { }
+      emptyDir: {}
+
   extraVolumeMounts:
     - name: tmp
       mountPath: /tmp
@@ -262,8 +274,7 @@ jibri:
       mountPath: /run
     - name: storage
       mountPath: /storage
-  extraEnvs:
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+
   shm:
     enabled: true
     useHost: false
@@ -272,9 +283,12 @@ jibri:
 jigasi:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jigasi
+
   podSecurityContext:
     fsGroup: 1000
+
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       # overwrite default added capability
       add: null
@@ -283,17 +297,22 @@ jigasi:
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
-  # mount writable volumes to allow running with readOnlyRootFilesystem (https://github.com/jitsi-contrib/hardened-images)
+
+  extraEnvs:
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+
+  # mount writable volumes to allow running with readOnlyRootFilesystem
+  # https://github.com/jitsi-contrib/hardened-images
   extraVolumes:
     - name: tmp
-      emptyDir: { }
+      emptyDir: {}
     - name: run
-      emptyDir: { }
+      emptyDir: {}
     - name: storage
-      emptyDir: { }
+      emptyDir: {}
+
   extraVolumeMounts:
     - name: tmp
       mountPath: /tmp
@@ -301,11 +320,11 @@ jigasi:
       mountPath: /run
     - name: storage
       mountPath: /storage
-  extraEnvs:
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+
   initContainers:
     busybox:
       securityContext:
+        allowPrivilegeEscalation: false
         capabilities:
           # overwrite default added capability
           add: null
@@ -314,16 +333,18 @@ jigasi:
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
-        allowPrivilegeEscalation: false
         seccompProfile:
           type: RuntimeDefault
 
 transcriber:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jigasi
+
   podSecurityContext:
     fsGroup: 1000
+
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       # overwrite default added capability
       add: null
@@ -332,12 +353,34 @@ transcriber:
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
+
+  extraEnvs:
+    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
+
+  # mount writable volumes to allow running with readOnlyRootFilesystem
+  # https://github.com/jitsi-contrib/hardened-images
+  extraVolumes:
+    - name: tmp
+      emptyDir: {}
+    - name: run
+      emptyDir: {}
+    - name: storage
+      emptyDir: {}
+
+  extraVolumeMounts:
+    - name: tmp
+      mountPath: /tmp
+    - name: run
+      mountPath: /run
+    - name: storage
+      mountPath: /storage
+
   initContainers:
     busybox:
       securityContext:
+        allowPrivilegeEscalation: false
         capabilities:
           # overwrite default added capability
           add: null
@@ -346,61 +389,53 @@ transcriber:
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
-        allowPrivilegeEscalation: false
         seccompProfile:
           type: RuntimeDefault
-  # mount writable volumes to allow running with readOnlyRootFilesystem (https://github.com/jitsi-contrib/hardened-images)
-  extraVolumes:
-    - name: tmp
-      emptyDir: { }
-    - name: run
-      emptyDir: { }
-    - name: storage
-      emptyDir: { }
-  extraVolumeMounts:
-    - name: tmp
-      mountPath: /tmp
-    - name: run
-      mountPath: /run
-    - name: storage
-      mountPath: /storage
-  extraEnvs:
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
 
 excalidraw:
   enabled: true
+
   metrics:
     enabled: true
+
   podSecurityContext:
     fsGroup: 1000
+
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: false
     runAsUser: 1000
-    allowPrivilegeEscalation: false
     seccompProfile:
       type: RuntimeDefault
+
   # update port to sth. > 1024
   livenessProbe:
     httpGet:
       path: /
       port: 8080
+
   readinessProbe:
     httpGet:
       path: /
       port: 8080
+
   service:
     port: 8080
+
   extraEnvs:
     PORT: "8080"
-  # in readOnly environments, excalidraw needs write permission to following folder
+
+  # In readOnly environments, excalidraw needs write permission to following
+  # folder
   extraVolumes:
     - name: dist
       emptyDir:
         sizeLimit: 32Mi
+
   extraVolumeMounts:
     - name: dist
       mountPath: /excalidraw-backend/dist
