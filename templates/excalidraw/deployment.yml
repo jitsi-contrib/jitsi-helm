@@ -22,6 +22,7 @@ spec:
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/excalidraw/configmap.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.excalidraw.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
@@ -50,6 +51,11 @@ spec:
             - name: metrics
               protocol: TCP
               containerPort: 9090
+          envFrom:
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.excalidraw.fullname" . }}
           {{- with .Values.excalidraw.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
