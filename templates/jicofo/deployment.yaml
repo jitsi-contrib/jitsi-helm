@@ -68,11 +68,6 @@ spec:
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
-          ports:
-            # Note: check if this port configuration is really needed, no service is available for jicofo
-            - name: http
-              containerPort: 80
-              protocol: TCP
           {{- with .Values.jicofo.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
