@@ -650,9 +650,8 @@ jvb:
       repository: docker.io/systemli/prometheus-jitsi-meet-exporter
       tag: 1.2.3
       pullPolicy: IfNotPresent
-    securityContext: {}
-      # is this needed?
-      #runAsUser: 10001
+    securityContext:
+      runAsUser: 10001
 
     resources:
       requests:
