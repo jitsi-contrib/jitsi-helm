@@ -4,6 +4,9 @@ metadata:
   name: {{ include "jitsi-meet.prosody.fullname" . }}
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
+    {{- with .Values.prosody.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.prosody.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -18,7 +21,7 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.prosody.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.prosody.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
@@ -45,7 +48,10 @@ spec:
         checksum/secret-jibri-xmpp: {{ printf "disabled-or-existing" | sha256sum | quote }}
         {{- end }}
         {{- if and
-               .Values.jigasi.enabled
+               (or
+                  .Values.jigasi.enabled
+                  .Values.transcriber.enabled
+               )
                (not .Values.jigasi.xmpp.existingSecretName)
         }}
         checksum/secret-jigasi: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
@@ -60,7 +66,7 @@ spec:
         {{- else }}
         checksum/secret-transcriber: {{ printf "disabled-or-existing" | sha256sum | quote }}
         {{- end }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.prosody.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.prosody.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
@@ -99,7 +105,7 @@ spec:
             defaultMode: 420
         {{- end }}
         {{- with .Values.prosody.extraVolumes }}
-        {{-   toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -131,7 +137,10 @@ spec:
             - secretRef:
                 name: {{ include "jitsi-meet.jibri.recorderSecretName" . }}
             {{- end }}
-            {{- if .Values.jigasi.enabled }}
+            {{- if or
+                   .Values.jigasi.enabled
+                   .Values.transcriber.enabled
+            }}
             - secretRef:
                 name: {{ include "jitsi-meet.jigasi.secretName" . }}
             {{- end }}

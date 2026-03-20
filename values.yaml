@@ -172,7 +172,10 @@ web:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a
@@ -234,6 +237,9 @@ excalidraw:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -254,7 +260,11 @@ coturn:
 
   image:
     repository: coturn/coturn
-    tag: 4.8
+    tag: 4.9
+
+  custom:
+    configs:
+      _turnserver_conf: ""
 
   staticAuth:
     secret:
@@ -262,12 +272,15 @@ coturn:
     # the value for TURN_CREDENTIALS
     existingSecretName:
 
+  turn:
+    transport: "udp"
+
   # TURNS (TURN over TLS) configuration
   # Relay ports use pod networking (internal cluster access only).
   # - TCP/443 is exposed via LoadBalancer service for TURNS control connection
   # - UDP relay ports remain internal on pod IP
   # - JVB sends media to relay via internal pod-to-pod UDP
-  # - Requires coturn.allowedPeerIp set to pod/node CIDR for relay to JVB
+  # - Requires coturn.allowedPeerIPs set to pod/node CIDR for relay to JVB
   turns:
     enabled: false
     relayPortRange:
@@ -297,8 +310,8 @@ coturn:
 
   service:
     type: LoadBalancer
-    # Disable NodePort allocation when using LoadBalancer service
-    allocateLoadBalancerNodePorts: false
+    # NodePort allocation when using LoadBalancer service
+    allocateLoadBalancerNodePorts: true
     ports:
       turn: 3478
       turns: 443
@@ -311,11 +324,11 @@ coturn:
 
   # The JVB's public IP addresses are expected to be directly accessible by
   # Coturn in the production environment.
-  # allowedPeerIp is required when Coturn cannot directly access JVBs through
+  # allowedPeerIPs is required when Coturn cannot directly access JVBs through
   # their public IPs. In this case, set to your cluster's node/pod range to
   # allow coturn to relay to JVB
-  allowedPeerIp: []
-  #allowedPeerIp:
+  allowedPeerIPs: []
+  #allowedPeerIPs:
   #  - "10.244.0.0-10.244.255.255"
   #  - "100.64.0.0-100.127.255.255"
 
@@ -327,9 +340,22 @@ coturn:
     tcpSocket:
       port: 3478
 
+  # Native Prometheus metrics for Coturn (port 9641)
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      # honorLabels: false
+
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -437,6 +463,7 @@ prosody:
   annotations: {}
   extraEnvs: {}
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -491,6 +518,9 @@ jicofo:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -541,7 +571,7 @@ jvb:
   # and remove stunServers (use an empty string, ""). You might want to do this
   # if publicIPs is already explicitly set and there is no need to discover IP
   # address via STUN.
-  useInternalStun: true
+  useInternalStun: false
   # Try to use the hostPort feature:
   # (might not be supported by some clouds or CNI engines)
   useHostPort: false
@@ -629,6 +659,9 @@ jvb:
   affinity: {}
   annotations: {}
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -690,7 +723,10 @@ jigasi:
   annotations: {}
   extraEnvFrom: []
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -760,7 +796,10 @@ transcriber:
   annotations: {}
   extraEnvFrom: []
   extraEnvs: {}
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
@@ -906,7 +945,10 @@ jibri:
   extraEnvs: {}
   extraSecrets: []
   extraSecretsFrom: []
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
+  labels: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}

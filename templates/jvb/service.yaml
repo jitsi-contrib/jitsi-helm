@@ -44,7 +44,12 @@ spec:
   externalIPs:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if or
+         (eq .Values.jvb.service.type "NodePort")
+         (eq .Values.jvb.service.type "LoadBalancer")
+  }}
   externalTrafficPolicy: {{ .Values.jvb.service.externalTrafficPolicy }}
+  {{- end }}
   selector:
     {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
 {{- end }}

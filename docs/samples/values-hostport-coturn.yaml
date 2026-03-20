@@ -44,15 +44,36 @@ coturn:
   #enabled: false
   enabled: true
 
-  allowedPeerIp:
-    # JVBs are not publicly accessible. So, Coturn can only connect to them
-    # through their internal IPs. Therefore, allow the internal IP block used by
-    # JVBs. Coturn will only forward UDP traffic.
+  turn:
+    transport: "udp"
+
+  service:
+    annotations:
+      # For LB to automatically update its DNS record, "service" must be
+      # available as "--source". Check it with this command:
+      #
+      #   kubectl get deployment -A -o yaml | grep "\-\-source"
+      #
+      # Sample annotations for AWS:
+      external-dns.alpha.kubernetes.io/hostname: "turn.example.com"
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "3478"
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "tcp"
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+
+  allowedPeerIPs:
+    # JVBs are not publicly accessible in this scenario. So, Coturn can only
+    # connect to them through their internal IPs. Therefore, allow the internal
+    # IP block used by JVBs. Coturn will only forward UDP traffic.
     - "10.244.0.0-10.244.255.255"
 
 jvb:
   #replicaCount: 1
   replicaCount: 3
+
+  #useNodeIP: false
+  useNodeIP: true
 
   #useHostPort: false
   useHostPort: true

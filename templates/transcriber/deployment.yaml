@@ -8,6 +8,9 @@ metadata:
   name: {{ include "jitsi-meet.transcriber.fullname" . }}
   labels:
     {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
+    {{- with .Values.transcriber.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.transcriber.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -21,14 +24,14 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.transcriber.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.transcriber.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/transcriber/configmap.yaml") . | sha256sum | quote }}
         checksum/secret-jigasi: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
         checksum/secret-transcriber: {{ include (print $.Template.BasePath "/transcriber/secret.yaml") . | sha256sum | quote }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.transcriber.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.transcriber.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
@@ -51,6 +54,9 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- with .Values.transcriber.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       initContainers:
         - name: init-prosody
           image: busybox:1.36
@@ -100,6 +106,9 @@ spec:
             {{- if .Values.transcriber.persistence.enabled }}
             - name: transcriber-data
               mountPath: /tmp/transcripts
+            {{- end }}
+            {{- with .Values.transcriber.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
       {{- with .Values.transcriber.affinity }}

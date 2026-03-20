@@ -8,6 +8,9 @@ metadata:
   name: {{ include "jitsi-meet.jibri.fullname" . }}
   labels:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+    {{- with .Values.jibri.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.jibri.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -25,14 +28,14 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.jibri.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.jibri.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum | quote }}
         checksum/secret-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum | quote }}
         checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum | quote }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.jibri.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jibri.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
@@ -76,6 +79,9 @@ spec:
             medium: Memory
             sizeLimit: {{ .Values.jibri.shm.size | default "2Gi" | quote }}
           {{- end }}
+        {{- end }}
+        {{- with .Values.jibri.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -165,6 +171,9 @@ spec:
             {{- if .Values.jibri.shm.enabled }}
             - name: dev-shm
               mountPath: /dev/shm
+            {{- end }}
+            {{- with .Values.jibri.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
       {{- with .Values.jibri.affinity }}

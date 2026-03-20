@@ -4,6 +4,20 @@
 ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
 
+- [Quick start](#quick-start)
+- [Exposing your Jitsi Meet installation](#exposing-your-jitsi-meet-installation)
+  - [Option 1: Using a LoadBalancer service](#option-1-using-a-loadbalancer-service)
+  - [Option 2: Using a NodePort service (public node IP or external LB)](#option-2-using-a-nodeport-service-public-node-ip-or-external-lb)
+  - [Option 3: Using hostPort (public node IP)](#option-3-using-hostport-public-node-ip)
+  - [Option 3.1: Using hostPort (auto-detected public node IP)](#option-31-using-hostport-auto-detected-public-node-ip)
+  - [Option 3.2: Using hostPort with a port range](#option-32-using-hostport-with-a-port-range)
+  - [Option 4: Using hostNetwork](#option-4-using-hostnetwork)
+  - [Option 5: Bring your own setup](#option-5-bring-your-own-setup)
+- [Recording and streaming support](#recording-and-streaming-support)
+- [Scaling your installation](#scaling-your-installation)
+- [Adding custom Prosody plugins](#adding-custom-prosody-plugins)
+- [References](#references)
+
 [Jitsi-Meet](https://jitsi.org/jitsi-meet/): Secure, simple and scalable video
 conferences that you can use as a standalone app or embed in your web
 application.
@@ -14,7 +28,7 @@ This chart bootstraps a Jitsi Meet stack on Kubernetes.
 
 ```bash
 helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
-helm install myjitsi jitsi/jitsi-meet
+helm install myjitsi jitsi/jitsi-meet --set publicURL=https://meet.mydomain.com
 ```
 
 ## Exposing your Jitsi Meet installation
@@ -78,11 +92,15 @@ the video connection.
 
 ```yaml
 jvb:
-  useHostPort: true
+  service:
+    enabled: false
 
   # Use public IPs of the nodes:
   publicIPs:
     - 30.10.10.1
+
+  useHostPort: true
+  UDPPort: 10000
 ```
 
 While this allows `jvb.replicaCount` to be greater than 1, it requires exposing
@@ -92,8 +110,13 @@ Node IPs and JVB ports directly to Internet.
 
 ```yaml
 jvb:
-  useHostPort: true
+  service:
+    enabled: false
+
   useNodeIP: true
+
+  useHostPort: true
+  UDPPort: 10000
 ```
 
 This is similar to Option 3, but every JVB pod will auto-detect its own external
@@ -104,8 +127,12 @@ suited for installations that use OCTO.
 
 ```yaml
 jvb:
-  useHostPort: true
+  service:
+    enabled: false
+
   useNodeIP: true
+
+  useHostPort: true
   UDPPort: 10000
   portRangeSize: 3
 ```
@@ -197,12 +224,15 @@ as live streams of their meetings.
 
 ## Scaling your installation
 
-At the moment you can freely scale Jitsi Web and Jibri pods, as they're
+At the moment you can freely scale Jitsi Web, Jibri and Coturn pods, as they're
 stateless and require zero special configuration to work in multi-instance
 setup:
 
 ```yaml
 web:
+  replicaCount: 3
+
+coturn:
   replicaCount: 3
 
 jibri:
@@ -216,24 +246,28 @@ based on the Option 3.1 mentioned above:
 
 ```yaml
 jvb:
-  ## Set JVB instance count:
+  # Set JVB instance count:
   replicaCount: 3
-  ## Expose JVB interface port to the outside world
-  #  only on nodes that actually have it:
+
+  service:
+    enabled: false
+
+  # Expose JVB interface port to the outside world
+  # only on nodes that actually have it:
   useHostPort: true
-  ## Make every JVB pod announce its Node's external
-  #  IP address and nothing more:
+
+  # Make every JVB pod announce its Node's external
+  # IP address and nothing more:
   useNodeIP: true
 
 octo:
-  ## Enable OCTO support for both JVB and Jicofo:
+  # Enable OCTO support for both JVB and Jicofo:
   enabled: true
 ```
 
-Please note that the JVB scaling feature is currently under-tested and thus
-considered _experimental_. Also note that this chart doesn't allow to scale JVB
-into multiple zones/regions yet: all JVB pods will be part of the single OCTO
-region named `all`.
+Please note that this chart doesn't allow to scale JVB into multiple
+zones/regions yet: all JVB pods will be part of the single OCTO region named
+`all`.
 
 ## Adding custom Prosody plugins
 
@@ -247,6 +281,7 @@ prosody:
     - name: prosody-modules
       configMap:
         name: prosody-modules
+
   extraVolumeMounts:
     - name: prosody-modules
       subPath: mod_measure_client_presence.lua
@@ -257,19 +292,13 @@ No need to add a module from
 [jitsi-contrib/prosody-plugins](https://github.com/jitsi-contrib/prosody-plugins)
 manually since they are available in the official `jitsi/prosody` container.
 
-## Configuration
+## References
 
 Feature-specific documentation can be found here:
 
 - [Octo](/docs/manuals/testing-octo.md)
 - [TURNS](/docs/manuals/turns.md)
+- [Sample values files](/docs/samples/)
 
 For further documentation on all available configuration, refer to
 [values.yaml](/values.yaml).
-
-## Package
-
-```bash
-helm package . -d docs
-helm repo index docs --url https://jitsi-contrib.github.io/jitsi-helm/
-```

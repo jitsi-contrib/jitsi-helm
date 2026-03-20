@@ -48,9 +48,15 @@ data:
     denied-peer-ip=2002::-2002:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
     denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-    {{- if .Values.coturn.allowedPeerIp }}
-    {{-   range .Values.coturn.allowedPeerIp }}
+    {{- if .Values.coturn.allowedPeerIPs }}
+    {{-   range .Values.coturn.allowedPeerIPs }}
     allowed-peer-ip={{ . }}
     {{-   end }}
+    {{- end }}
+    {{- if .Values.coturn.metrics.enabled }}
+    prometheus
+    {{- end }}
+    {{- with .Values.coturn.custom.configs._turnserver_conf }}
+    {{- . | nindent 4 }}
     {{- end }}
 {{- end }}

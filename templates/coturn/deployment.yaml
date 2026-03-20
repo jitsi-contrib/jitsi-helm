@@ -5,6 +5,9 @@ metadata:
   name: {{ include "jitsi-meet.coturn.fullname" . }}
   labels:
     {{- include "jitsi-meet.coturn.labels" . | nindent 4 }}
+    {{- with .Values.coturn.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.coturn.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -18,7 +21,7 @@ spec:
     metadata:
       labels:
         {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 8 }}
-        {{- with (mergeOverwrite .Values.global.podLabels .Values.coturn.podLabels) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.coturn.podLabels) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
@@ -27,7 +30,7 @@ spec:
         {{- if .Values.coturn.turns.enabled }}
         secret.reloader.stakater.com/reload: {{ if .Values.coturn.turns.certificate.create }}{{ include "jitsi-meet.coturn.fullname" . }}-tls{{ else }}{{ .Values.coturn.turns.certificate.existingSecretName }}{{ end }}
         {{- end }}
-        {{- with (mergeOverwrite .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
     spec:
@@ -63,6 +66,9 @@ spec:
         - name: acme-proxy-config
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
+        {{- end }}
+        {{- with .Values.coturn.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       initContainers:
         {{- if and
@@ -147,6 +153,11 @@ spec:
               protocol: TCP
               containerPort: {{ .Values.coturn.service.ports.turns }}
             {{- end }}
+            {{- if .Values.coturn.metrics.enabled }}
+            - name: tcp-metrics
+              protocol: TCP
+              containerPort: 9641
+            {{- end }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -165,6 +176,9 @@ spec:
             - name: tls
               mountPath: /tls
               readOnly: true
+            {{- end }}
+            {{- with .Values.coturn.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
 
       {{- with .Values.coturn.affinity }}

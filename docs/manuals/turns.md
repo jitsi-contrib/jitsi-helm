@@ -76,7 +76,7 @@ to ensure pods load new certificates when they are refreshed.
 
 To ensure that coTURN is able to relay traffic to your JVB's, you should ensure
 that the ClusterIP ranges your JVB's (the "peer") is running on is covered by
-the range(s) defined in `coturn.allowedPeerIp`. When TURNS is enabled, this is
+the range(s) defined in `coturn.allowedPeerIPs`. When TURNS is enabled, this is
 by default set to `10.244.0.0-10.244.255.255`. This value accepts either a
 single range in the format seen here, or a list of ranges in the same format.
 
