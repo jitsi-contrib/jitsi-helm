@@ -147,7 +147,7 @@ spec:
           image: {{ $.Values.jvb.metrics.image.repository }}:{{ $.Values.jvb.metrics.image.tag }}
           imagePullPolicy: {{ $.Values.jvb.metrics.image.pullPolicy }}
           securityContext:
-            {{- toYaml .Values.jvb.metrics.securityContext | nindent 12 }}
+            {{- toYaml $.Values.jvb.metrics.securityContext | nindent 12 }}
           command:
             - /prometheus-jitsi-meet-exporter
             - -videobridge-url
