@@ -80,9 +80,6 @@ prosody:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/prosody
 
-  podSecurityContext:
-    fsGroup: 1000
-
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -133,9 +130,6 @@ prosody:
 jicofo:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jicofo
-
-  podSecurityContext:
-    fsGroup: 1000
 
   securityContext:
     allowPrivilegeEscalation: false
@@ -238,9 +232,6 @@ jibri:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jibri
 
-  podSecurityContext:
-    fsGroup: 1000
-
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -283,9 +274,6 @@ jibri:
 jigasi:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jigasi
-
-  podSecurityContext:
-    fsGroup: 1000
 
   securityContext:
     allowPrivilegeEscalation: false
@@ -339,9 +327,6 @@ jigasi:
 transcriber:
   image:
     repository: ghcr.io/jitsi-contrib/hardened-images/jigasi
-
-  podSecurityContext:
-    fsGroup: 1000
 
   securityContext:
     allowPrivilegeEscalation: false
@@ -397,9 +382,6 @@ excalidraw:
 
   metrics:
     enabled: true
-
-  podSecurityContext:
-    fsGroup: 1000
 
   securityContext:
     allowPrivilegeEscalation: false
