@@ -230,17 +230,17 @@ excalidraw:
     tag: 2025.8.2
 
   service:
-    port: 3002
+    port: 9001
 
   livenessProbe:
     httpGet:
       path: /
-      port: 3002
+      port: 9001
 
   readinessProbe:
     httpGet:
       path: /
-      port: 3002
+      port: 9001
 
   metrics:
     enabled: false
@@ -279,17 +279,17 @@ etherpad:
     tag: 2.6.1
 
   service:
-    port: 9001
+    port: 9002
 
   livenessProbe:
     httpGet:
       path: /
-      port: 9001
+      port: 9002
 
   readinessProbe:
     httpGet:
       path: /
-      port: 9001
+      port: 9002
 
   affinity: {}
   annotations: {}

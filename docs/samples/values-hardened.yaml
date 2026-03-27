@@ -394,23 +394,6 @@ excalidraw:
     seccompProfile:
       type: RuntimeDefault
 
-  # update port to sth. > 1024
-  livenessProbe:
-    httpGet:
-      path: /
-      port: 8080
-
-  readinessProbe:
-    httpGet:
-      path: /
-      port: 8080
-
-  service:
-    port: 8080
-
-  extraEnvs:
-    PORT: "8080"
-
   # In readOnly environments, Excalidraw needs write permission for
   # the following folder
   extraVolumes:
