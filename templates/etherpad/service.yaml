@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "jitsi-meet.etherpad.fullname" . }}-etherpad
+  name: {{ include "jitsi-meet.etherpad.fullname" . }}
   labels:
     {{- include "jitsi-meet.etherpad.labels" . | nindent 4 }}
 spec:

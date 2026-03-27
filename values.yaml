@@ -296,17 +296,19 @@ etherpad:
   extraEnvs:
     NODE_ENV: production
     ADMIN_PASSWORD: admin
-    # Select a supported datab ase from here: https://www.npmjs.com/package/ueberdb2
-    # by default use sqlite
+    # Select a supported database from here:
+    #   https://www.npmjs.com/package/ueberdb2
+    # By default, it uses Sqlite.
     DB_TYPE: "sqlite"
     DB_FILENAME: "var/etherpad.sq3"
-    # configure other database parameters (e.g. for postgres)
+    # Configure other database parameters (e.g. for Postgres)
     #DB_USER: etherpad
     #DB_HOST: postgres
     #DB_NAME: etherpad
     #DB_PASS: etherpad
     #DB_PORT: 5432
-    # For now, the env var DEFAULT_PAD_TEXT cannot be unset or empty; it seems to be mandatory in the latest version of etherpad
+    # For now, DEFAULT_PAD_TEXT cannot be unset or empty.
+    # It seems to be mandatory in the latest version of Etherpad.
     DEFAULT_PAD_TEXT: " "
     DISABLE_IP_LOGGING: "true"
     TRUST_PROXY: "true"
