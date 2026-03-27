@@ -6,6 +6,8 @@ metadata:
   labels:
     {{- include "jitsi-meet.excalidraw.labels" . | nindent 4 }}
 data:
+  PORT: {{ .Values.excalidraw.service.port | quote }}
+
   {{- range $key, $value := .Values.excalidraw.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
   {{      $key }}: {{ tpl $value $ | quote }}

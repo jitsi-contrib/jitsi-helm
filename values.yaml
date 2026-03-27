@@ -230,17 +230,17 @@ excalidraw:
     tag: 2025.8.2
 
   service:
-    port: 80
+    port: 3002
 
   livenessProbe:
     httpGet:
       path: /
-      port: 80
+      port: 3002
 
   readinessProbe:
     httpGet:
       path: /
-      port: 80
+      port: 3002
 
   metrics:
     enabled: false
