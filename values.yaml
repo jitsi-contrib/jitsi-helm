@@ -285,7 +285,7 @@ excalidraw:
 
   image:
     repository: jitsi/excalidraw-backend
-    tag: 2025.8.2
+    tag: 2026.3.0
 
   service:
     port: 9002
