@@ -10,11 +10,11 @@ data:
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
 
   {{- if .Values.excalidraw.enabled }}
-  WHITEBOARD_COLLAB_SERVER_URL_BASE: 'http://{{ include "jitsi-meet.excalidraw.fullname" . }}:{{ .Values.excalidraw.service.port}}'
+  WHITEBOARD_COLLAB_SERVER_URL_BASE: 'http://{{ include "jitsi-meet.excalidraw.server" . }}:{{ .Values.excalidraw.service.port}}'
   {{- end }}
 
   {{- if .Values.etherpad.enabled }}
-  ETHERPAD_URL_BASE: 'http://{{ include "jitsi-meet.etherpad.fullname" . }}:{{ .Values.etherpad.service.port}}'
+  ETHERPAD_URL_BASE: 'http://{{ include "jitsi-meet.excalidraw.server" . }}:{{ .Values.etherpad.service.port}}'
   {{- end }}
 
   {{- if .Values.transcriber.enabled }}
