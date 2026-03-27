@@ -1,0 +1,24 @@
+{{- if .Values.web.gateway.enabled -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "jitsi-meet.web.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.web.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ include "jitsi-meet.web.fullname" . }}
+      kind: Gateway
+  hostnames:
+    - {{ .Values.web.gateway.host | quote }}
+  rules:
+    - matches:
+        {{- range .Values.web.gateway.paths }}
+        - path:
+            type: PathPrefix
+            value: {{ . | quote }}
+        {{- end }}
+      backendRefs:
+        - name: {{ include "jitsi-meet.web.fullname" . }}
+          port: {{ .Values.web.service.port }}
+{{- end }}

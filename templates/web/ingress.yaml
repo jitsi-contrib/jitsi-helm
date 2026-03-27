@@ -1,4 +1,7 @@
-{{- if .Values.web.ingress.enabled }}
+{{- if and
+       .Values.web.ingress.enabled
+       (not .Values.web.gateway.enabled)
+-}}
 {{-   $fullName := include "jitsi-meet.web.fullname" . }}
 {{-   $svcPort := .Values.web.service.port -}}
 apiVersion: networking.k8s.io/v1

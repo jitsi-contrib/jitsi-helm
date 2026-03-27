@@ -90,17 +90,27 @@ app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- else -}}
 {{-   $host := "" -}}
 {{-   $tlsEnabled := false -}}
-{{-   if and .Values.web.ingress.enabled .Values.web.ingress.tls -}}
-{{-     $host = (.Values.web.ingress.tls|first).hosts|first -}}
-{{-     $tlsEnabled = true -}}
-{{-   else if and .Values.web.ingress.enabled .Values.web.ingress.hosts -}}
-{{-     $host = (.Values.web.ingress.hosts|first).host -}}
+{{-   if .Values.web.gateway.enabled -}}
+{{-     $host = .Values.web.gateway.host -}}
+{{-     $tlsEnabled = .Values.web.gateway.tls.enabled -}}
+{{-   else if .Values.web.ingress.enabled -}}
+{{-     if .Values.web.ingress.tls -}}
+{{-       $host = (index (index .Values.web.ingress.tls 0).hosts 0) -}}
+{{-       $tlsEnabled = true -}}
+{{-     else if .Values.web.ingress.hosts -}}
+{{-       $host = (index .Values.web.ingress.hosts 0).host -}}
+{{-     end -}}
 {{-   end -}}
+
 {{-   if $host -}}
-{{-     if $tlsEnabled -}}https://{{- else -}}http://{{- end -}}
-{{-     $host -}}
+{{-     if $tlsEnabled -}}
+{{-       printf "https://%s" $host -}}
+{{-     else -}}
+{{-       printf "http://%s" $host -}}
+{{-     end -}}
 {{-   else -}}
-{{ required "A publicURL must be set if Ingress is not enabled or does not define a host." .Values.publicURL }}
+{{      required "A publicURL must be set if neither Gateway nor Ingress is enabled or defines a host." .Values.publicURL }}
 {{-   end -}}
+
 {{- end -}}
 {{- end -}}

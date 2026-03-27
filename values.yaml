@@ -107,7 +107,7 @@ web:
     type: ClusterIP
     port: 80
     # If you want to expose the Jitsi Web service directly
-    # (bypassing the Ingress Controller), use this:
+    # (bypassing gateway or ingress), use this:
     #type: NodePort
     #nodePort: 30580
     #port: 80
@@ -117,18 +117,30 @@ web:
     annotations: {}
     #  beta.cloud.google.com/backend-config: backend-config-iap
 
+  gateway:
+    enabled: false
+    gatewayClassName: envoy-gateway-class
+    annotations: {}
+    host: "jitsi.local"
+    paths:
+      - "/"
+    tls:
+      enabled: false
+      secretName: jitsi-web-certificate
+
   ingress:
     enabled: false
     # ingressClassName: nginx-ingress-0
     annotations: {}
     #  kubernetes.io/tls-acme: "true"
     hosts:
-      - host: jitsi.local
-        paths: ["/"]
+      - host: "jitsi.local"
+        paths:
+          - "/"
     tls: []
     #  - secretName: jitsi-web-certificate
     #    hosts:
-    #      - jitsi.local
+    #      - "jitsi.local"
 
   # Useful for ingresses that don't support http-to-https redirect by themself,
   # (namely: GKE),
