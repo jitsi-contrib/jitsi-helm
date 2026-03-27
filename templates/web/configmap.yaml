@@ -13,6 +13,10 @@ data:
   WHITEBOARD_COLLAB_SERVER_URL_BASE: 'http://{{ include "jitsi-meet.excalidraw.server" . }}'
   {{- end }}
 
+  {{- if .Values.etherpad.enabled }}
+  ETHERPAD_URL_BASE: 'http://{{ include "jitsi-meet.etherpad.fullname" . }}-etherpad:9001'
+  {{- end }}
+
   {{- if .Values.transcriber.enabled }}
   ENABLE_TRANSCRIPTIONS: "true"
   {{- end }}

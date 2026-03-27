@@ -254,6 +254,62 @@ excalidraw:
   tolerations: []
 
 ## #############################################################################
+## Etherpad configuration
+## #############################################################################
+etherpad:
+  enabled: false
+
+  # Always one replica, hardcoded in etherpad/deployment.yaml
+  # replicaCount: 1
+
+  image:
+    repository: etherpad/etherpad
+    tag: 2.6.1
+
+  service:
+    port: 9001
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 9001
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 9001
+
+  affinity: {}
+  annotations: {}
+  extraEnvs:
+    NODE_ENV: production
+    ADMIN_PASSWORD: admin
+    # Select a supported datab ase from here: https://www.npmjs.com/package/ueberdb2
+    # by default use sqlite
+    DB_TYPE: "sqlite"
+    DB_FILENAME: "var/etherpad.sq3"
+    # configure other database parameters (e.g. for postgres)
+    #DB_USER: etherpad
+    #DB_HOST: postgres
+    #DB_NAME: etherpad
+    #DB_PASS: etherpad
+    #DB_PORT: 5432
+    # For now, the env var DEFAULT_PAD_TEXT cannot be unset or empty; it seems to be mandatory in the latest version of etherpad
+    DEFAULT_PAD_TEXT: " "
+    DISABLE_IP_LOGGING: "true"
+    TRUST_PROXY: "true"
+  extraVolumes: []
+  extraVolumeMounts: []
+  labels: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+## #############################################################################
 ## Coturn configuration
 ## #############################################################################
 # STUN and TURN over UDP/3478. Media packages are still encrypted with DTLS-SRTP
