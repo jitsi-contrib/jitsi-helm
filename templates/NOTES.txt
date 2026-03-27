@@ -4,7 +4,7 @@
 Your application will be available at:
 {{ include "jitsi-meet.publicURL" . }}
 
-NOTE: It may take a few minutes for the LoadBalancer IP to be assigned
+It may take a few minutes for the LoadBalancer IP to be assigned
 and for DNS to propagate.
 
 {{- else -}}
