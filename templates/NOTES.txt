@@ -8,20 +8,23 @@ It may take a few minutes for the LoadBalancer IP to be assigned
 and for DNS to propagate.
 
 {{- else -}}
-🔧 Access your application:
+🔧 To access your application, run:
 
 {{-   if contains "NodePort" .Values.web.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "jitsi-meet.web.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo "Visit http://$NODE_IP:$NODE_PORT"
+
+  And visit: http://$NODE_IP:$NODE_PORT
 
 {{-   else if contains "LoadBalancer" .Values.web.service.type }}
-  echo "Waiting for LoadBalancer IP..."
-  kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "jitsi-meet.web.fullname" . }}
+  kubectl get svc --namespace {{ .Release.Namespace }} {{ include "jitsi-meet.web.fullname" . }}
+
+  And wait for the EXTERNAL-IP to be assigned, then visit that IP in your browser
 
 {{-   else if contains "ClusterIP" .Values.web.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "jitsi-meet.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=web" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
+
+  And visit: http://127.0.0.1:8080
 {{-   end }}
 {{- end }}
