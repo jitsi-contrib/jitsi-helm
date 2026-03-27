@@ -6,6 +6,8 @@ metadata:
   labels:
     {{- include "jitsi-meet.etherpad.labels" . | nindent 4 }}
 data:
+  PORT: {{ .Values.etherpad.service.port | quote }}
+
   {{- range $key, $value := .Values.etherpad.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
   {{      $key }}: {{ tpl $value $ | quote }}
