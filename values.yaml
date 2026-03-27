@@ -216,56 +216,6 @@ web:
   tolerations: []
 
 ## #############################################################################
-## Excalidraw configuration
-## #############################################################################
-excalidraw:
-  # Enabling Excalidraw will allow the virtual whiteboard within meetings.
-  enabled: false
-
-  # Always one replica, hardcoded in excalidraw/deployment.yaml
-  # replicaCount: 1
-
-  image:
-    repository: jitsi/excalidraw-backend
-    tag: 2025.8.2
-
-  service:
-    port: 9001
-
-  livenessProbe:
-    httpGet:
-      path: /
-      port: 9001
-
-  readinessProbe:
-    httpGet:
-      path: /
-      port: 9001
-
-  metrics:
-    enabled: false
-    serviceMonitor:
-      enabled: true
-      selector:
-        release: prometheus-operator
-      interval: 10s
-      #honorLabels: false
-
-  affinity: {}
-  annotations: {}
-  extraEnvs: {}
-  extraVolumes: []
-  extraVolumeMounts: []
-  labels: {}
-  nodeSelector: {}
-  resources: {}
-  podAnnotations: {}
-  podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
-  tolerations: []
-
-## #############################################################################
 ## Etherpad configuration
 ## #############################################################################
 etherpad:
@@ -279,17 +229,17 @@ etherpad:
     tag: 2.6.1
 
   service:
-    port: 9002
+    port: 9001
 
   livenessProbe:
     httpGet:
       path: /
-      port: 9002
+      port: 9001
 
   readinessProbe:
     httpGet:
       path: /
-      port: 9002
+      port: 9001
 
   affinity: {}
   annotations: {}
@@ -312,6 +262,56 @@ etherpad:
     DEFAULT_PAD_TEXT: " "
     DISABLE_IP_LOGGING: "true"
     TRUST_PROXY: "true"
+  extraVolumes: []
+  extraVolumeMounts: []
+  labels: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+## #############################################################################
+## Excalidraw configuration
+## #############################################################################
+excalidraw:
+  # Enabling Excalidraw will allow the virtual whiteboard within meetings.
+  enabled: false
+
+  # Always one replica, hardcoded in excalidraw/deployment.yaml
+  # replicaCount: 1
+
+  image:
+    repository: jitsi/excalidraw-backend
+    tag: 2025.8.2
+
+  service:
+    port: 9002
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 9002
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 9002
+
+  metrics:
+    enabled: false
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: prometheus-operator
+      interval: 10s
+      #honorLabels: false
+
+  affinity: {}
+  annotations: {}
+  extraEnvs: {}
   extraVolumes: []
   extraVolumeMounts: []
   labels: {}
