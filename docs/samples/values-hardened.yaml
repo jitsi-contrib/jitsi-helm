@@ -421,3 +421,47 @@ excalidraw:
   extraVolumeMounts:
     - name: dist
       mountPath: /excalidraw-backend/dist
+
+
+etherpad:
+  enabled: true
+
+  extraEnvs:
+    NODE_ENV: production
+    # Note: move this to a secret
+    ADMIN_PASSWORD: admin
+    # Select a supported datab ase from here: https://www.npmjs.com/package/ueberdb2
+    # by default use sqlite
+    DB_TYPE: "sqlite"
+    DB_FILENAME: "var/etherpad.sq3"
+    #DB_USER: etherpad
+    #DB_HOST: postgres
+    #DB_NAME: etherpad
+    #DB_PASS: etherpad
+    #DB_PORT: 5432
+    # For now, the env var DEFAULT_PAD_TEXT cannot be unset or empty; it seems to be mandatory in the latest version of etherpad
+    DEFAULT_PAD_TEXT: " "
+    DISABLE_IP_LOGGING: "true"
+    TRUST_PROXY: "true"
+  extraVolumes:
+    - name: tmp
+      emptyDir: { }
+    # move to a persistent volume
+    - name: data
+      emptyDir: { }
+  extraVolumeMounts:
+    - name: tmp
+      mountPath: /tmp
+    # move to a persistent volume
+    - name: data
+      mountPath: /opt/etherpad-lite/var
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault

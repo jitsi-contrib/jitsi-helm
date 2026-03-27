@@ -1,0 +1,84 @@
+{{- if .Values.etherpad.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jitsi-meet.etherpad.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.etherpad.labels" . | nindent 4 }}
+  {{- with .Values.etherpad.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.etherpad.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jitsi-meet.etherpad.selectorLabels" . | nindent 8 }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.etherpad.podLabels) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/etherpad/configmap.yaml") . | sha256sum | quote }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.etherpad.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}-etherpad
+      securityContext:
+        {{- toYaml .Values.etherpad.podSecurityContext | nindent 8 }}
+      {{- with .Values.etherpad.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.etherpad.image.repository }}:{{ .Values.etherpad.image.tag }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.etherpad.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.etherpad.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ .Values.etherpad.service.port }}
+          envFrom:
+            # Note: check if really needed
+            #- configMapRef:
+            #    name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.etherpad.fullname" . }}
+          {{- with .Values.etherpad.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.etherpad.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.etherpad.resources | nindent 12 }}
+          {{- with .Values.etherpad.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+      {{- with .Values.etherpad.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.etherpad.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.etherpad.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

@@ -1,0 +1,14 @@
+{{- if .Values.etherpad.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.etherpad.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.etherpad.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.etherpad.extraEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
+  {{- end }}
+{{- end }}
