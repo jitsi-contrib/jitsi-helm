@@ -32,7 +32,7 @@ web:
       - host: meet.example.com
         paths: ["/"]
     tls:
-      - secretName: jitsi-tls
+      - secretName: jitsi-web-tls
         hosts:
           - meet.example.com
 
