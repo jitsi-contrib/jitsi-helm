@@ -335,7 +335,7 @@ coturn:
 
   image:
     repository: coturn/coturn
-    tag: 4.10
+    tag: "4.10"
 
   custom:
     configs:
