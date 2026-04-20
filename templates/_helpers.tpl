@@ -5,8 +5,8 @@
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this.
+If the release name contains chart name it will be used as a full name.
 */}}
 {{- define "jitsi-meet.fullname" -}}
 {{- if .Values.fullnameOverride -}}
@@ -21,7 +21,7 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{/* Create chart name and version as used by the chart label.  */}}
+{{/* Create chart name and version as used by the chart label. */}}
 {{- define "jitsi-meet.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
