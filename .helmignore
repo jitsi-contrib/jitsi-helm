@@ -26,7 +26,4 @@ Thumbs.db
 *~
 
 # Project specific
-charts/
 docs/
-*.tgz
-*.tgz.prov
