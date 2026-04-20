@@ -14,7 +14,7 @@ version: 2.16.0
 # the default tag for Jitsi images.
 appVersion: stable-10888
 
-## Chart annotations (for ArtifactHub):
+# Chart annotations for ArtifactHub
 annotations:
   artifacthub.io/category: streaming-messaging
   artifacthub.io/links: |
