@@ -24,6 +24,9 @@ application.
 
 This chart bootstraps a Jitsi Meet stack on Kubernetes.
 
+See also [jitsi-scaler](https://github.com/jitsi-contrib/jitsi-scaler) for a
+Jitsi Meet stack containing multiple shards.
+
 ## Quick start
 
 ```bash
