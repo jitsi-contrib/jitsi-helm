@@ -37,5 +37,5 @@ Overall, the release process looks like this:
   git push
   ```
 - Create a release on GitHub. This step will also create a tag for the release.
-- Release the version of
+- Release the new version of
   [jitsi-scaler](https://github.com/jitsi-contrib/jitsi-scaler)
