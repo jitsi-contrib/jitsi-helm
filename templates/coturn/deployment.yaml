@@ -86,7 +86,9 @@ spec:
               readOnly: true
         {{- end }}
         - name: init-coturn
-          image: {{ .Values.coturn.initContainers.busybox.image | default "busybox:1.36" }}
+          image: "{{ .Values.coturn.initContainers.busybox.image }}"
+          securityContext:
+            {{- toYaml .Values.coturn.initContainers.busybox.securityContext | nindent 12  }}
           command:
             - sh
             - -c

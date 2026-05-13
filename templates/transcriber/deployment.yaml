@@ -59,7 +59,7 @@ spec:
         {{- end }}
       initContainers:
         - name: init-prosody
-          image: {{ .Values.transcriber.initContainers.busybox.image | default "busybox:1.36" }}
+          image: "{{ .Values.transcriber.initContainers.busybox.image }}"
           securityContext:
             {{- toYaml .Values.transcriber.initContainers.busybox.securityContext | nindent 12  }}
           command:
