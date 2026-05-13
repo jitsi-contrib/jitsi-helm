@@ -812,6 +812,7 @@ jigasi:
   initContainers:
     busybox:
       securityContext: { }
+      image: busybox:1.36
 
   affinity: {}
   annotations: {}
@@ -890,6 +891,7 @@ transcriber:
   initContainers:
     busybox:
       securityContext: {}
+      image: busybox:1.36
 
   affinity: {}
   annotations: {}

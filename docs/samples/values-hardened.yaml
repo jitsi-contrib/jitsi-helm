@@ -323,6 +323,7 @@ jigasi:
         runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
+      image: busybox:1.36
 
 transcriber:
   image:
@@ -376,6 +377,7 @@ transcriber:
         runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
+      image: busybox:1.36
 
 excalidraw:
   enabled: true
