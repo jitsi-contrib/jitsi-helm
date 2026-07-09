@@ -1,0 +1,127 @@
+{{- if and
+       .Values.skynet.enabled
+       (not .Values.skynet.useExternalSkynet)
+}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jitsi-meet.skynet.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.skynet.labels" . | nindent 4 }}
+    {{- with .Values.skynet.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.skynet.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.skynet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jitsi-meet.skynet.selectorLabels" . | nindent 8 }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.skynet.podLabels) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/skynet/configmap.yaml") . | sha256sum | quote }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.skynet.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.skynet.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.skynet.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: skynet-models
+          {{- if .Values.skynet.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.skynet.persistence.existingClaim | default (include "jitsi-meet.skynet.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.skynet.extraFiles }}
+        - name: extra-files
+          configMap:
+            name: {{ include "jitsi-meet.skynet.fullname" . }}-extrafiles
+            items:
+              {{- range $i, $f := .Values.skynet.extraFiles }}
+              - key: extrafile-{{ $i }}
+                path: extrafile-{{ $i }}
+                {{- with $f.mode }}
+                mode: {{ . }}
+                {{- end }}
+              {{- end }}
+        {{- end }}
+        {{- with .Values.skynet.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-skynet
+          image: "{{ .Values.skynet.image.repository }}:{{ .Values.skynet.image.tag }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.skynet.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.skynet.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ .Values.skynet.service.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "jitsi-meet.skynet.fullname" . }}
+            {{- range .Values.skynet.extraEnvFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            {{- end }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
+          {{- with .Values.skynet.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.skynet.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.skynet.resources | nindent 12 }}
+          volumeMounts:
+            - name: skynet-models
+              mountPath: "/models"
+            {{- range $i, $f := .Values.skynet.extraFiles }}
+            - name: extra-files
+              mountPath: {{ $f.path }}
+              subPath: extrafile-{{ $i }}
+              readOnly: true
+            {{- end }}
+            {{- with .Values.skynet.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+      {{- with .Values.skynet.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.skynet.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.skynet.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

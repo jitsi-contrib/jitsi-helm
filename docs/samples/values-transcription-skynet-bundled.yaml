@@ -1,0 +1,30 @@
+# -----------------------------------------------------------------------------
+# Sample: near real-time transcription (subtitles) with a bundled Skynet.
+# Assumed that:
+# - Jitsi domain is meet.example.com
+# - Transcription is performed by the Transcriber (Jigasi in transcriber mode)
+# - Skynet (the Whisper backend) is deployed in-cluster by this chart
+# -----------------------------------------------------------------------------
+#publicURL: ""
+publicURL: "https://meet.example.com"
+
+# The Transcriber also needs Jigasi XMPP credentials even though the Jigasi
+# (SIP) pod itself stays disabled.
+transcriber:
+  enabled: true
+
+skynet:
+  enabled: true
+  # Deploy Skynet in-cluster and wire the Transcriber to it automatically.
+  useExternalSkynet: false
+
+  whisper:
+    # Multilingual model that runs on CPU. Bigger models (medium, large-v3)
+    # are more accurate but slower. The public Skynet image is CPU-only.
+    model: small
+
+  # Enable for large models to avoid re-downloading on every pod recreation.
+  persistence:
+    enabled: false
+    #storageClass: ""
+    #size: 10Gi

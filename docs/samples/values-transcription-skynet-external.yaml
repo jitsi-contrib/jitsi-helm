@@ -1,0 +1,22 @@
+# -----------------------------------------------------------------------------
+# Sample: near real-time transcription (subtitles) with an external Skynet.
+# Assumed that:
+# - Jitsi domain is meet.example.com
+# - Transcription is performed by the Transcriber (Jigasi in transcriber mode)
+# - Skynet (the Whisper backend) runs outside this chart and is reachable at
+#   the websocket URL below
+# -----------------------------------------------------------------------------
+#publicURL: ""
+publicURL: "https://meet.example.com"
+
+# The Transcriber also needs Jigasi XMPP credentials even though the Jigasi
+# (SIP) pod itself stays disabled.
+transcriber:
+  enabled: true
+
+skynet:
+  enabled: true
+  useExternalSkynet: true
+  # Base websocket URL of your Skynet streaming-whisper endpoint.
+  # Do NOT include a trailing connection id; jigasi appends it.
+  url: "wss://skynet.example.com/streaming-whisper/ws"

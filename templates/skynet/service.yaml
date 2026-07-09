@@ -1,0 +1,19 @@
+{{- if and
+       .Values.skynet.enabled
+       (not .Values.skynet.useExternalSkynet)
+}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.skynet.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.skynet.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.skynet.service.port }}
+  selector:
+    {{- include "jitsi-meet.skynet.selectorLabels" . | nindent 4 }}
+{{- end }}
