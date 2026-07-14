@@ -1,0 +1,26 @@
+{{- if and
+       .Values.skynet.enabled
+       (not .Values.skynet.useExternalSkynet)
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.skynet.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.skynet.labels" . | nindent 4 }}
+data:
+  SKYNET_LISTEN_IP: "0.0.0.0"
+  SKYNET_PORT: {{ .Values.skynet.service.port | quote }}
+  ENABLED_MODULES: "streaming_whisper"
+  WHISPER_MODEL_NAME: {{ .Values.skynet.whisper.model | quote }}
+  WHISPER_MODEL_PATH: "/models"
+  # The bundled Transcriber connects without a token, and Skynet is only
+  # reachable in-cluster (ClusterIP), so authorization is disabled.
+  BYPASS_AUTHORIZATION: "1"
+
+  {{- range $key, $value := .Values.skynet.extraEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
+  {{- end }}
+{{- end }}

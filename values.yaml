@@ -878,8 +878,6 @@ transcriber:
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
-  breweryMuc: jigasibrewery
-
   # Transcriber XMPP user credentials
   # Transcriber also requires credentials for Jigasi, even its pod is disabled.
   xmpp:
@@ -919,6 +917,89 @@ transcriber:
     busybox:
       image: busybox:1.36
       securityContext: {}
+
+  affinity: {}
+  annotations: {}
+  extraEnvFrom: []
+  extraEnvs: {}
+  extraFiles: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  hostAliases: []
+  labels: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+## #############################################################################
+## Skynet configuration
+## #############################################################################
+skynet:
+  # Skynet provides the streaming Whisper backend used by the Transcriber for
+  # near real-time transcription. When enabled, the Transcriber is
+  # automatically pointed at it (see the transcriber.whisper section), unless
+  # you set transcriber.whisper.url explicitly.
+  #
+  # NOTE: only the streaming_whisper module is enabled here, which does NOT
+  # require Redis. The summaries/assistant modules (which do need Redis) are
+  # out of scope for this chart.
+  enabled: false
+
+  # Use an external Skynet installation instead of the bundled one.
+  # When true, no Skynet resources are created and the Transcriber is wired
+  # to the websocket URL below.
+  useExternalSkynet: false
+
+  # Base websocket URL of the external Skynet streaming-whisper endpoint.
+  # Only used when useExternalSkynet is true. Do NOT include a trailing
+  # connection id or query string; jigasi appends the connection id itself.
+  # e.g. wss://skynet.example.com/streaming-whisper/ws
+  url: ""
+
+  # Always one replica, hardcoded in skynet/deployment.yaml
+  # replicaCount: 1
+
+  image:
+    repository: jitsi/skynet
+    # Skynet is released independently from Jitsi, so the tag is pinned here
+    # rather than derived from Chart.AppVersion. Only CPU images (the "-cpu"
+    # tag) are published, so the bundled Skynet runs on CPU.
+    tag: latest-cpu
+
+  service:
+    port: 8000
+
+  whisper:
+    # Whisper model name, pulled from HuggingFace at runtime. Defaults to the
+    # multilingual "small" model. Bigger models (medium, large-v3) are more
+    # accurate but slower on CPU and larger to download.
+    model: small
+
+  # Persist the downloaded Whisper model across pod restarts/rescheduling.
+  # Off by default: the model is cached in an emptyDir, which already survives
+  # container restarts within a pod. Enable this for large models to avoid
+  # re-downloading the model on every pod recreation.
+  persistence:
+    enabled: false
+    #storageClass: ""
+    #size: 10Gi
+    #existingClaim: ""
+
+  # No liveness probe by default: Skynet downloads the model on first start,
+  # and a failing liveness probe would restart the container mid-download in a
+  # loop. The readiness probe (tcpSocket) simply keeps the pod out of the
+  # Service until the port is listening. Set a livenessProbe/startupProbe here
+  # if you want one.
+  livenessProbe: {}
+  readinessProbe:
+    tcpSocket:
+      port: 8000
+    initialDelaySeconds: 10
+    periodSeconds: 10
 
   affinity: {}
   annotations: {}
@@ -1057,7 +1138,7 @@ jibri:
     # May be required by built-in Chromium.
     enabled: false
     # If "true", will use host's shared memory dir,
-    # and if "false" — an emptyDir mount.
+    # and if "false", an emptyDir mount.
     #useHost: false
     #size: 2Gi
 

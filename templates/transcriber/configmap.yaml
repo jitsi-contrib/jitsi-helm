@@ -14,11 +14,27 @@ data:
   JIGASI_MODE: "transcriber"
   XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}
 
-  {{- with .Values.transcriber.whisper.customService }}
+  {{- /*
+       Whisper backend wiring. An explicit transcriber.whisper.* value always
+       wins; otherwise, when Skynet is enabled, default to the Skynet whisper
+       service and its (internal or external) websocket URL.
+  */}}
+  {{- $customService := .Values.transcriber.whisper.customService }}
+  {{- $whisperURL := .Values.transcriber.whisper.url }}
+  {{- if .Values.skynet.enabled }}
+  {{-   if not $customService }}
+  {{-     $customService = "org.jitsi.jigasi.transcription.WhisperTranscriptionService" }}
+  {{-   end }}
+  {{-   if not $whisperURL }}
+  {{-     $whisperURL = include "jitsi-meet.skynet.whisperURL" . }}
+  {{-   end }}
+  {{- end }}
+
+  {{- with $customService }}
   JIGASI_TRANSCRIBER_CUSTOM_SERVICE: {{ . | quote }}
   {{- end }}
 
-  {{- with .Values.transcriber.whisper.url }}
+  {{- with $whisperURL }}
   JIGASI_TRANSCRIBER_WHISPER_URL: {{ . | quote }}
   {{- end }}
 

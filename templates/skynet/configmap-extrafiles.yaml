@@ -1,0 +1,17 @@
+{{- if and
+       .Values.skynet.enabled
+       (not .Values.skynet.useExternalSkynet)
+       .Values.skynet.extraFiles
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.skynet.fullname" . }}-extrafiles
+  labels:
+    {{- include "jitsi-meet.skynet.labels" . | nindent 4 }}
+data:
+  {{- range $i, $f := .Values.skynet.extraFiles }}
+  extrafile-{{ $i }}: |
+    {{- $f.content | nindent 4 }}
+  {{- end }}
+{{- end }}

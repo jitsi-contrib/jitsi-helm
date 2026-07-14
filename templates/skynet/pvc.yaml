@@ -1,0 +1,20 @@
+{{- if and
+       .Values.skynet.enabled
+       (not .Values.skynet.useExternalSkynet)
+       .Values.skynet.persistence.enabled
+       (not .Values.skynet.persistence.existingClaim)
+}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jitsi-meet.skynet.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.skynet.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.skynet.persistence.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.skynet.persistence.size | default "10Gi" }}
+{{- end }}
