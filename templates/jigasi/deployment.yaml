@@ -63,8 +63,11 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       initContainers:
-        - name: init-prosody
+        - name: wait-for-prosody
           image: "{{ .Values.jigasi.initContainers.busybox.image }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.jigasi.initContainers.busybox .Values.image | first }}
+          resources:
+            {{- toYaml .Values.jigasi.resources | nindent 12 }}
           securityContext:
             {{- toYaml .Values.jigasi.initContainers.busybox.securityContext | nindent 12  }}
           command:

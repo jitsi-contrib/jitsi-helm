@@ -89,8 +89,12 @@ spec:
                .Values.coturn.turns.certificate.acmeProxy.enabled
         }}
         - name: acme-proxy
-          image: nginx:alpine
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.coturn.initContainers.acmeProxy.image }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.coturn.initContainers.acmeProxy .Values.image | first }}
+          resources:
+            {{- toYaml .Values.coturn.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.coturn.initContainers.acmeProxy.securityContext | nindent 12 }}
           restartPolicy: Always
           volumeMounts:
             - name: acme-proxy-config
@@ -100,6 +104,9 @@ spec:
         {{- end }}
         - name: init-coturn
           image: "{{ .Values.coturn.initContainers.busybox.image }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.coturn.initContainers.busybox .Values.image | first }}
+          resources:
+            {{- toYaml .Values.coturn.resources | nindent 12 }}
           securityContext:
             {{- toYaml .Values.coturn.initContainers.busybox.securityContext | nindent 12  }}
           command:
