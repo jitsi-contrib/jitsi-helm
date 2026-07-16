@@ -71,8 +71,11 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       initContainers:
-        - name: init-prosody
+        - name: wait-for-prosody
           image: "{{ .Values.transcriber.initContainers.busybox.image }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.transcriber.initContainers.busybox .Values.image | first }}
+          resources:
+            {{- toYaml .Values.transcriber.resources | nindent 12 }}
           securityContext:
             {{- toYaml .Values.transcriber.initContainers.busybox.securityContext | nindent 12  }}
           command:

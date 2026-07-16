@@ -9,7 +9,7 @@ metadata:
     helm.sh/hook-delete-policy: "hook-succeeded"
 spec:
   containers:
-    - name: wget
+    - name: web-smoke-test
       image: busybox
       command: ["wget"]
       args: ['{{ include "jitsi-meet.web.fullname" . }}:{{ .Values.web.service.port }}']
