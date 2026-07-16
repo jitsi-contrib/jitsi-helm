@@ -241,7 +241,7 @@ etherpad:
 
   image:
     repository: etherpad/etherpad
-    tag: 2.6.1
+    tag: 3.3.2
 
   service:
     port: 9001
@@ -352,7 +352,7 @@ coturn:
 
   image:
     repository: coturn/coturn
-    tag: "4.12"
+    tag: "4.14"
 
   custom:
     configs:
@@ -434,7 +434,7 @@ coturn:
 
   initContainers:
     busybox:
-      image: busybox:1.36
+      image: busybox:1.38.0
       securityContext: {}
     acmeProxy:
       image: nginx:alpine
@@ -746,7 +746,7 @@ jvb:
     enabled: false
     image:
       repository: docker.io/systemli/prometheus-jitsi-meet-exporter
-      tag: 1.2.3
+      tag: 1.4.2
       pullPolicy: IfNotPresent
     securityContext:
       runAsUser: 10001
@@ -840,7 +840,7 @@ jigasi:
 
   initContainers:
     busybox:
-      image: busybox:1.36
+      image: busybox:1.38.0
       securityContext: {}
 
   affinity: {}
@@ -918,7 +918,7 @@ transcriber:
 
   initContainers:
     busybox:
-      image: busybox:1.36
+      image: busybox:1.38.0
       securityContext: {}
 
   affinity: {}
