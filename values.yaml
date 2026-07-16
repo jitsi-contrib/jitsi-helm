@@ -241,7 +241,7 @@ etherpad:
 
   image:
     repository: etherpad/etherpad
-    tag: 2.6.1
+    tag: 3.3.2
 
   service:
     port: 9001
