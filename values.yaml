@@ -352,7 +352,7 @@ coturn:
 
   image:
     repository: coturn/coturn
-    tag: "4.12"
+    tag: "4.14"
 
   custom:
     configs:
