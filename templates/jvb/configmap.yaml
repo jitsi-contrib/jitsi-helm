@@ -7,7 +7,9 @@ metadata:
 data:
   COLIBRI_REST_ENABLED: "true"
   JVB_BREWERY_MUC: {{ .Values.jvb.breweryMuc | quote }}
-  {{- if and
+  {{- if .Values.jvb.disableStun }}
+  JVB_DISABLE_STUN: "true"
+  {{- else if and
          .Values.turnHost
          .Values.coturn.enabled
          .Values.jvb.useInternalStun
