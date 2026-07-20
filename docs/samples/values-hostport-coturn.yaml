@@ -86,10 +86,10 @@ jvb:
     #enabled: true
     enabled: false
 
+  # JVB's external IP is not reachable here, so STUN discovery is not needed.
+  disableStun: true
+
   extraEnvs:
-    # Since JVB's external IPs are not accessible in this scenario,
-    # no need to find these external IPs using a STUN service.
-    JVB_DISABLE_STUN: "true"
     DISABLE_AWS_HARVESTER: "true"
 
 octo:

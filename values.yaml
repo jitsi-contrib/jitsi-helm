@@ -104,19 +104,19 @@ web:
       _custom_config_js: ""
 
   extraFiles: []
-    # - path: /config/nginx-custom/oidc.conf
-    #   content: |
-    #       location ~ /oidc/ {
-    #           proxy_pass http://127.0.0.1:9000;
-    #           proxy_http_version 1.1;
-    #           proxy_set_header X-Forwarded-For $remote_addr;
-    #           proxy_set_header Host $http_host;
-    #       }
-    # - path: /etc/cont-init.d/20-custom
-    #   mode: "0755"
-    #   content: |
-    #     #!/usr/bin/env bash
-    #     echo "Hello"
+  # - path: /config/nginx-custom/oidc.conf
+  #   content: |
+  #       location ~ /oidc/ {
+  #           proxy_pass http://127.0.0.1:9000;
+  #           proxy_http_version 1.1;
+  #           proxy_set_header X-Forwarded-For $remote_addr;
+  #           proxy_set_header Host $http_host;
+  #       }
+  # - path: /etc/cont-init.d/20-custom
+  #   mode: "0755"
+  #   content: |
+  #     #!/usr/bin/env bash
+  #     echo "Hello"
 
   service:
     type: ClusterIP
@@ -560,15 +560,15 @@ prosody:
       interval: 10s
       #honorLabels: false
     securityContext: {}
-      #allowPrivilegeEscalation: false
-      #capabilities:
-      #  drop:
-      #    - ALL
-      #readOnlyRootFilesystem: true
-      #runAsNonRoot: true
-      #runAsUser: 1000
-      #seccompProfile:
-      #  type: RuntimeDefault
+    #  allowPrivilegeEscalation: false
+    #  capabilities:
+    #    drop:
+    #      - ALL
+    #  readOnlyRootFilesystem: true
+    #  runAsNonRoot: true
+    #  runAsUser: 1000
+    #  seccompProfile:
+    #    type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -676,16 +676,30 @@ jvb:
   # or hostPort enabled) where every JVB pod should announce it's
   # own IP address only.
   useNodeIP: false
-  # Use a STUN server to help JVB to find its own external IP.
-  stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
-  # Use the internal STUN if coturn is enabled. In this case, it will overwrite
-  # stunServers and will use STUN installed by this chart.
+
+  # STUN lets JVB discover its own public (server-reflexive) IP so it can
+  # advertise a reachable address to clients. The STUN server must be reachable
+  # over a public path: querying an in-cluster address would only report JVB's
+  # internal IP and defeat the purpose.
   #
-  # If you want to completely disable STUN for JVB then set this value to false
-  # and remove stunServers (use an empty string, ""). You might want to do this
-  # if publicIPs is already explicitly set and there is no need to discover IP
-  # address via STUN.
+  # Precedence (first match wins):
+  #   1. disableStun: true          STUN disabled
+  #   2. useInternalStun (+ coturn) chart's coturn STUN, via the public turnHost
+  #   3. stunServers (non-empty)    that external STUN server
+  #   4. otherwise                  STUN disabled
+
+  # External STUN server used to find JVB's external IP.
+  stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
+  # Use the coturn STUN deployed by this chart instead of stunServers. Despite
+  # the name, this targets the PUBLIC turnHost (not an internal ClusterIP),
+  # because STUN must observe JVB from outside. Requires coturn.enabled and
+  # turnHost.
   useInternalStun: false
+  # Explicitly disable STUN, overriding useInternalStun and stunServers. Use
+  # this when publicIPs (or useNodeIP) is set explicitly and JVB does not need
+  # STUN to discover its IP.
+  disableStun: false
+
   # Try to use the hostPort feature:
   # (might not be supported by some clouds or CNI engines)
   useHostPort: false
@@ -1170,5 +1184,5 @@ jibri:
   podSecurityContext: {}
   securityContext:
     capabilities:
-      add: [ "SYS_ADMIN" ]
+      add: ["SYS_ADMIN"]
   tolerations: []
