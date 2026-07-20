@@ -25,4 +25,5 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
           helm push "$chart" oci://ghcr.io/jitsi-contrib 2>&1 | tee push.log
           digest="$(awk '/[Dd]igest:/ {print $2}' push.log)"
+          echo "${{ secrets.GITHUB_TOKEN }}" | cosign login ghcr.io -u "${{ github.actor }}" --password-stdin
           cosign sign --yes "ghcr.io/jitsi-contrib/jitsi-meet@${digest}"
