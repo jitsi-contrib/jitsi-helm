@@ -1,0 +1,28 @@
+name: Publish OCI chart
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Package, push, and sign
+        run: |
+          set -euo pipefail
+          helm package . -d dist/
+          chart="$(ls dist/*.tgz)"
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+          helm push "$chart" oci://ghcr.io/jitsi-contrib 2>&1 | tee push.log
+          digest="$(awk '/[Dd]igest:/ {print $2}' push.log)"
+          cosign sign --yes "ghcr.io/jitsi-contrib/jitsi-meet@${digest}"

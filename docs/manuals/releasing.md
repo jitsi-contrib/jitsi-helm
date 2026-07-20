@@ -37,5 +37,10 @@ Overall, the release process looks like this:
   git push
   ```
 - Create a release on GitHub. This step will also create a tag for the release.
+  Publishing the release triggers the `publish-oci-chart` workflow, which
+  packages the chart, pushes it to `oci://ghcr.io/jitsi-contrib/jitsi-meet`, and
+  signs it with cosign (keyless). No manual step is needed for this. The
+  workflow pins its actions to commit SHAs; bump those SHAs by hand when you
+  want to update them (see the version comments in the workflow file).
 - Release the new version of
   [jitsi-scaler](https://github.com/jitsi-contrib/jitsi-scaler)
