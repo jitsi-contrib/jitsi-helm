@@ -38,6 +38,22 @@ helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
 helm install myjitsi jitsi/jitsi-meet --set publicURL=https://meet.mydomain.com
 ```
 
+Alternatively, install directly from the OCI registry (GitHub Container
+Registry):
+
+```bash
+helm install myjitsi oci://ghcr.io/jitsi-contrib/jitsi-meet --set publicURL=https://meet.mydomain.com
+```
+
+OCI releases are signed with [cosign](https://github.com/sigstore/cosign)
+(keyless). To verify a release before installing:
+
+```bash
+cosign verify ghcr.io/jitsi-contrib/jitsi-meet:<version> \
+  --certificate-identity-regexp '^https://github.com/jitsi-contrib/jitsi-helm/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
 ## Exposing your Jitsi Meet installation
 
 To be able to do video conferencing with other people, the JVB component should
@@ -241,14 +257,14 @@ transcriber:
 
 The Transcriber streams the meeting audio to a speech-to-text backend, and that
 backend is pluggable. This chart has first-class support for
-[Skynet](https://github.com/jitsi/skynet), Jitsi's own Whisper backend, which
-it can deploy for you (Option 1) or wire to an existing instance (Option 2). You
+[Skynet](https://github.com/jitsi/skynet), Jitsi's own Whisper backend, which it
+can deploy for you (Option 1) or wire to an existing instance (Option 2). You
 can also point the Transcriber at any other Jigasi-supported backend yourself
 (Option 3). **Skynet is not required.**
 
-> **Note:** when this chart deploys Skynet it enables only the `streaming_whisper`
-> module, which does not require Redis. Skynet's summaries/assistant modules are
-> out of scope for this chart.
+> **Note:** when this chart deploys Skynet it enables only the
+> `streaming_whisper` module, which does not require Redis. Skynet's
+> summaries/assistant modules are out of scope for this chart.
 
 ### Option 1: Bundled Skynet (deployed by this chart)
 
