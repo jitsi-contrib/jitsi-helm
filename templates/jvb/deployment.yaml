@@ -69,7 +69,7 @@ spec:
         {{- if $.Values.jvb.extraFiles }}
         - name: extra-files
           configMap:
-            name: {{ include "jitsi-meet.jvb.fullname" . }}-extrafiles
+            name: {{ include "jitsi-meet.jvb.fullname" $ }}-extrafiles
             items:
               {{- range $i, $f := $.Values.jvb.extraFiles }}
               - key: extrafile-{{ $i }}
