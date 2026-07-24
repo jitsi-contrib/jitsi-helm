@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  artifacthub.io/category: streaming-messaging
+  artifacthub.io/links: |
+    - name: Jitsi Meet
+      url: https://jitsi.org/jitsi-meet/
+    - name: Jitsi Meet Documentation
+      url: https://jitsi.github.io/handbook/docs/intro/
+    - name: Jitsi-Helm GitHub
+      url: https://github.com/jitsi-contrib/jitsi-helm
+apiVersion: v2
+appVersion: stable-11031
+description: Jitsi Meet packaged for Kubernetes
+icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
+name: jitsi-meet
+type: application
+version: 2.22.1
+
+...
+files:
+  jitsi-meet-2.22.1.tgz: sha256:2c3f66c039c8a0622eeee0ac4c8e0c17e1d7463dc223fbc1c37e6f9784e32af3
+-----BEGIN PGP SIGNATURE-----
+
+wsFcBAEBCgAQBQJqY18KCRCMkGqlTqyzCgAA890QABfkOh7F+Yr7q3YKBkJpxT08
+9ku5O2SdsDuqwDqZVbUytGGzKRMMk1FfUFwZ9bskJPij6scojP7svAD3erx2Oh7x
+//z6PW6XJMg2O5RUCwqq9M7yIA2IgWb/xUFkEkXq97EMGAYE4z4Xz+sNMa3gFhG9
+TWRd572lVXUrxK/H9LfNxsLT6pSvt/twmmM9VnO5pkVsHFhTqEsF3Z+Jvko4IT1i
+0oTIzmNW8D67/jc3hV3hZcBCMFHxxHBrrCmWqjSrInA6UBOR/Cr7OySfhaow5gcp
+QtsJURJdBbSaubF4zFaEtddUdnVrSwnX5QJtuJ0K4AHrTFA8kFR0oXRXIgoNWPak
+/I9jpAbUOh3Dz6AATcpJVT4DHxumJXNu7w1JY0GCl+Roelw3jVjHucyae7DGMVQG
+6NYPogQXDf/6hpelfZOBBEqJwyoSY08xwnD6MuwWqg4JkbhL1+zy7zeWRcKp0xRK
+7UoCC5qJpKoluXznQCgbIqfdgU6n8Itxq9FmdRfswWstbntw2zlQ9XowcR2DAIgx
+g6chvv+ds4ejaa4YJYsuWPwEJsvuqrESOjdLeFvZ5hKNWDfXnVBSdWua2LuoyOql
+W6WUbqeigDUnVg9c/9VcDON+k5ukRPhYl8WfA0RDgb5clZRxJVB0ztDpjfUpC/fs
+9jz4wnLguaX60bhXbbjp
+=BVfM
+-----END PGP SIGNATURE-----
