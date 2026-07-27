@@ -9,7 +9,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "jitsi-meet.transcriber.fullname" . }}
   labels:
-    app.kubernetes.io/name: jitsi-transcriber
+    {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany
