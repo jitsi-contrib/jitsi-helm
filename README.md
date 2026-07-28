@@ -102,6 +102,7 @@ See the [Prosody plugins guide](/docs/guides/prosody-plugins.md) for an example.
 Each feature section above links to its detailed guide. See also:
 
 - [TURNS (TURN over TLS)](/docs/guides/turns.md)
+- [Troubleshooting](/docs/guides/troubleshooting.md)
 - [Sample values files](/docs/samples/)
 - [All guides](/docs/guides/)
 
