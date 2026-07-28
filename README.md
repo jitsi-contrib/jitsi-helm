@@ -103,6 +103,7 @@ Each feature section above links to its detailed guide. See also:
 
 - [TURNS (TURN over TLS)](/docs/guides/turns.md)
 - [Troubleshooting](/docs/guides/troubleshooting.md)
+- [Upgrading](/docs/guides/upgrading.md)
 - [Sample values files](/docs/samples/)
 - [All guides](/docs/guides/)
 
