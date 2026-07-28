@@ -68,9 +68,17 @@ available. In the latter case, enabling `coturn.turns.acmeProxy` is required, as
 ACME will be handled by whatever ingress is associated with your `Issuer` or
 `ClusterIssuer`, but the external certificate authority will be sending ACME
 validation requests to the IP associated with the domain set in `turnHost`, and
-these requests have to be proxied back to the targeted ingress. When using
-`coturn.turns.certificate.create`, it is recommended to have Reloader available,
-to ensure pods load new certificates when they are refreshed.
+these requests have to be proxied back to the targeted ingress.
+
+**Important:** coTURN does not reload its TLS certificate at runtime. When using
+`coturn.turns.certificate.create` (cert-manager), if you do not run Reloader -
+or otherwise restart the coTURN pods when the secret changes - coTURN keeps
+serving the old certificate after cert-manager renews it. Everything appears to
+work until the original certificate expires (for example, around 90 days with
+Let's Encrypt), at which point TURNS breaks with no earlier warning. This chart
+already sets the `secret.reloader.stakater.com/reload` annotation on the coTURN
+Deployment, so installing Reloader once at the cluster level is enough;
+otherwise, arrange for the pods to restart on renewal.
 
 ## Allowed peers
 

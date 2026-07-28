@@ -401,8 +401,8 @@ manually since they are available in the official `jitsi/prosody` container.
 
 Feature-specific documentation can be found here:
 
-- [Octo](/docs/manuals/testing-octo.md)
-- [TURNS](/docs/manuals/turns.md)
+- [Octo](/docs/guides/testing-octo.md)
+- [TURNS](/docs/guides/turns.md)
 - [Sample values files](/docs/samples/)
 
 For further documentation on all available configuration, refer to
