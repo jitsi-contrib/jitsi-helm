@@ -12,7 +12,8 @@
   - [Option 3.1: Using hostPort (auto-detected public node IP)](#option-31-using-hostport-auto-detected-public-node-ip)
   - [Option 3.2: Using hostPort with a port range](#option-32-using-hostport-with-a-port-range)
   - [Option 4: Using hostNetwork](#option-4-using-hostnetwork)
-  - [Option 5: Bring your own setup](#option-5-bring-your-own-setup)
+  - [Option 5: Using Ingress TCP/UDP forward capabilities](#option-5-using-ingress-tcpudp-forward-capabilities)
+  - [Option 6: Bring your own setup](#option-6-bring-your-own-setup)
 - [Recording and streaming support](#recording-and-streaming-support)
 - [Transcription support](#transcription-support)
   - [Option 1: Bundled Skynet (deployed by this chart)](#option-1-bundled-skynet-deployed-by-this-chart)
@@ -180,7 +181,7 @@ Similar to Option 3, this way you expose JVB "as is" on the node, without any
 additional protection. This is not recommended, but might be useful in some rare
 cases.
 
-### Option 4: Using Ingress TCP/UDP forward capabilities
+### Option 5: Using Ingress TCP/UDP forward capabilities
 
 In case of an ingress capable of doing TCP/UDP forwarding (like nginx-ingress),
 it can be setup to forward the video streams.
@@ -195,7 +196,7 @@ jvb:
 
 Again in this case, only one JVB will work.
 
-### Option 5: Bring your own setup
+### Option 6: Bring your own setup
 
 There are multiple other possibilities combining the available parameters,
 depending of your cluster/network setup.
