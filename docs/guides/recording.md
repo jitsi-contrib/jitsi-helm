@@ -10,11 +10,10 @@ jibri:
   ## and/or stream their meetings (e.g. to YouTube).
   enabled: true
 
-  ## Enable single-use mode for Jibri (recommended).
+  ## Enable single-use mode for Jibri.
   singleUseMode: false
 
   ## Enable multiple Jibri instances.
-  ## Secommended for single-use mode.
   replicaCount: 1
 
   ## Enable recording service.
