@@ -4,13 +4,14 @@
 ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
 
+- [Prerequisites](#prerequisites)
 - [Quick start](#quick-start)
 - [Exposing your Jitsi Meet installation](#exposing-your-jitsi-meet-installation)
 - [Recording and streaming support](#recording-and-streaming-support)
 - [Transcription support](#transcription-support)
 - [Scaling your installation](#scaling-your-installation)
 - [Adding custom Prosody plugins](#adding-custom-prosody-plugins)
-- [References](#references)
+- [Documentation](#documentation)
 
 [Jitsi-Meet](https://jitsi.org/jitsi-meet/): Secure, simple and scalable video
 conferences that you can use as a standalone app or embed in your web
@@ -20,6 +21,13 @@ This chart bootstraps a Jitsi Meet stack on Kubernetes.
 
 See also [jitsi-scaler](https://github.com/jitsi-contrib/jitsi-scaler) for a
 Jitsi Meet stack containing multiple shards.
+
+## Prerequisites
+
+- A Kubernetes cluster and Helm 3.8+ (3.8+ is required for the OCI install).
+- A way to expose JVB media to participants (see the Exposing section below).
+- cert-manager, only if you enable TURNS (see the TURNS guide under
+  Documentation).
 
 ## Quick start
 
@@ -89,13 +97,12 @@ already ship in the official `jitsi/prosody` image.
 
 See the [Prosody plugins guide](/docs/guides/prosody-plugins.md) for an example.
 
-## References
+## Documentation
 
-Feature-specific documentation can be found here:
+Each feature section above links to its detailed guide. See also:
 
-- [Scaling and OCTO](/docs/guides/scaling.md)
-- [TURNS](/docs/guides/turns.md)
+- [TURNS (TURN over TLS)](/docs/guides/turns.md)
 - [Sample values files](/docs/samples/)
+- [All guides](/docs/guides/)
 
-For further documentation on all available configuration, refer to
-[values.yaml](/values.yaml).
+For the full configuration reference, see [values.yaml](/values.yaml).
