@@ -77,3 +77,11 @@ multiple browser tabs and check the server count which shows the number of JVBs
 hosting this meeting. It should be greater than 1.
 
 ![OCTO server count](/docs/files/octo-server-count.png)
+
+## How many users, and with what resources?
+
+See the [Sizing guide](/docs/guides/sizing.md) for capacity estimates at
+720p/1080p per JVB resource tier, a decision table mapping target concurrent
+users to concrete `resources`/`extraEnvs` settings, and an honest accounting
+of this chart's HA ceiling (Jicofo and Prosody are single-replica, hardcoded
+in their templates, regardless of values).

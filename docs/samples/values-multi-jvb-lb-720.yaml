@@ -1,0 +1,171 @@
+# Example: 6 JVBs sharing 2 public IPs, 3 UDP ports each, in one Octo cluster.
+#
+#   1.2.3.4:10000  jvb-0        5.6.7.8:10000  jvb-3
+#   1.2.3.4:10001  jvb-1        5.6.7.8:10001  jvb-4
+#   1.2.3.4:10002  jvb-2        5.6.7.8:10002  jvb-5
+#
+# Each JVB gets its own single-pod LoadBalancer Service; Services that land on
+# the same public IP share it via MetalLB's IP-sharing annotations. Requires
+# a MetalLB IPAddressPool containing 1.2.3.4 and 5.6.7.8, and a firewall that
+# opens 10000-10002/udp on BOTH addresses. See docs/guides/exposing.md for the
+# full write-up, including why this is MetalLB/Cilium-LB-IPAM/kube-vip/loxilb
+# only (cloud NLBs cannot share one address across several Services).
+
+publicURL: "https://meet.example.com"
+
+octo:
+  enabled: true
+
+jvb:
+  replicaCount: 1 # must be 1: one pod per instance
+
+  publicIPs:
+    - 1.2.3.4
+    - 5.6.7.8
+  portsPerIP: 2 # -> 6 bridges: <ip>:10000, <ip>:10001, <ip>:10002
+  UDPPort: 10000
+
+
+  # IPs are explicit; STUN would only report the node's egress IP.
+  disableStun: true
+
+  service:
+    enabled: true
+    perInstanceServices: true
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster # required for MetalLB IP sharing
+    extraPorts: [] # must stay empty: duplicate ports break IP sharing
+
+  resources:
+    requests:
+      cpu: "2"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+
+  extraEnvs:
+    # JVB's JVM defaults to -Xmx3072m regardless of the container's memory
+    # limit, so it WILL eventually get OOMKilled at a 2Gi limit unless the
+    # heap is capped explicitly. Leave headroom under the 2Gi limit for
+    # off-heap RTP/SRTP packet buffers, metaspace and thread stacks.
+    VIDEOBRIDGE_MAX_MEMORY: "1536m"
+
+  # Spread bridges across nodes so one node failure doesn't take out every
+  # instance behind a public IP.
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: jvb
+
+jicofo:
+
+  extraEnvs:
+    JICOFO_ENABLE_BRIDGE_HEALTH_CHECKS: "true"
+    JICOFO_ENABLE_ICE_FAILURE_DETECTION: "true"
+    JICOFO_ENABLE_LOAD_REDISTRIBUTION: "true"
+    # NOTE: forces Octo redistribution past 2 participants in a room -- looks
+    # like a leftover test value. Jitsi's own default is 80; pick a number
+    # that matches how many people you actually expect in one room before you
+    # want it spread across bridges.
+    # MAX_BRIDGE_PARTICIPANTS: "2"
+
+    # Cap forwarded video/audio streams per conference regardless of room
+    # size -- this is the actual protection for a CPU-capped (2 vCPU) JVB:
+    # without it, JVB cost grows ~O(participants^2) as everyone forwards to
+    # everyone. Tune video count to taste; audio is cheap, so it can stay
+    # higher.
+    JICOFO_CONF_MAX_VIDEO_SENDERS: "5"
+    JICOFO_CONF_MAX_AUDIO_SENDERS: "20"
+
+    # Bridges get marked "stressed" (and jicofo stops assigning new
+    # conferences to them) once reported stress crosses this threshold.
+    # Lower than the 0.8 default so a 2 vCPU bridge gets relieved earlier,
+    # before quality on its existing calls degrades.
+    BRIDGE_STRESS_THRESHOLD: "0.5"
+
+  # extraEnvs:
+  #   MAX_BRIDGE_PARTICIPANTS: "3"
+
+web:
+
+
+  extraEnvs:
+    # Caps the resolution the client requests/sends at 720p (this is already
+    # the image default -- set explicitly so it's not accidentally overridden
+    # elsewhere and to document the intent).
+    RESOLUTION: "720"
+    # Simulcast lets JVB forward a lower-res layer to bandwidth-constrained
+    # participants instead of transcoding (which JVB doesn't do) -- keep on,
+    # it's what makes 720p viable for a mixed-bandwidth call.
+    ENABLE_SIMULCAST: "true"
+    # Auto-adjusts sent quality to actual available bandwidth instead of
+    # forcing a fixed resolution regardless of network conditions.
+    ENABLE_ADAPTIVE_MODE: "true"
+    # 1:1 calls go directly peer-to-peer, bypassing JVB entirely -- best
+    # possible quality/latency for 2-person calls and one less thing your
+    # capped JVBs need to carry.
+    ENABLE_P2P: "true"
+    # Codec preference order for desktop/bridge connections (also used for
+    # desktop P2P calls). This is a *preference* list, not a forced codec --
+    # each participant negotiates down to the highest-ranked entry that both
+    # their own hardware/browser and the bridge (or peer, for P2P) support.
+    # Sets config.videoQuality.codecPreferenceOrder (+ config.p2p.*). This is
+    # the image's own default order, just re-quoted here.
+    CODEC_ORDER_JVB: "[\"VP8\", \"H264\",  \"VP9\",\"AV1\" ]"
+    CODEC_ORDER_P2P: "[\"VP8\", \"H264\",  \"VP9\",\"AV1\" ]"
+    # Same preference-order mechanism, applied only to mobile clients (sets
+    # config.videoQuality.mobileCodecPreferenceOrder + config.p2p.*).
+    # Differs from the image default (VP8, VP9, H264, AV1) in two ways:
+    #  - AV1 dropped entirely: AV1 encode/decode is CPU-heavy and often
+    #    lacks hardware support on phones, so it would either fail to
+    #    negotiate or burn battery/thermal-throttle if it did.
+    #  - H264 ranked above VP9: many phone SoCs have H264 hardware
+    #    encode/decode (cheap on battery, consistent quality), while VP9 is
+    #    usually software-only on mobile (more CPU/battery for often-similar
+    #    quality at typical mobile bitrates).
+    # Net effect: prioritizes battery life and negotiation reliability on
+    # mobile over the marginal quality AV1/VP9 can offer when they do have
+    # hardware support.
+    CODEC_ORDER_JVB_MOBILE: "[\"VP8\", \"H264\",  \"VP9\",\"AV1\" ]"
+    CODEC_ORDER_P2P_MOBILE: "[\"VP8\", \"H264\",  \"VP9\",\"AV1\" ]"
+    
+# Recording/streaming is NOT currently enabled (no `enabled: true` below) --
+# this block is here so the quality/resource tuning is ready when you turn it
+# on. Jibri runs one headless Chromium + ffmpeg pipeline per pod (one
+# recording per pod, not "N users"), so 2 vCPU/2Gi caps its encode quality,
+# not the meeting size.
+jibri:
+  #enabled: true
+  resources:
+    requests:
+      cpu: "2"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+
+  extraEnvs:
+    # Matches the web-side RESOLUTION cap above; this is already the image
+    # default, set explicitly to document intent and drive the virtual
+    # display Jibri renders into.
+    JIBRI_RECORDING_RESOLUTION: "1280x720"
+    # Frames/sec Jibri captures and encodes. 30 is the image default; if you
+    # see health-check flakiness or dropped frames under a busy layout at
+    # only 2 vCPU, drop this to 20 before lowering resolution.
+    JIBRI_RECORDING_FRAMERATE: "30"
+    # x264 encode preset -- "ultrafast" is already the cheapest-CPU option
+    # and the image default; do not raise this (e.g. to "fast"/"medium") on a
+    # CPU-capped pod, it trades CPU for compression efficiency and 2 vCPU
+    # doesn't have room to spare.
+    JIBRI_RECORDING_VIDEO_ENCODE_PRESET_RECORDING: "ultrafast"
+    # x264 constant rate factor: lower = better quality/bigger files/more
+    # CPU, higher = worse quality/smaller files/less CPU. 25 is the image
+    # default and a reasonable balance at 2 vCPU; raise toward 28-30 first if
+    # you need to shed CPU, before touching resolution/framerate.
+    JIBRI_RECORDING_CONSTANT_RATE_FACTOR: "25"

@@ -10,6 +10,7 @@
 - [Recording and streaming support](#recording-and-streaming-support)
 - [Transcription support](#transcription-support)
 - [Scaling your installation](#scaling-your-installation)
+- [Sizing: capacity, resources, HA, and quality](/docs/guides/sizing.md)
 - [Adding custom Prosody plugins](#adding-custom-prosody-plugins)
 - [Documentation](#documentation)
 

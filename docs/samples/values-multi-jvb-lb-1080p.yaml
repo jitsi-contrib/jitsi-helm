@@ -1,0 +1,148 @@
+# Same shared-IP-matrix topology as values-sample.yaml, tuned for 1080p
+# instead of 720p.
+#
+#   1.2.3.4:10000  jvb-0        5.6.7.8:10000  jvb-3
+#   1.2.3.4:10001  jvb-1        5.6.7.8:10001  jvb-4
+#   1.2.3.4:10002  jvb-2        5.6.7.8:10002  jvb-5
+#
+# 1080p roughly doubles the pixels of 720p and pushes a noticeably higher top
+# simulcast layer bitrate, which raises JVB's per-forwarded-stream CPU/network
+# cost (JVB doesn't transcode -- it's SRTP-encrypt-and-forward -- so cost
+# scales with bytes/packets moved, not "rendering"). Two changes follow from
+# that vs. the 720p sample:
+#   1. Give each JVB more headroom (4 vCPU/4Gi instead of 2/2) -- this matches
+#      Jitsi's own published videobridge sizing guidance ("4 or 8 CPU with
+#      8GB RAM"), scaled down slightly for memory since a single-region Octo
+#      bridge here isn't juggling as many concurrent conferences as a public
+#      SaaS shard.
+#   2. Cap forwarded video senders LOWER than at 720p (3 instead of 5), since
+#      each one now costs more to forward. See docs/guides/sizing.md for the
+#      capacity numbers this is based on and how to re-derive them for your
+#      own hardware.
+
+publicURL: "https://meet.example.com"
+
+octo:
+  enabled: true
+
+jvb:
+  replicaCount: 1 # must be 1: one pod per instance
+
+  publicIPs:
+    - 1.2.3.4
+    - 5.6.7.8
+  portsPerIP: 2 # -> 6 bridges: <ip>:10000, <ip>:10001, <ip>:10002
+  UDPPort: 10000
+
+  # IPs are explicit; STUN would only report the node's egress IP.
+  disableStun: true
+
+  service:
+    enabled: true
+    perInstanceServices: true
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster # required for MetalLB IP sharing
+    extraPorts: [] # must stay empty: duplicate ports break IP sharing
+
+  resources:
+    requests:
+      cpu: "4"
+      memory: 4Gi
+    limits:
+      cpu: "4"
+      memory: 4Gi
+
+  extraEnvs:
+    # Matches the docker-jitsi-meet image default exactly (-Xmx3072m), made
+    # explicit so it's never silently overridden -- and it leaves 1Gi of
+    # headroom under the 4Gi container limit for off-heap RTP/SRTP buffers,
+    # metaspace and thread stacks. Do NOT raise this past ~3Gi on a 4Gi pod.
+    VIDEOBRIDGE_MAX_MEMORY: "3072m"
+
+  # Spread bridges across nodes so one node failure doesn't take out every
+  # instance behind a public IP.
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: jvb
+
+jicofo:
+
+  extraEnvs:
+    JICOFO_ENABLE_BRIDGE_HEALTH_CHECKS: "true"
+    JICOFO_ENABLE_ICE_FAILURE_DETECTION: "true"
+    JICOFO_ENABLE_LOAD_REDISTRIBUTION: "true"
+    # Pick a number that matches how many people you actually expect in one
+    # room before you want it spread across bridges via Octo. Jitsi's own
+    # default is 80 (tuned for a "4-8 vCPU" bridge at 720p); at 1080p on a
+    # 4 vCPU bridge, keep this well under that -- see sizing.md.
+    MAX_BRIDGE_PARTICIPANTS: "40"
+
+    # Lower than the 720p sample's "5" -- each forwarded 1080p stream costs
+    # more, so fewer of them fit in the same CPU budget. Audio stays cheap.
+    JICOFO_CONF_MAX_VIDEO_SENDERS: "3"
+    JICOFO_CONF_MAX_AUDIO_SENDERS: "20"
+
+    # Slightly higher than the 2 vCPU/720p sample's 0.5, reflecting the extra
+    # headroom from doubling JVB's CPU/memory -- still below Jitsi's 0.8
+    # default so a bridge gets relieved before quality on its existing calls
+    # degrades.
+    BRIDGE_STRESS_THRESHOLD: "0.65"
+
+web:
+
+  extraEnvs:
+    # 1080p instead of the 720p sample's cap.
+    RESOLUTION: "1080"
+    # Simulcast lets JVB forward a lower-res layer to bandwidth-constrained
+    # participants instead of transcoding (which JVB doesn't do) -- keep on,
+    # it's what makes 1080p viable for a mixed-bandwidth call.
+    ENABLE_SIMULCAST: "true"
+    # Auto-adjusts sent quality to actual available bandwidth instead of
+    # forcing a fixed resolution regardless of network conditions.
+    ENABLE_ADAPTIVE_MODE: "true"
+    # 1:1 calls go directly peer-to-peer, bypassing JVB entirely -- best
+    # possible quality/latency for 2-person calls and one less thing your
+    # JVBs need to carry.
+    ENABLE_P2P: "true"
+
+
+# Recording/streaming is NOT currently enabled (no `enabled: true` below) --
+# this block is here so the quality/resource tuning is ready when you turn it
+# on. Jibri runs one headless Chromium + ffmpeg pipeline per pod (one
+# recording per pod, not "N users"); 1080p encoding is noticeably heavier
+# than 720p on CPU, hence the bump to 4 vCPU/4Gi vs. the 720p sample's 2/2.
+jibri:
+
+  resources:
+    requests:
+      cpu: "4"
+      memory: 4Gi
+    limits:
+      cpu: "4"
+      memory: 4Gi
+
+  extraEnvs:
+    # 1080p instead of the 720p sample's 1280x720; drives the virtual
+    # display Jibri renders into as well as the ffmpeg output.
+    JIBRI_RECORDING_RESOLUTION: "1920x1080"
+    # Frames/sec Jibri captures and encodes. 30 is the image default; at
+    # 1080p this is meaningfully more CPU than at 720p -- drop to 20-24
+    # first if you see health-check flakiness or dropped frames, before
+    # lowering resolution.
+    JIBRI_RECORDING_FRAMERATE: "30"
+    # x264 encode preset -- "ultrafast" is already the cheapest-CPU option
+    # and the image default. At 1080p there is even less room than at 720p
+    # to trade this for better compression; do not raise it.
+    JIBRI_RECORDING_VIDEO_ENCODE_PRESET_RECORDING: "ultrafast"
+    # x264 constant rate factor: lower = better quality/bigger files/more
+    # CPU, higher = worse quality/smaller files/less CPU. Raised slightly
+    # from the 720p sample's 25 -> 27, since 1080p+ultrafast is already
+    # CPU-heavy and this is the cheapest knob to shed a bit more before
+    # touching resolution/framerate.
+    JIBRI_RECORDING_CONSTANT_RATE_FACTOR: "27"

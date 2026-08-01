@@ -857,7 +857,13 @@ jvb:
   extraVolumeMounts: []
   labels: {}
   nodeSelector: {}
-  resources: {}
+  resources:
+    requests:
+      cpu: "2"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
@@ -1240,7 +1246,13 @@ jibri:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
+  resources:
+    requests:
+      cpu: "2"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
