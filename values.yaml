@@ -646,6 +646,7 @@ jicofo:
 ## #############################################################################
 ## JVB configuration
 ## #############################################################################
+
 jvb:
   replicaCount: 1
 
@@ -713,14 +714,36 @@ jvb:
   # If > 1, UDPPort acts as the base for the port range.
   # This range logic is only valid if useHostPort is enabled.
   portRangeSize: 1
+  # Number of consecutive UDP ports to use PER public IP. Together with
+  # publicIPs this declares an IP x port matrix and creates
+  # len(publicIPs) * portsPerIP JVB instances, each with its own Deployment
+  # and (when service.perInstanceServices is enabled) its own LoadBalancer
+  # Service. This is the Service-based counterpart to portRangeSize/hostPort
+  # and lets several JVBs share a small pool of public IPs, one UDP port each.
+  #
+  #   publicIPs: [1.2.3.4, 5.6.7.8]
+  #   portsPerIP: 3
+  #   UDPPort: 10000
+  # =>  jvb-0 1.2.3.4:10000   jvb-3 5.6.7.8:10000
+  #     jvb-1 1.2.3.4:10001   jvb-4 5.6.7.8:10001
+  #     jvb-2 1.2.3.4:10002   jvb-5 5.6.7.8:10002
+  #
+  # Unset preserves the legacy behavior, where every pod advertises the whole
+  # publicIPs list. Mutually exclusive with portRangeSize. Treat publicIPs as
+  # append-only in practice: reordering it re-maps every instance to a
+  # different IP and rewrites every Service, causing a full media outage.
+  #portsPerIP: 3
   # Use a pre-defined external port for NodePort or LoadBalancer service,
   # if needed. Will allocate a random port from allowed range if unset.
   # (Default NodePort range for K8s is 30000-32767)
+  # Cannot be set together with portsPerIP when it produces more than one
+  # instance per IP -- unset it to auto-allocate a nodePort per instance.
   #nodePort: 10000
 
   service:
     # When the service is enabled, JVB's replicaCount and portRangeSize must be
-    # 1. This means that there can only be one JVB in this case.
+    # 1, unless perInstanceServices is enabled (see below). This means that
+    # there can only be one JVB in this case.
     enabled: true
     type: ClusterIP
     externalTrafficPolicy: Cluster
@@ -741,10 +764,49 @@ jvb:
     #  service.beta.kubernetes.io/do-loadbalancer-healthcheck-protocol: "tcp"
     # Add extra ports to the service.
     # An example below is needed for DigitalOcean managed k8s setups.
+    # When perInstanceServices shares one public IP across several Services,
+    # duplicate ports break the IP-sharing group, so extraPorts is only
+    # attached to the first Service on each public IP (see
+    # extraPortsOnEveryInstance below).
     extraPorts: []
     #  - name: http-healthcheck
     #    port: 8080
     #    protocol: TCP
+
+    # Emit ONE Service per JVB instance (see publicIPs/portsPerIP above)
+    # instead of a single Service shared by all JVB pods. Each Service's
+    # selector is pinned to that instance's `instance` label, so it routes
+    # UDP to exactly one pod on exactly one port. Services that land on the
+    # same public IP are annotated so the LoadBalancer implementation places
+    # them behind the same address (see ipSharing below).
+    #
+    # Requires jvb.replicaCount: 1, and an LB implementation that supports
+    # sharing one IP across several Services: MetalLB, Cilium LB-IPAM,
+    # kube-vip, loxilb. Cloud-provider NLBs (AWS/GCP/Azure/DigitalOcean) do
+    # NOT support this -- each LoadBalancer Service there gets its own
+    # address, which is the opposite of the goal. On such clouds, use
+    # useHostPort/useHostNetwork + your own external LB/DNAT instead.
+    #
+    # Because Services in a sharing group select different pods, MetalLB only
+    # allows this with externalTrafficPolicy: Cluster (see above).
+    perInstanceServices: false
+    ipSharing:
+      # Annotation key used to request IP sharing across the Services that
+      # land on the same public IP. Leave empty to disable IP-sharing
+      # annotations (only safe with one instance per public IP).
+      #   MetalLB: metallb.universe.tf/allow-shared-ip
+      #   Cilium:  io.cilium/lb-ipam-sharing-key
+      annotationKey: metallb.universe.tf/allow-shared-ip
+      # Annotation used to request a specific IP for a Service, instead of
+      # the deprecated spec.loadBalancerIP. Leave empty to fall back to
+      # spec.loadBalancerIP.
+      #   MetalLB >= 0.13: metallb.universe.tf/loadBalancerIPs
+      #   Cilium:          lbipam.cilium.io/ips
+      ipAnnotationKey: metallb.universe.tf/loadBalancerIPs
+    # extraPorts collide when several Services share one public IP. Set this
+    # to true to attach them to every per-instance Service anyway (only safe
+    # when every public IP has exactly one instance).
+    extraPortsOnEveryInstance: false
 
   livenessProbe:
     httpGet:

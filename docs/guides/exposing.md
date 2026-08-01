@@ -33,6 +33,67 @@ In this configuration, `jvb.replicaCount` must remain at 1. Increasing the
 replicas will cause UDP packets to be routed to random JVB instances, breaking
 the video connection.
 
+### Option 1.1: Multiple JVBs sharing public IPs via per-instance LoadBalancer services
+
+If you have far fewer public IPs than JVBs you want to run, you can put
+several JVBs behind the same public IP, each on its own UDP port. Every JVB
+still gets its own single-pod `LoadBalancer` Service; Services that land on
+the same public IP share it via your LoadBalancer implementation's IP-sharing
+annotations.
+
+```yaml
+octo:
+  enabled: true
+
+jvb:
+  replicaCount: 1 # must stay 1: one pod per instance
+
+  publicIPs:
+    - 1.2.3.4
+    - 5.6.7.8
+  portsPerIP: 3 # -> 6 bridges: <ip>:10000, <ip>:10001, <ip>:10002
+  UDPPort: 10000
+  disableStun: true # IPs are explicit; STUN would only report the node's egress IP
+
+  service:
+    enabled: true
+    perInstanceServices: true
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster # required, see below
+```
+
+This creates `len(publicIPs) * portsPerIP` JVB instances (6, in the example
+above): `jvb-0`..`jvb-2` behind `1.2.3.4` on ports `10000`-`10002`, `jvb-3`..
+`jvb-5` behind `5.6.7.8` on the same three ports. See
+[the sample config](/docs/samples/values-shared-ip-matrix.yaml).
+
+Important caveats:
+
+- **This only works with a LoadBalancer implementation that supports sharing
+  one IP across several Services**: MetalLB, Cilium LB-IPAM, kube-vip, loxilb.
+  **Cloud-provider NLBs (AWS, GCP, Azure, DigitalOcean) do not support this**
+  — each `LoadBalancer` Service there gets its own address, which is the
+  opposite of the goal. On such clouds, use Option 3/3.1/3.2 (hostPort) with
+  your own external LB or DNAT in front instead.
+- There is no advertise-*port* override in the Jitsi images: JVB always
+  advertises the port it binds. `Service.port`, the container port and
+  `JVB_PORT` are therefore always equal, and there is no way to remap an
+  external port to a different internal one.
+- Because each Service in a sharing group selects a different pod, MetalLB
+  requires `externalTrafficPolicy: Cluster` for the group (it only allows
+  `Local` when all sharing Services select the *same* pods). This adds a hop
+  and SNATs media to the node IP, which is harmless for JVB, but the node's
+  conntrack tables and any firewall in front must allow the whole
+  `UDPPort..UDPPort+portsPerIP-1` range on **every** advertised IP.
+- Don't set `jvb.service.extraPorts` in this mode: a duplicate port on any
+  Service breaks the whole IP-sharing group. Rely on the pod's
+  `readinessProbe` instead.
+- Treat `jvb.publicIPs` as append-only: reordering it re-maps every instance
+  to a different IP and rewrites every Service, causing a full media outage.
+- Deployments update with `strategy: Recreate`, so upgrading a JVB briefly
+  drops its Service to zero endpoints. Jicofo re-invites affected conferences
+  to another bridge.
+
 ## Option 2: Using a NodePort service (public node IP or external LB)
 
 ```yaml

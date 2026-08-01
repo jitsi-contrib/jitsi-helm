@@ -46,6 +46,12 @@ Please note that this chart doesn't allow to scale JVB into multiple
 zones/regions yet: all JVB pods will be part of the single OCTO region named
 `all`.
 
+If instead of node-exposed hostPorts you want JVBs behind `LoadBalancer`
+Services while conserving public IPs, see
+[Option 1.1 in the Exposing guide](/docs/guides/exposing.md#option-11-multiple-jvbs-sharing-public-ips-via-per-instance-loadbalancer-services):
+several JVBs can share one public IP, each on its own UDP port, all still in
+the single `all` OCTO region.
+
 ## Testing OCTO
 
 When OCTO is enabled, the participants of a single meeting are distributed

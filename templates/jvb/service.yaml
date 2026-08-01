@@ -1,8 +1,79 @@
-{{- if and
-       .Values.jvb.service.enabled
-       (not .Values.jvb.useHostPort)
-       (not .Values.jvb.useHostNetwork)
-}}
+{{- if .Values.jvb.service.enabled }}
+
+{{- if and .Values.jvb.service.perInstanceServices (not .Values.jvb.useHostNetwork) }}
+{{- $instances := fromYamlArray (include "jitsi-meet.jvb.instanceList" .) }}
+{{- $share := .Values.jvb.service.ipSharing | default dict }}
+{{- range $inst := $instances }}
+{{- $i := $inst.index }}
+{{- $ann := deepCopy ($.Values.jvb.service.annotations | default dict) }}
+{{- if and $inst.publicIP (eq $.Values.jvb.service.type "LoadBalancer") }}
+{{-   with $share.annotationKey }}
+{{-     $_ := set $ann . (regexReplaceAll "[^A-Za-z0-9._-]" ($inst.sharingKey | toString) "-") }}
+{{-   end }}
+{{-   with $share.ipAnnotationKey }}
+{{-     $_ := set $ann . $inst.publicIP }}
+{{-   end }}
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jitsi-meet.jvb.instanceFullname" (dict "ctx" $ "index" $i) }}
+  labels:
+    {{- include "jitsi-meet.jvb.labels" $ | nindent 4 }}
+    instance: {{ $i | quote }}
+  {{- with $ann }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ $.Values.jvb.service.type }}
+  {{- with $.Values.jvb.service.loadBalancerClass }}
+  loadBalancerClass: {{ . }}
+  {{- end }}
+  {{- if and $inst.publicIP (eq $.Values.jvb.service.type "LoadBalancer") (not $share.ipAnnotationKey) }}
+  loadBalancerIP: {{ $inst.publicIP | quote }}
+  {{- else }}
+  {{- with $.Values.jvb.service.loadBalancerIP }}
+  loadBalancerIP: {{ . }}
+  {{- end }}
+  {{- end }}
+  {{- with $.Values.jvb.service.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ . }}
+  {{- end }}
+  ports:
+    - name: rtp-udp
+      protocol: UDP
+      port: {{ $inst.port }}
+      targetPort: {{ $inst.port }}
+      {{- if and
+             $inst.nodePort
+             (or
+                (eq $.Values.jvb.service.type "NodePort")
+                (eq $.Values.jvb.service.type "LoadBalancer")
+             )
+      }}
+      nodePort: {{ $inst.nodePort }}
+      {{- end }}
+    {{- if and $.Values.jvb.service.extraPorts (or $inst.firstOnIP $.Values.jvb.service.extraPortsOnEveryInstance) }}
+    {{ toYaml $.Values.jvb.service.extraPorts | indent 4 | trim }}
+    {{- end }}
+  {{- with $.Values.jvb.service.externalIPs }}
+  externalIPs:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if or
+         (eq $.Values.jvb.service.type "NodePort")
+         (eq $.Values.jvb.service.type "LoadBalancer")
+  }}
+  externalTrafficPolicy: {{ $.Values.jvb.service.externalTrafficPolicy }}
+  {{- end }}
+  selector:
+    {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 4 }}
+    instance: {{ $i | quote }}
+{{- end }}
+
+{{- else if and (not .Values.jvb.useHostPort) (not .Values.jvb.useHostNetwork) }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -52,4 +123,6 @@ spec:
   {{- end }}
   selector:
     {{- include "jitsi-meet.jvb.selectorLabels" . | nindent 4 }}
+{{- end }}
+
 {{- end }}

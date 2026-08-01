@@ -1,0 +1,58 @@
+# Example: 6 JVBs sharing 2 public IPs, 3 UDP ports each, in one Octo cluster.
+#
+#   1.2.3.4:10000  jvb-0        5.6.7.8:10000  jvb-3
+#   1.2.3.4:10001  jvb-1        5.6.7.8:10001  jvb-4
+#   1.2.3.4:10002  jvb-2        5.6.7.8:10002  jvb-5
+#
+# Each JVB gets its own single-pod LoadBalancer Service; Services that land on
+# the same public IP share it via MetalLB's IP-sharing annotations. Requires
+# a MetalLB IPAddressPool containing 1.2.3.4 and 5.6.7.8, and a firewall that
+# opens 10000-10002/udp on BOTH addresses. See docs/guides/exposing.md for the
+# full write-up, including why this is MetalLB/Cilium-LB-IPAM/kube-vip/loxilb
+# only (cloud NLBs cannot share one address across several Services).
+
+publicURL: "https://meet.example.com"
+
+octo:
+  enabled: true
+
+jvb:
+  replicaCount: 1 # must be 1: one pod per instance
+
+  publicIPs:
+    - 1.2.3.4
+    - 5.6.7.8
+  portsPerIP: 3 # -> 6 bridges: <ip>:10000, <ip>:10001, <ip>:10002
+  UDPPort: 10000
+
+  # IPs are explicit; STUN would only report the node's egress IP.
+  disableStun: true
+
+  service:
+    enabled: true
+    perInstanceServices: true
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster # required for MetalLB IP sharing
+    extraPorts: [] # must stay empty: duplicate ports break IP sharing
+
+  resources:
+    requests:
+      cpu: "1"
+      memory: 1Gi
+
+  # Spread bridges across nodes so one node failure doesn't take out every
+  # instance behind a public IP.
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: jvb
+
+# For testing bridge spread only -- the default threshold is 80 participants:
+#jicofo:
+#  extraEnvs:
+#    MAX_BRIDGE_PARTICIPANTS: "3"

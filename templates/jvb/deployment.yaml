@@ -1,17 +1,14 @@
-{{- $basePort := .Values.jvb.UDPPort }}
+{{- include "jitsi-meet.jvb.validate" . }}
+{{- $instances := fromYamlArray (include "jitsi-meet.jvb.instanceList" .) }}
 
-{{- $rangeSize := 1 }}
-{{- if .Values.jvb.useHostPort }}
-{{-   $rangeSize = .Values.jvb.portRangeSize | default 1 }}
-{{- end }}
-
-{{- range $i := until (int $rangeSize) }}
-{{- $udpPort := add $basePort $i }}
+{{- range $inst := $instances }}
+{{- $i := $inst.index }}
+{{- $udpPort := $inst.port }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "jitsi-meet.jvb.fullname" $ }}-{{ $i }}
+  name: {{ include "jitsi-meet.jvb.instanceFullname" (dict "ctx" $ "index" $i) }}
   labels:
     {{- include "jitsi-meet.jvb.labels" $ | nindent 4 }}
     instance: {{ $i | quote }}
@@ -28,7 +25,7 @@ spec:
     matchLabels:
       {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 6 }}
       instance: {{ $i | quote }}
-  {{- if $.Values.jvb.useHostPort }}
+  {{- if or $.Values.jvb.useHostPort $.Values.jvb.service.perInstanceServices }}
   strategy:
     type: Recreate
   {{- end }}
@@ -103,7 +100,10 @@ spec:
           env:
             - name: JVB_PORT
               value: {{ $udpPort | quote }}
-            {{- if $.Values.jvb.publicIPs }}
+            {{- if $inst.publicIP }}
+            - name: JVB_ADVERTISE_IPS
+              value: {{ $inst.publicIP | quote }}
+            {{- else if $.Values.jvb.publicIPs }}
             - name: JVB_ADVERTISE_IPS
               value: {{ $.Values.jvb.publicIPs | join "," | quote }}
             {{- else if $.Values.jvb.useNodeIP }}
