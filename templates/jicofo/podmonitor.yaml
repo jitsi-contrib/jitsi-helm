@@ -1,4 +1,7 @@
-{{- if .Values.jicofo.metrics.enabled }}
+{{- if and
+       .Values.jicofo.metrics.enabled
+       .Values.jicofo.metrics.podMonitor.enabled
+}}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
