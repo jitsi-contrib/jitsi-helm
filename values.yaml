@@ -825,6 +825,38 @@ jvb:
       path: /about/health
       port: 8080
 
+  # Graceful drain. Enables JVB's REST shutdown endpoint and, optionally, a
+  # preStop hook that asks the bridge to drain before SIGTERM.
+  #
+  # READ THIS FIRST if you use jvb.service.perInstanceServices: in that
+  # topology each Service has exactly ONE backing pod. The moment the pod
+  # goes Terminating its EndpointSlice entry flips ready:false, kube-proxy
+  # drops it from the (now empty) Service and FLUSHES the UDP conntrack
+  # entries for it, so media for already-connected participants stops
+  # immediately -- the draining bridge is alive but unreachable through its
+  # LoadBalancer IP. perInstanceServices also forces strategy: Recreate, so
+  # every second the hook waits is a second of downtime for that instance,
+  # not a second of protected calls. Keep preStop.maxWaitSeconds SMALL and
+  # drain out-of-band for real maintenance: POST a drain to the pod while it
+  # is still Ready (existing calls finish untouched, Jicofo stops assigning
+  # new ones to it), poll /colibri/stats until local participants hit 0,
+  # *then* delete/upgrade the pod.
+  gracefulShutdown:
+    # Sets SHUTDOWN_REST_ENABLED=true -> videobridge.rest.shutdown.enabled.
+    # Needed for BOTH the preStop hook and out-of-band drains. Requires the
+    # private COLIBRI REST API, which this chart already enables.
+    enabled: false
+    # Time kubelet gives the pod between SIGTERM and SIGKILL. Must exceed
+    # preStop.maxWaitSeconds; the hook runs INSIDE this budget.
+    terminationGracePeriodSeconds: 60
+    preStop:
+      enabled: false
+      # Hard ceiling on the drain wait. 30-60s, not minutes: see above.
+      maxWaitSeconds: 30
+      pollIntervalSeconds: 5
+      # Exit the hook once local (non-relay) participants drop to this.
+      minParticipants: 0
+
   metrics:
     enabled: false
     image:
@@ -857,6 +889,19 @@ jvb:
       annotations: {}
 
   affinity: {}
+  # Spread JVB pods evenly across nodes (in addition to/instead of affinity's
+  # preferred anti-affinity). Use whenUnsatisfiable: ScheduleAnyway, not
+  # DoNotSchedule -- with strategy: Recreate (useHostPort or
+  # perInstanceServices), an unsatisfiable hard constraint leaves the old
+  # pod already deleted and the new one stuck Pending: unbounded outage for
+  # that instance.
+  topologySpreadConstraints: []
+  #  - maxSkew: 1
+  #    topologyKey: kubernetes.io/hostname
+  #    whenUnsatisfiable: ScheduleAnyway
+  #    labelSelector:
+  #      matchLabels:
+  #        app.kubernetes.io/component: jvb
   annotations: {}
   extraEnvs: {}
   extraFiles: []
