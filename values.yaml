@@ -627,6 +627,13 @@ jicofo:
       tag: "1.3.2"
     resources: {}
     securityContext: {}
+    # Add prometheus.io/scrape + prometheus.io/port pod annotations so a
+    # plain annotation-based Prometheus scrape config picks this pod up
+    # directly, without needing the Prometheus Operator's PodMonitor CRD
+    # (jicofo/podmonitor.yaml, rendered separately whenever metrics.enabled).
+    # If the exporter doesn't serve on the default /metrics path, add
+    # prometheus.io/path via jicofo.podAnnotations.
+    prometheusAnnotations: false
 
   affinity: {}
   annotations: {}

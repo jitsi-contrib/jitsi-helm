@@ -56,6 +56,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" $ }}
+      {{- if $.Values.jvb.gracefulShutdown.enabled }}
+      terminationGracePeriodSeconds: {{ $.Values.jvb.gracefulShutdown.terminationGracePeriodSeconds }}
+      {{- end }}
       securityContext:
         {{- toYaml $.Values.jvb.podSecurityContext | nindent 8 }}
       {{- if $.Values.jvb.useHostNetwork }}
@@ -128,6 +131,10 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             {{- end }}
+            {{- if $.Values.jvb.gracefulShutdown.enabled }}
+            - name: SHUTDOWN_REST_ENABLED
+              value: "true"
+            {{- end }}
           ports:
             - name: rtp-udp
               containerPort: {{ $udpPort }}
@@ -147,6 +154,13 @@ spec:
           {{- with $.Values.jvb.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if and $.Values.jvb.gracefulShutdown.enabled $.Values.jvb.gracefulShutdown.preStop.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  {{- include "jitsi-meet.jvb.preStopScript" $ | nindent 18 }}
           {{- end }}
           resources:
             {{- toYaml $.Values.jvb.resources | nindent 12 }}
@@ -187,6 +201,10 @@ spec:
 
       {{- with $.Values.jvb.affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.jvb.topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with $.Values.jvb.nodeSelector }}

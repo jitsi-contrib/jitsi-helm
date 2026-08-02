@@ -26,6 +26,13 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
+        {{- if and
+               .Values.jicofo.metrics.enabled
+               .Values.jicofo.metrics.prometheusAnnotations
+        }}
+        prometheus.io/port: "9996"
+        prometheus.io/scrape: "true"
+        {{- end }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jicofo.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
