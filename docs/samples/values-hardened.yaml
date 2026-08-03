@@ -413,9 +413,9 @@ etherpad:
     capabilities:
       drop:
         - ALL
-    readOnlyRootFilesystem: true
+    readOnlyRootFilesystem: false
     runAsNonRoot: true
-    runAsUser: 1000
+    runAsUser: 5001
     seccompProfile:
       type: RuntimeDefault
 
@@ -438,6 +438,10 @@ etherpad:
     DEFAULT_PAD_TEXT: " "
     DISABLE_IP_LOGGING: "true"
     TRUST_PROXY: "true"
+    # Disable outgoing network calls
+    UPDATES_TIER: "off"
+    PRIVACY_UPDATE_CHECK: "false"
+    PRIVACY_PLUGIN_CATALOG: "false"
 
   extraVolumes:
     - name: tmp
