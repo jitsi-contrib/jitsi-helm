@@ -10,6 +10,7 @@
 - [Recording and streaming support](#recording-and-streaming-support)
 - [Transcription support](#transcription-support)
 - [Scaling your installation](#scaling-your-installation)
+- [Sizing: capacity, resources, HA, and quality](/docs/guides/sizing.md)
 - [Adding custom Prosody plugins](#adding-custom-prosody-plugins)
 - [Documentation](#documentation)
 
@@ -56,8 +57,9 @@ cosign verify ghcr.io/jitsi-contrib/jitsi-meet:<version> \
 
 JVB must be reachable by all participants (typically on a public IP), and the
 best approach depends on your cluster. The chart supports several options:
-LoadBalancer, NodePort, hostPort (including auto-detected node IP and port
-ranges), hostNetwork, and ingress TCP/UDP forwarding.
+LoadBalancer (including multiple JVBs sharing a small pool of public IPs via
+per-instance Services), NodePort, hostPort (including auto-detected node IP
+and port ranges), hostNetwork, and ingress TCP/UDP forwarding.
 
 See the [Exposing guide](/docs/guides/exposing.md) for all options and examples.
 

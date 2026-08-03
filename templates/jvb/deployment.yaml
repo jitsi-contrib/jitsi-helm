@@ -1,17 +1,14 @@
-{{- $basePort := .Values.jvb.UDPPort }}
+{{- include "jitsi-meet.jvb.validate" . }}
+{{- $instances := fromYamlArray (include "jitsi-meet.jvb.instanceList" .) }}
 
-{{- $rangeSize := 1 }}
-{{- if .Values.jvb.useHostPort }}
-{{-   $rangeSize = .Values.jvb.portRangeSize | default 1 }}
-{{- end }}
-
-{{- range $i := until (int $rangeSize) }}
-{{- $udpPort := add $basePort $i }}
+{{- range $inst := $instances }}
+{{- $i := $inst.index }}
+{{- $udpPort := $inst.port }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "jitsi-meet.jvb.fullname" $ }}-{{ $i }}
+  name: {{ include "jitsi-meet.jvb.instanceFullname" (dict "ctx" $ "index" $i) }}
   labels:
     {{- include "jitsi-meet.jvb.labels" $ | nindent 4 }}
     instance: {{ $i | quote }}
@@ -28,7 +25,7 @@ spec:
     matchLabels:
       {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 6 }}
       instance: {{ $i | quote }}
-  {{- if $.Values.jvb.useHostPort }}
+  {{- if or $.Values.jvb.useHostPort $.Values.jvb.service.perInstanceServices }}
   strategy:
     type: Recreate
   {{- end }}
@@ -59,6 +56,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" $ }}
+      {{- if $.Values.jvb.gracefulShutdown.enabled }}
+      terminationGracePeriodSeconds: {{ $.Values.jvb.gracefulShutdown.terminationGracePeriodSeconds }}
+      {{- end }}
       securityContext:
         {{- toYaml $.Values.jvb.podSecurityContext | nindent 8 }}
       {{- if $.Values.jvb.useHostNetwork }}
@@ -103,7 +103,10 @@ spec:
           env:
             - name: JVB_PORT
               value: {{ $udpPort | quote }}
-            {{- if $.Values.jvb.publicIPs }}
+            {{- if $inst.publicIP }}
+            - name: JVB_ADVERTISE_IPS
+              value: {{ $inst.publicIP | quote }}
+            {{- else if $.Values.jvb.publicIPs }}
             - name: JVB_ADVERTISE_IPS
               value: {{ $.Values.jvb.publicIPs | join "," | quote }}
             {{- else if $.Values.jvb.useNodeIP }}
@@ -128,6 +131,10 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             {{- end }}
+            {{- if $.Values.jvb.gracefulShutdown.enabled }}
+            - name: SHUTDOWN_REST_ENABLED
+              value: "true"
+            {{- end }}
           ports:
             - name: rtp-udp
               containerPort: {{ $udpPort }}
@@ -147,6 +154,13 @@ spec:
           {{- with $.Values.jvb.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if and $.Values.jvb.gracefulShutdown.enabled $.Values.jvb.gracefulShutdown.preStop.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  {{- include "jitsi-meet.jvb.preStopScript" $ | nindent 18 }}
           {{- end }}
           resources:
             {{- toYaml $.Values.jvb.resources | nindent 12 }}
@@ -187,6 +201,10 @@ spec:
 
       {{- with $.Values.jvb.affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $.Values.jvb.topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with $.Values.jvb.nodeSelector }}
