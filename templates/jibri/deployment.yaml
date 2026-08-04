@@ -57,6 +57,9 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: 256Mi
+        - name: var-log
+          emptyDir:
+            sizeLimit: 64Mi
         - name: config
           emptyDir: {}
         - name: custom-continit
@@ -158,6 +161,9 @@ spec:
               mountPath: /run
             - name: tmp
               mountPath: /tmp
+            # chromedriver writes its log here
+            - name: var-log
+              mountPath: /var/log/jitsi/jibri
             - name: config
               mountPath: /config
             {{- if .Values.jibri.custom.contInit._10_config }}
