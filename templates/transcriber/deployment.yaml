@@ -47,6 +47,12 @@ spec:
       securityContext:
         {{- toYaml .Values.transcriber.podSecurityContext | nindent 8 }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 128Mi
         - name: transcriber-data
           {{- if .Values.transcriber.persistence.enabled }}
           persistentVolumeClaim:
@@ -121,10 +127,13 @@ spec:
           resources:
             {{- toYaml .Values.transcriber.resources | nindent 12 }}
           volumeMounts:
-            {{- if .Values.transcriber.persistence.enabled }}
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
+            # must always exist, even without persistence
             - name: transcriber-data
               mountPath: /tmp/transcripts
-            {{- end }}
             {{- range $i, $f := .Values.transcriber.extraFiles }}
             - name: extra-files
               mountPath: {{ $f.path }}

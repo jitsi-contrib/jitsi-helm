@@ -41,6 +41,16 @@ spec:
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
+        # only used when web terminates TLS itself (web.httpsEnabled)
+        - name: storage
+          emptyDir:
+            sizeLimit: 64Mi
         - name: config
           emptyDir: {}
         - name: custom-continit
@@ -110,6 +120,12 @@ spec:
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
           volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
+            - name: storage
+              mountPath: /storage
             - name: config
               mountPath: /config
             {{- if .Values.web.custom.contInit._10_config }}

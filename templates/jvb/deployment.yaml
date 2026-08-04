@@ -66,6 +66,12 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
         {{- if $.Values.jvb.extraFiles }}
         - name: extra-files
           configMap:
@@ -151,6 +157,10 @@ spec:
           resources:
             {{- toYaml $.Values.jvb.resources | nindent 12 }}
           volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
             {{- range $i, $f := $.Values.jvb.extraFiles }}
             - name: extra-files
               mountPath: {{ $f.path }}

@@ -514,10 +514,9 @@ prosody:
       path: /http-bind
       port: bosh-insecure
 
-  dataDir: /config/data
-
   # Persistence is needed if user accounts are stored in Prosody.
-  # e.g. internal_hashed as authentication
+  # e.g. internal_hashed as authentication.
+  # The volume is mounted at /var/lib/prosody, Prosody's data path.
   persistence:
     enabled: false
     size: 3G

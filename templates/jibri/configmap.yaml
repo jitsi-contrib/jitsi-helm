@@ -12,7 +12,7 @@ data:
   DISPLAY: ":0"
   JIBRI_BREWERY_MUC: {{ .Values.jibri.breweryMuc | quote }}
   JIBRI_FINALIZE_RECORDING_SCRIPT_PATH: "/config/finalize.sh"
-  JIBRI_RECORDING_DIR: {{ .Values.jibri.recordingDir | default "/data/recordings" | quote }}
+  JIBRI_RECORDING_DIR: {{ .Values.jibri.recordingDir | default "/storage/recordings" | quote }}
   JIBRI_SINGLE_USE_MODE: {{ .Values.jibri.singleUseMode | default false | quote }}
   JIBRI_STRIP_DOMAIN_JID: "muc"
   XMPP_SERVER: {{ include "jitsi-meet.xmpp.server" . | quote }}

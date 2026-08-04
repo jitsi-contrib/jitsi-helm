@@ -46,6 +46,12 @@ spec:
       securityContext:
         {{- toYaml .Values.jigasi.podSecurityContext | nindent 8 }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 128Mi
         {{- if .Values.jigasi.extraFiles }}
         - name: extra-files
           configMap:
@@ -111,6 +117,10 @@ spec:
           resources:
             {{- toYaml .Values.jigasi.resources | nindent 12 }}
           volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
             {{- range $i, $f := .Values.jigasi.extraFiles }}
             - name: extra-files
               mountPath: {{ $f.path }}
