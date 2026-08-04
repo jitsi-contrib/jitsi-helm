@@ -555,6 +555,25 @@ prosody:
     size: 3G
     storageClassName:
 
+  # Prosody requires its data path to be owned by the container user, which
+  # Kubernetes cannot set on a volume. This init container fixes the ownership
+  # and is the only container in this chart that runs as root.
+  initContainers:
+    busybox:
+      image: busybox:1.38.0
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+          add:
+            - CHOWN
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+        seccompProfile:
+          type: RuntimeDefault
+
   extraVolumes: []
   #  - name: prosody-modules
   #    configMap:
