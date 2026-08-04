@@ -19,4 +19,5 @@ prosody:
 
 No need to add a module from
 [jitsi-contrib/prosody-plugins](https://github.com/jitsi-contrib/prosody-plugins)
-manually since they are available in the official `jitsi/prosody` container.
+manually since they are available in the official `ghcr.io/jitsi/prosody`
+container.

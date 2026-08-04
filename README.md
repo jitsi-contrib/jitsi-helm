@@ -93,7 +93,7 @@ configuration, and how to test it.
 
 Extend Prosody with extra plugins by mounting them via `prosody.extraVolumes` /
 `extraVolumeMounts`. Modules from the jitsi-contrib/prosody-plugins collection
-already ship in the official `jitsi/prosody` image.
+already ship in the official `ghcr.io/jitsi/prosody` image.
 
 See the [Prosody plugins guide](/docs/guides/prosody-plugins.md) for an example.
 

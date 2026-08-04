@@ -81,7 +81,7 @@ web:
   replicaCount: 1
 
   image:
-    repository: jitsi/web
+    repository: ghcr.io/jitsi/web
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -510,7 +510,7 @@ prosody:
   # replicaCount: 1
 
   image:
-    repository: jitsi/prosody
+    repository: ghcr.io/jitsi/prosody
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -638,7 +638,7 @@ jicofo:
   # replicaCount: 1
 
   image:
-    repository: jitsi/jicofo
+    repository: ghcr.io/jitsi/jicofo
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -715,7 +715,7 @@ jvb:
   replicaCount: 1
 
   image:
-    repository: jitsi/jvb
+    repository: ghcr.io/jitsi/jvb
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -906,7 +906,7 @@ jigasi:
   # replicaCount: 1
 
   image:
-    repository: jitsi/jigasi
+    repository: ghcr.io/jitsi/jigasi
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -994,7 +994,7 @@ transcriber:
   # replicaCount: 1
 
   image:
-    repository: jitsi/jigasi
+    repository: ghcr.io/jitsi/jigasi
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -1179,7 +1179,7 @@ jibri:
   replicaCount: 1
 
   image:
-    repository: jitsi/jibri
+    repository: ghcr.io/jitsi/jibri
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
