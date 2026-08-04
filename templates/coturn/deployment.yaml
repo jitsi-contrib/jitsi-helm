@@ -185,14 +185,14 @@ spec:
           ports:
             - name: tcp-turn
               protocol: TCP
-              containerPort: {{ .Values.coturn.service.ports.turn }}
+              containerPort: 3478
             - name: udp-turn
               protocol: UDP
-              containerPort: {{ .Values.coturn.service.ports.turn }}
+              containerPort: 3478
             {{- if .Values.coturn.turns.enabled }}
             - name: tcp-turns
               protocol: TCP
-              containerPort: {{ .Values.coturn.service.ports.turns }}
+              containerPort: 5349
             {{- end }}
             {{- if .Values.coturn.metrics.enabled }}
             - name: tcp-metrics

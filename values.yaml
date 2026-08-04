@@ -451,9 +451,6 @@ coturn:
         capabilities:
           drop:
             - ALL
-          # nginx listens on port 80 for ACME challenges
-          add:
-            - NET_BIND_SERVICE
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
@@ -488,9 +485,6 @@ coturn:
     capabilities:
       drop:
         - ALL
-      # coturn binds the TURNS port (443 by default), which is privileged
-      add:
-        - NET_BIND_SERVICE
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
