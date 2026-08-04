@@ -438,10 +438,31 @@ coturn:
   initContainers:
     busybox:
       image: busybox:1.38.0
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
     acmeProxy:
       image: nginx:alpine
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+          # nginx listens on port 80 for ACME challenges
+          add:
+            - NET_BIND_SERVICE
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 
   # Native Prometheus metrics for Coturn (port 9641)
   metrics:
@@ -464,8 +485,21 @@ coturn:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+      # coturn binds the TURNS port (443 by default), which is privileged
+      add:
+        - NET_BIND_SERVICE
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################

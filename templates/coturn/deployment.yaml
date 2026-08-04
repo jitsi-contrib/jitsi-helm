@@ -75,6 +75,12 @@ spec:
         - name: acme-proxy-config
           configMap:
             name: {{ include "jitsi-meet.coturn.fullname" . }}-acme-proxy
+        - name: acme-proxy-run
+          emptyDir:
+            sizeLimit: 8Mi
+        - name: acme-proxy-cache
+          emptyDir:
+            sizeLimit: 16Mi
         {{- end }}
         {{- if .Values.coturn.extraFiles }}
         - name: extra-files
@@ -110,6 +116,11 @@ spec:
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
+            # nginx writes its pid and temporary files
+            - name: acme-proxy-run
+              mountPath: /var/run
+            - name: acme-proxy-cache
+              mountPath: /var/cache/nginx
         {{- end }}
         - name: init-coturn
           image: "{{ .Values.coturn.initContainers.busybox.image }}"
@@ -122,7 +133,6 @@ spec:
             - sh
             - -c
             - |
-              chmod 755 /config-dir && \
               cp /turnserver.conf /config-dir/ && \
               echo >>/config-dir/turnserver.conf && \
               echo "static-auth-secret=$TURN_CREDENTIALS" >>/config-dir/turnserver.conf
