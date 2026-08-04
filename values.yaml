@@ -219,15 +219,18 @@ web:
   #    memory: 128Mi
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  #  fsGroup: 2000
-  securityContext: {}
-  #  capabilities:
-  #    drop:
-  #    - ALL
-  #  readOnlyRootFilesystem: true
-  #  runAsNonRoot: true
-  #  runAsUser: 1000
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -579,8 +582,18 @@ prosody:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -638,8 +651,18 @@ jicofo:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -797,8 +820,18 @@ jvb:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 octo:
@@ -854,7 +887,16 @@ jigasi:
   initContainers:
     busybox:
       image: busybox:1.38.0
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -869,8 +911,18 @@ jigasi:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -932,7 +984,16 @@ transcriber:
   initContainers:
     busybox:
       image: busybox:1.38.0
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -947,8 +1008,18 @@ transcriber:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -1151,8 +1222,8 @@ jibri:
 
   shm:
     # Set to true to enable "/dev/shm" mount.
-    # May be required by built-in Chromium.
-    enabled: false
+    # Required by the built-in Chromium.
+    enabled: true
     # If "true", will use host's shared memory dir,
     # and if "false", an emptyDir mount.
     #useHost: false
@@ -1180,8 +1251,16 @@ jibri:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
-      add: ["SYS_ADMIN"]
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
