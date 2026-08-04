@@ -161,10 +161,6 @@ web:
   # (namely: GKE),
   httpRedirect: false
 
-  # When tls-termination by the ingress is not wanted, enable this and set
-  # web.service.type=Loadbalancer
-  httpsEnabled: false
-
   # Resolver IP for nginx.
   #
   # Starting with version `stable-8044`, the web container can
@@ -190,12 +186,12 @@ web:
   livenessProbe:
     httpGet:
       path: /
-      port: 80
+      port: http
 
   readinessProbe:
     httpGet:
       path: /
-      port: 80
+      port: http
 
   affinity: {}
   annotations: {}
