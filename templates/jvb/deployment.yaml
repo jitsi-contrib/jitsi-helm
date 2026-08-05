@@ -118,12 +118,6 @@ spec:
                 fieldRef:
                   fieldPath: status.hostIP
             {{- end }}
-            {{- if $.Values.websockets.colibri.enabled }}
-            - name: JVB_WS_SERVER_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            {{- end }}
             {{- if  $.Values.octo.enabled }}
             - name: JVB_OCTO_BIND_ADDRESS
               valueFrom:
@@ -141,11 +135,6 @@ spec:
               hostPort: {{ $udpPort }}
               {{- end }}
               protocol: UDP
-            {{- if $.Values.websockets.colibri.enabled }}
-            - name: colibri-ws-tcp
-              containerPort: 9090
-              protocol: TCP
-            {{- end }}
           {{- with $.Values.jvb.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

@@ -39,17 +39,11 @@ enableGuests: true
 
 # WebSocket configuration:
 #
-# Both Colibri and XMPP WebSockets are disabled by default, since some
-# LoadBalancer / Reverse Proxy setups can't pass WebSocket connections properly,
-# which might result in breakage for some clients.
-#
-# Enable XMPP WebSocket and disable Colibri WebSocket to replicate the current
-# upstream `meet.jit.si` setup. SCTP is currently the preferred method for JVB
-# signaling.
+# The XMPP WebSocket is disabled by default, since some LoadBalancer / Reverse
+# Proxy setups can't pass WebSocket connections properly, which might result in
+# breakage for some clients. Enable it to replicate the current upstream
+# `meet.jit.si` setup.
 websockets:
-  # Colibri (JVB signalling)
-  colibri:
-    enabled: false
   # XMPP (Prosody signalling)
   xmpp:
     enabled: false

@@ -15,8 +15,6 @@ publicURL: "https://meet.example.com"
 turnHost: "turn.example.com"
 
 websockets:
-  colibri:
-    enabled: false
   xmpp:
     #enabled: false
     enabled: true
