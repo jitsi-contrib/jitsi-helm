@@ -10,8 +10,6 @@
 publicURL: "https://meet.example.com"
 
 websockets:
-  colibri:
-    enabled: false
   xmpp:
     #enabled: false
     enabled: true

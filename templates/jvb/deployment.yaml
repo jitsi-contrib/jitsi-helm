@@ -66,6 +66,12 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
         {{- if $.Values.jvb.extraFiles }}
         - name: extra-files
           configMap:
@@ -112,12 +118,6 @@ spec:
                 fieldRef:
                   fieldPath: status.hostIP
             {{- end }}
-            {{- if $.Values.websockets.colibri.enabled }}
-            - name: JVB_WS_SERVER_ID
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            {{- end }}
             {{- if  $.Values.octo.enabled }}
             - name: JVB_OCTO_BIND_ADDRESS
               valueFrom:
@@ -135,11 +135,6 @@ spec:
               hostPort: {{ $udpPort }}
               {{- end }}
               protocol: UDP
-            {{- if $.Values.websockets.colibri.enabled }}
-            - name: colibri-ws-tcp
-              containerPort: 9090
-              protocol: TCP
-            {{- end }}
           {{- with $.Values.jvb.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -151,6 +146,10 @@ spec:
           resources:
             {{- toYaml $.Values.jvb.resources | nindent 12 }}
           volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
             {{- range $i, $f := $.Values.jvb.extraFiles }}
             - name: extra-files
               mountPath: {{ $f.path }}

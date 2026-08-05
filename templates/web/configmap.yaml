@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
 data:
-  DISABLE_HTTPS: {{ .Values.web.httpsEnabled | ternary "0" "1" | quote }}
+  DISABLE_HTTPS: "1"
   ENABLE_HTTP_REDIRECT: {{ .Values.web.httpRedirect | ternary "true" "false" | quote }}
   XMPP_BOSH_URL_BASE: 'http://{{ include "jitsi-meet.xmpp.server" . }}:{{ index .Values.prosody.service.ports "bosh-insecure" }}'
 

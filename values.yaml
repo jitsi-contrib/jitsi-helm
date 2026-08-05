@@ -39,17 +39,11 @@ enableGuests: true
 
 # WebSocket configuration:
 #
-# Both Colibri and XMPP WebSockets are disabled by default, since some
-# LoadBalancer / Reverse Proxy setups can't pass WebSocket connections properly,
-# which might result in breakage for some clients.
-#
-# Enable XMPP WebSocket and disable Colibri WebSocket to replicate the current
-# upstream `meet.jit.si` setup. SCTP is currently the preferred method for JVB
-# signaling.
+# The XMPP WebSocket is disabled by default, since some LoadBalancer / Reverse
+# Proxy setups can't pass WebSocket connections properly, which might result in
+# breakage for some clients. Enable it to replicate the current upstream
+# `meet.jit.si` setup.
 websockets:
-  # Colibri (JVB signalling)
-  colibri:
-    enabled: false
   # XMPP (Prosody signalling)
   xmpp:
     enabled: false
@@ -81,7 +75,7 @@ web:
   replicaCount: 1
 
   image:
-    repository: jitsi/web
+    repository: ghcr.io/jitsi/web
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -161,10 +155,6 @@ web:
   # (namely: GKE),
   httpRedirect: false
 
-  # When tls-termination by the ingress is not wanted, enable this and set
-  # web.service.type=Loadbalancer
-  httpsEnabled: false
-
   # Resolver IP for nginx.
   #
   # Starting with version `stable-8044`, the web container can
@@ -190,12 +180,12 @@ web:
   livenessProbe:
     httpGet:
       path: /
-      port: 80
+      port: http
 
   readinessProbe:
     httpGet:
       path: /
-      port: 80
+      port: http
 
   affinity: {}
   annotations: {}
@@ -219,15 +209,18 @@ web:
   #    memory: 128Mi
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  #  fsGroup: 2000
-  securityContext: {}
-  #  capabilities:
-  #    drop:
-  #    - ALL
-  #  readOnlyRootFilesystem: true
-  #  runAsNonRoot: true
-  #  runAsUser: 1000
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -435,10 +428,28 @@ coturn:
   initContainers:
     busybox:
       image: busybox:1.38.0
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
     acmeProxy:
       image: nginx:alpine
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 
   # Native Prometheus metrics for Coturn (port 9641)
   metrics:
@@ -461,8 +472,22 @@ coturn:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+      # The turnserver binary carries this as a file capability. Without it
+      # here, the kernel refuses to execute the binary at all.
+      add:
+        - NET_BIND_SERVICE
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -473,7 +498,7 @@ prosody:
   # replicaCount: 1
 
   image:
-    repository: jitsi/prosody
+    repository: ghcr.io/jitsi/prosody
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -514,14 +539,32 @@ prosody:
       path: /http-bind
       port: bosh-insecure
 
-  dataDir: /config/data
-
   # Persistence is needed if user accounts are stored in Prosody.
-  # e.g. internal_hashed as authentication
+  # e.g. internal_hashed as authentication.
+  # The volume is mounted at /var/lib/prosody, Prosody's data path.
   persistence:
     enabled: false
     size: 3G
     storageClassName:
+
+  # Prosody requires its data path to be owned by the container user, which
+  # Kubernetes cannot set on a volume. This init container fixes the ownership
+  # and is the only container in this chart that runs as root.
+  initContainers:
+    busybox:
+      image: busybox:1.38.0
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+          add:
+            - CHOWN
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+        seccompProfile:
+          type: RuntimeDefault
 
   extraVolumes: []
   #  - name: prosody-modules
@@ -559,16 +602,16 @@ prosody:
         release: prometheus-operator
       interval: 10s
       #honorLabels: false
-    securityContext: {}
-    #  allowPrivilegeEscalation: false
-    #  capabilities:
-    #    drop:
-    #      - ALL
-    #  readOnlyRootFilesystem: true
-    #  runAsNonRoot: true
-    #  runAsUser: 1000
-    #  seccompProfile:
-    #    type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -580,8 +623,18 @@ prosody:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -592,7 +645,7 @@ jicofo:
   # replicaCount: 1
 
   image:
-    repository: jitsi/jicofo
+    repository: ghcr.io/jitsi/jicofo
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -626,7 +679,16 @@ jicofo:
       repository: prayagsingh/prometheus-jicofo-exporter
       tag: "1.3.2"
     resources: {}
-    securityContext: {}
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -639,8 +701,18 @@ jicofo:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -650,7 +722,7 @@ jvb:
   replicaCount: 1
 
   image:
-    repository: jitsi/jvb
+    repository: ghcr.io/jitsi/jvb
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -763,7 +835,16 @@ jvb:
       tag: 1.4.2
       pullPolicy: IfNotPresent
     securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      # this image expects uid 10001
       runAsUser: 10001
+      seccompProfile:
+        type: RuntimeDefault
 
     resources:
       requests:
@@ -798,8 +879,18 @@ jvb:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 octo:
@@ -822,7 +913,7 @@ jigasi:
   # replicaCount: 1
 
   image:
-    repository: jitsi/jigasi
+    repository: ghcr.io/jitsi/jigasi
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -855,7 +946,16 @@ jigasi:
   initContainers:
     busybox:
       image: busybox:1.38.0
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -870,8 +970,18 @@ jigasi:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -891,7 +1001,7 @@ transcriber:
   # replicaCount: 1
 
   image:
-    repository: jitsi/jigasi
+    repository: ghcr.io/jitsi/jigasi
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -933,7 +1043,16 @@ transcriber:
   initContainers:
     busybox:
       image: busybox:1.38.0
-      securityContext: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 
   affinity: {}
   annotations: {}
@@ -948,8 +1067,18 @@ transcriber:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
-  securityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -1057,7 +1186,7 @@ jibri:
   replicaCount: 1
 
   image:
-    repository: jitsi/jibri
+    repository: ghcr.io/jitsi/jibri
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
@@ -1152,8 +1281,8 @@ jibri:
 
   shm:
     # Set to true to enable "/dev/shm" mount.
-    # May be required by built-in Chromium.
-    enabled: false
+    # Required by the built-in Chromium.
+    enabled: true
     # If "true", will use host's shared memory dir,
     # and if "false", an emptyDir mount.
     #useHost: false
@@ -1181,8 +1310,16 @@ jibri:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
+  podSecurityContext:
+    fsGroup: 1000
   securityContext:
+    allowPrivilegeEscalation: false
     capabilities:
-      add: ["SYS_ADMIN"]
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []

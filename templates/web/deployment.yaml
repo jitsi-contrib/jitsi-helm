@@ -41,6 +41,12 @@ spec:
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
         - name: config
           emptyDir: {}
         - name: custom-continit
@@ -94,10 +100,7 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.web.service.port }}
-              protocol: TCP
-            - name: https
-              containerPort: 443
+              containerPort: 8000
               protocol: TCP
           {{- with .Values.web.livenessProbe }}
           livenessProbe:
@@ -110,6 +113,10 @@ spec:
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
           volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
             - name: config
               mountPath: /config
             {{- if .Values.web.custom.contInit._10_config }}

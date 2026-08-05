@@ -8,7 +8,7 @@ metadata:
 data:
   turnserver.conf: |-
     realm={{ .Values.turnHost }}
-    listening-port={{ .Values.coturn.service.ports.turn }}
+    listening-port=3478
     listening-ip=0.0.0.0
     log-file=stdout
     use-auth-secret
@@ -18,7 +18,7 @@ data:
     no-tcp-relay
     no-dtls
     {{- if .Values.coturn.turns.enabled }}
-    tls-listening-port={{ .Values.coturn.service.ports.turns }}
+    tls-listening-port=5349
     cert=/tls/tls.crt
     pkey=/tls/tls.key
     min-port={{ .Values.coturn.turns.relayPortRange.min }}

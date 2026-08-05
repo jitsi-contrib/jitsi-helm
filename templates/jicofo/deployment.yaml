@@ -38,6 +38,12 @@ spec:
       securityContext:
         {{- toYaml .Values.jicofo.podSecurityContext | nindent 8 }}
       volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
         - name: config
           emptyDir: {}
         - name: custom-continit
@@ -92,6 +98,10 @@ spec:
           resources:
             {{- toYaml .Values.jicofo.resources | nindent 12 }}
           volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: tmp
+              mountPath: /tmp
             # to support readOnlyRootFilesystem
             - name: config
               mountPath: /config

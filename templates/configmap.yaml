@@ -5,6 +5,8 @@ metadata:
   labels:
     {{- include "jitsi-meet.labels" . | nindent 4 }}
 data:
+  # /run is an emptyDir, which Kubernetes creates world-writable
+  S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
   ENABLE_AUTH: {{ .Values.enableAuth | ternary "true" "false" | quote }}
   ENABLE_GUESTS: {{ .Values.enableGuests | ternary "true" "false" | quote }}
   PUBLIC_URL: {{ include "jitsi-meet.publicURL" . | quote }}
@@ -15,16 +17,6 @@ data:
   XMPP_GUEST_DOMAIN: {{ .Values.xmpp.guestDomain | default (printf "guest.%s" (include "jitsi-meet.xmpp.domain" .)) | quote }}
   XMPP_HIDDEN_DOMAIN: {{ .Values.xmpp.hiddenDomain | default (printf "hidden.%s" (include "jitsi-meet.xmpp.domain" .)) | quote }}
   XMPP_INTERNAL_MUC_DOMAIN: {{ .Values.xmpp.internalMucDomain | default (printf "internal-muc.%s" (include "jitsi-meet.xmpp.domain" .)) | quote }}
-
-  {{- if .Values.websockets.colibri.enabled }}
-  ENABLE_COLIBRI_WEBSOCKET: "true"
-  # TODO: rework into a proper regex or dynamic name list
-  ENABLE_COLIBRI_WEBSOCKET_UNSAFE_REGEX: "1"
-  {{- else }}
-  ENABLE_SCTP: "true"
-  ENABLE_COLIBRI_WEBSOCKET: "false"
-  JVB_PREFER_SCTP: "true"
-  {{- end }}
 
   {{- if .Values.websockets.xmpp.enabled }}
   ENABLE_XMPP_WEBSOCKET: "true"
