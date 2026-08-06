@@ -1,10 +1,13 @@
 # -----------------------------------------------------------------------------
 # This is a sample config. Assumed that:
 # - Jitsi domain is meet.example.com
-# - It uses hardened containers from
-#   https://github.com/jitsi-contrib/hardened-images
 # - Read-only filesystems
 # - Non-root containers
+#
+# The Jitsi components and Coturn are hardened by the chart itself, so nothing
+# is needed for them here. Etherpad and Excalidraw are third-party images which
+# the chart does not harden, so their settings are shown below.
+# See /docs/guides/security.md
 # -----------------------------------------------------------------------------
 #publicURL: ""
 publicURL: "https://meet.example.com"
@@ -15,38 +18,6 @@ websockets:
     enabled: true
 
 web:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/web
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  extraVolumes:
-    - name: run
-      emptyDir:
-        sizeLimit: 32Mi
-    - name: tmp
-      emptyDir:
-        sizeLimit: 32Mi
-
-  extraVolumeMounts:
-    - name: run
-      mountPath: /run
-    - name: tmp
-      mountPath: /tmp
-
   ingress:
     #enabled: false
     enabled: true
@@ -61,147 +32,7 @@ web:
         hosts:
           - meet.example.com
 
-  service:
-    port: 8000
-
-  livenessProbe:
-    httpGet:
-      path: /
-      port: 8000
-
-  readinessProbe:
-    httpGet:
-      path: /
-      port: 8000
-
-prosody:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/prosody
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  extraVolumes:
-    - name: run
-      emptyDir:
-        sizeLimit: 32Mi
-    - name: tmp
-      emptyDir:
-        sizeLimit: 32Mi
-    - name: storage
-      emptyDir:
-        sizeLimit: 32Mi
-
-  extraVolumeMounts:
-    - name: run
-      mountPath: /run
-    - name: tmp
-      mountPath: /tmp
-    - name: storage
-      mountPath: /var/lib/prosody
-
-  metrics:
-    enabled: false
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-      runAsUser: 1000
-      seccompProfile:
-        type: RuntimeDefault
-
-jicofo:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/jicofo
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  extraVolumes:
-    - name: run
-      emptyDir:
-        sizeLimit: 32Mi
-    - name: tmp
-      emptyDir:
-        sizeLimit: 32Mi
-
-  extraVolumeMounts:
-    - name: run
-      mountPath: /run
-    - name: tmp
-      mountPath: /tmp
-
-  metrics:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
 jvb:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/jvb
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    # https://github.com/just-containers/s6-overlay/issues/600
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  extraVolumes:
-    - name: run
-      emptyDir:
-        sizeLimit: 32Mi
-    - name: tmp
-      emptyDir:
-        sizeLimit: 32Mi
-
-  extraVolumeMounts:
-    - name: run
-      mountPath: /run
-    - name: tmp
-      mountPath: /tmp
-
   #useNodeIP: false
   useNodeIP: true
 
@@ -213,167 +44,13 @@ jvb:
     #enabled: true
     enabled: false
 
-  metrics:
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-          - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-      runAsUser: 1000
-      seccompProfile:
-        type: RuntimeDefault
-
 jibri:
   enabled: true
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/jibri
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      # overwrite default added capability
-      add: null
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  # mount writable volumes to allow running with readOnlyRootFilesystem
-  # https://github.com/jitsi-contrib/hardened-images
-  extraVolumes:
-    - name: tmp
-      emptyDir: {}
-    - name: run
-      emptyDir: {}
-    - name: storage
-      emptyDir: {}
-
-  extraVolumeMounts:
-    - name: tmp
-      mountPath: /tmp
-    - name: run
-      mountPath: /run
-    - name: storage
-      mountPath: /storage
 
   shm:
     enabled: true
     useHost: false
     size: 2Gi
-
-jigasi:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/jigasi
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      # overwrite default added capability
-      add: null
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  # mount writable volumes to allow running with readOnlyRootFilesystem
-  # https://github.com/jitsi-contrib/hardened-images
-  extraVolumes:
-    - name: tmp
-      emptyDir: {}
-    - name: run
-      emptyDir: {}
-    - name: storage
-      emptyDir: {}
-
-  extraVolumeMounts:
-    - name: tmp
-      mountPath: /tmp
-    - name: run
-      mountPath: /run
-    - name: storage
-      mountPath: /storage
-
-  initContainers:
-    busybox:
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          # overwrite default added capability
-          add: null
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsNonRoot: true
-        runAsUser: 1000
-        seccompProfile:
-          type: RuntimeDefault
-
-transcriber:
-  image:
-    repository: ghcr.io/jitsi-contrib/hardened-images/jigasi
-
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      # overwrite default added capability
-      add: null
-      drop:
-        - ALL
-    readOnlyRootFilesystem: true
-    runAsNonRoot: true
-    runAsUser: 1000
-    seccompProfile:
-      type: RuntimeDefault
-
-  extraEnvs:
-    S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
-
-  # mount writable volumes to allow running with readOnlyRootFilesystem
-  # https://github.com/jitsi-contrib/hardened-images
-  extraVolumes:
-    - name: tmp
-      emptyDir: {}
-    - name: run
-      emptyDir: {}
-    - name: storage
-      emptyDir: {}
-
-  extraVolumeMounts:
-    - name: tmp
-      mountPath: /tmp
-    - name: run
-      mountPath: /run
-    - name: storage
-      mountPath: /storage
-
-  initContainers:
-    busybox:
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          # overwrite default added capability
-          add: null
-          drop:
-            - ALL
-        readOnlyRootFilesystem: true
-        runAsNonRoot: true
-        runAsUser: 1000
-        seccompProfile:
-          type: RuntimeDefault
 
 excalidraw:
   enabled: true
@@ -443,10 +120,10 @@ etherpad:
 
   extraVolumes:
     - name: tmp
-      emptyDir: { }
+      emptyDir: {}
     # move to a persistent volume
     - name: data
-      emptyDir: { }
+      emptyDir: {}
 
   extraVolumeMounts:
     - name: tmp
