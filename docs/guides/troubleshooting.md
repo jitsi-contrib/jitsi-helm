@@ -40,6 +40,20 @@ serving the old (now expired) one. Install Reloader at the cluster level (the
 chart already sets the reload annotation), or otherwise restart the coTURN pods
 on renewal. See the [TURNS guide](/docs/guides/turns.md).
 
+## TURN works on some ports but not others
+
+TURN relaying works with the default ports, but fails after you move it to a
+custom port - even though the port is reachable with `nc` or `turnutils`.
+
+Chrome only allows a TURN server on port **53, 80, 443, or 1024 and above**. On
+any other port it refuses to even open a socket, so nothing reaches coTURN and
+the server side stays silent. Firefox uses a different rule, so a port that
+fails only in Chrome is a good confirmation.
+
+Open `chrome://webrtc-internals` while joining: the fingerprint is an
+`icecandidateerror` with `Attempt to start allocation to a disallowed port`. Use
+one of the allowed ports.
+
 ## Image pull failures (ImagePullBackOff / ErrImagePull)
 
 Get the exact reason with `kubectl describe pod <pod>` and read the Events:
