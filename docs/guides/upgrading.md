@@ -65,7 +65,9 @@ picture and how to relax it.
 ### Changed paths
 
 - Prosody's data path moved from `/config/data` to `/var/lib/prosody`, and
-  `prosody.dataDir` was removed. Persistence now mounts at the new path.
+  `prosody.dataDir` was removed. The same PVC is reused and only its mount path
+  changes, so the data should carry over. If you store user accounts in Prosody
+  (`internal_hashed`), back the volume up before upgrading.
 - Jibri recordings moved from `/data/recordings` to `/storage/recordings`.
 - `jibri.shm.enabled` now defaults to `true`, and jibri no longer requests the
   `SYS_ADMIN` capability.
