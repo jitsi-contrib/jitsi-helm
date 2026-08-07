@@ -218,6 +218,7 @@ web:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -436,6 +437,7 @@ coturn:
             - ALL
         privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -449,6 +451,7 @@ coturn:
             - ALL
         privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -488,6 +491,7 @@ coturn:
         - NET_BIND_SERVICE
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -566,6 +570,7 @@ prosody:
             - CHOWN
         privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: false
         runAsUser: 0
         seccompProfile:
@@ -614,6 +619,7 @@ prosody:
           - ALL
       privileged: false
       readOnlyRootFilesystem: true
+      runAsGroup: 1000
       runAsNonRoot: true
       runAsUser: 1000
       seccompProfile:
@@ -638,6 +644,7 @@ prosody:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -693,6 +700,7 @@ jicofo:
           - ALL
       privileged: false
       readOnlyRootFilesystem: true
+      runAsGroup: 1000
       runAsNonRoot: true
       runAsUser: 1000
       seccompProfile:
@@ -718,6 +726,7 @@ jicofo:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -850,6 +859,7 @@ jvb:
           - ALL
       privileged: false
       readOnlyRootFilesystem: true
+      runAsGroup: 10001
       runAsNonRoot: true
       # this image expects uid 10001
       runAsUser: 10001
@@ -898,6 +908,7 @@ jvb:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -964,6 +975,7 @@ jigasi:
             - ALL
         privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -991,6 +1003,7 @@ jigasi:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -1063,6 +1076,7 @@ transcriber:
             - ALL
         privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -1090,6 +1104,7 @@ transcriber:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -1334,6 +1349,7 @@ jibri:
         - ALL
     privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
