@@ -10,7 +10,30 @@ metadata:
 spec:
   containers:
     - name: web-smoke-test
-      image: busybox
+      image: busybox:1.38.0
+      imagePullPolicy: IfNotPresent
+      # "-O -" writes the response to stdout. Downloading to a file would fail
+      # with the read-only root filesystem set below.
       command: ["wget"]
-      args: ['{{ include "jitsi-meet.web.fullname" . }}:{{ .Values.web.service.port }}']
+      args:
+        - "-q"
+        - "-O"
+        - "-"
+        - 'http://{{ include "jitsi-meet.web.fullname" . }}:{{ .Values.web.service.port }}'
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          memory: 64Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
   restartPolicy: Never

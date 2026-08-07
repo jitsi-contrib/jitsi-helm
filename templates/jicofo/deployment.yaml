@@ -87,6 +87,11 @@ spec:
             - {{    tpl (toYaml . ) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
+          ports:
+            # The health port the probes target.
+            - name: http
+              containerPort: 8888
+              protocol: TCP
           {{- with .Values.jicofo.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
