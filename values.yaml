@@ -216,6 +216,7 @@ web:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -433,6 +434,7 @@ coturn:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
@@ -445,6 +447,7 @@ coturn:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
@@ -483,6 +486,7 @@ coturn:
       # here, the kernel refuses to execute the binary at all.
       add:
         - NET_BIND_SERVICE
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -560,6 +564,7 @@ prosody:
             - ALL
           add:
             - CHOWN
+        privileged: false
         readOnlyRootFilesystem: true
         runAsNonRoot: false
         runAsUser: 0
@@ -607,6 +612,7 @@ prosody:
       capabilities:
         drop:
           - ALL
+      privileged: false
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 1000
@@ -630,6 +636,7 @@ prosody:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -684,6 +691,7 @@ jicofo:
       capabilities:
         drop:
           - ALL
+      privileged: false
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 1000
@@ -708,6 +716,7 @@ jicofo:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -839,6 +848,7 @@ jvb:
       capabilities:
         drop:
           - ALL
+      privileged: false
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       # this image expects uid 10001
@@ -886,6 +896,7 @@ jvb:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -951,6 +962,7 @@ jigasi:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
@@ -977,6 +989,7 @@ jigasi:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -1048,6 +1061,7 @@ transcriber:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
@@ -1074,6 +1088,7 @@ transcriber:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
@@ -1317,6 +1332,7 @@ jibri:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
     runAsNonRoot: true
     runAsUser: 1000
