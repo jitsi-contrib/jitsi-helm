@@ -143,11 +143,11 @@ spec:
               containerPort: 3333
             - name: http-api
               containerPort: 2222
-          {{- with default .Values.jibri.livenessProbe .Values.jibri.livenessProbeOverride }}
+          {{- with .Values.jibri.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with default .Values.jibri.readinessProbe .Values.jibri.readinessProbeOverride }}
+          {{- with .Values.jibri.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}

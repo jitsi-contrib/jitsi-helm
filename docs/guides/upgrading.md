@@ -92,6 +92,10 @@ picture and how to relax it.
   channels. An existing values file that still sets it is ignored rather than
   rejected.
 - `prosody.dataDir` and `web.httpsEnabled`, as noted above.
+- `jibri.livenessProbeOverride` and `jibri.readinessProbeOverride`. They were
+  never listed in `values.yaml` and only ever shadowed `jibri.livenessProbe` /
+  `jibri.readinessProbe`, which is where a probe belongs. Move any value you set
+  there onto the plain key.
 
 ## Deprecations
 

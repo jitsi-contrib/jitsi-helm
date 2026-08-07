@@ -30,8 +30,8 @@ The containers write only to the paths the chart mounts for them (`/run`,
 PersistentVolumeClaim writable by the container user.
 
 `runAsUser` and `runAsGroup` match the `s6` user of the Jitsi images, which is
-1000:1000. The jvb metrics sidecar is the one exception - it uses 10001,
-because its image expects that UID.
+1000:1000. The jvb metrics sidecar is the one exception - it uses 10001, because
+its image expects that UID.
 
 ## What is covered
 
