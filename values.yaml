@@ -181,11 +181,13 @@ web:
     httpGet:
       path: /
       port: http
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
       port: http
+    periodSeconds: 10
 
   affinity: {}
   annotations: {}
@@ -216,7 +218,9 @@ web:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -243,11 +247,13 @@ etherpad:
     httpGet:
       path: /
       port: 9001
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
       port: 9001
+    periodSeconds: 10
 
   affinity: {}
   annotations: {}
@@ -303,11 +309,13 @@ excalidraw:
     httpGet:
       path: /
       port: 9002
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
       port: 9002
+    periodSeconds: 10
 
   metrics:
     enabled: false
@@ -420,10 +428,12 @@ coturn:
   livenessProbe:
     tcpSocket:
       port: 3478
+    periodSeconds: 10
 
   readinessProbe:
     tcpSocket:
       port: 3478
+    periodSeconds: 10
 
   initContainers:
     busybox:
@@ -433,7 +443,9 @@ coturn:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -445,7 +457,9 @@ coturn:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -483,7 +497,9 @@ coturn:
       # here, the kernel refuses to execute the binary at all.
       add:
         - NET_BIND_SERVICE
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -533,11 +549,13 @@ prosody:
     httpGet:
       path: /http-bind
       port: bosh-insecure
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /http-bind
       port: bosh-insecure
+    periodSeconds: 10
 
   # Persistence is needed if user accounts are stored in Prosody.
   # e.g. internal_hashed as authentication.
@@ -560,7 +578,9 @@ prosody:
             - ALL
           add:
             - CHOWN
+        privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: false
         runAsUser: 0
         seccompProfile:
@@ -607,7 +627,9 @@ prosody:
       capabilities:
         drop:
           - ALL
+      privileged: false
       readOnlyRootFilesystem: true
+      runAsGroup: 1000
       runAsNonRoot: true
       runAsUser: 1000
       seccompProfile:
@@ -630,7 +652,9 @@ prosody:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -668,10 +692,12 @@ jicofo:
   livenessProbe:
     tcpSocket:
       port: 8888
+    periodSeconds: 10
 
   readinessProbe:
     tcpSocket:
       port: 8888
+    periodSeconds: 10
 
   metrics:
     enabled: false
@@ -684,7 +710,9 @@ jicofo:
       capabilities:
         drop:
           - ALL
+      privileged: false
       readOnlyRootFilesystem: true
+      runAsGroup: 1000
       runAsNonRoot: true
       runAsUser: 1000
       seccompProfile:
@@ -708,7 +736,9 @@ jicofo:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -822,11 +852,13 @@ jvb:
     httpGet:
       path: /about/health
       port: 8080
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /about/health
       port: 8080
+    periodSeconds: 10
 
   metrics:
     enabled: false
@@ -839,7 +871,9 @@ jvb:
       capabilities:
         drop:
           - ALL
+      privileged: false
       readOnlyRootFilesystem: true
+      runAsGroup: 10001
       runAsNonRoot: true
       # this image expects uid 10001
       runAsUser: 10001
@@ -886,7 +920,9 @@ jvb:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -934,6 +970,7 @@ jigasi:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
@@ -942,6 +979,7 @@ jigasi:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   initContainers:
     busybox:
@@ -951,7 +989,9 @@ jigasi:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -977,7 +1017,9 @@ jigasi:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -1021,6 +1063,7 @@ transcriber:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
@@ -1029,6 +1072,7 @@ transcriber:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   persistence:
     enabled: false
@@ -1048,7 +1092,9 @@ transcriber:
         capabilities:
           drop:
             - ALL
+        privileged: false
         readOnlyRootFilesystem: true
+        runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
         seccompProfile:
@@ -1074,7 +1120,9 @@ transcriber:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
@@ -1223,9 +1271,7 @@ jibri:
     existingSecretName:
 
   livenessProbe:
-    initialDelaySeconds: 5
-    periodSeconds: 5
-    failureThreshold: 3
+    periodSeconds: 10
     exec:
       command:
         - /bin/bash
@@ -1236,9 +1282,7 @@ jibri:
             | grep -qP 'HEALTHY (IDLE|BUSY)'
 
   readinessProbe:
-    initialDelaySeconds: 5
-    periodSeconds: 5
-    failureThreshold: 3
+    periodSeconds: 10
     exec:
       command:
         - /bin/bash
@@ -1317,7 +1361,9 @@ jibri:
     capabilities:
       drop:
         - ALL
+    privileged: false
     readOnlyRootFilesystem: true
+    runAsGroup: 1000
     runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
