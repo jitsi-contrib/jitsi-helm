@@ -135,6 +135,10 @@ spec:
               hostPort: {{ $udpPort }}
               {{- end }}
               protocol: UDP
+            # The health port the probes target.
+            - name: http
+              containerPort: 8080
+              protocol: TCP
           {{- with $.Values.jvb.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
