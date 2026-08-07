@@ -247,11 +247,13 @@ etherpad:
     httpGet:
       path: /
       port: 9001
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
       port: 9001
+    periodSeconds: 10
 
   affinity: {}
   annotations: {}
@@ -307,11 +309,13 @@ excalidraw:
     httpGet:
       path: /
       port: 9002
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
       port: 9002
+    periodSeconds: 10
 
   metrics:
     enabled: false
@@ -424,10 +428,12 @@ coturn:
   livenessProbe:
     tcpSocket:
       port: 3478
+    periodSeconds: 10
 
   readinessProbe:
     tcpSocket:
       port: 3478
+    periodSeconds: 10
 
   initContainers:
     busybox:
@@ -964,6 +970,7 @@ jigasi:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
@@ -972,6 +979,7 @@ jigasi:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   initContainers:
     busybox:
@@ -1055,6 +1063,7 @@ transcriber:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   readinessProbe:
     httpGet:
@@ -1063,6 +1072,7 @@ transcriber:
       httpHeaders:
         - name: Accept
           value: application/json
+    periodSeconds: 10
 
   persistence:
     enabled: false
