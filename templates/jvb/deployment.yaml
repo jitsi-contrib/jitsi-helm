@@ -1,3 +1,19 @@
+{{/*
+Every replica of a JVB Deployment shares the same Service port, so Jicofo could
+hand a client the address of one bridge while the traffic reaches another. Scale
+with portRangeSize instead: it gives each bridge its own port. This does not
+apply to hostPort/hostNetwork, where no Service is created and each replica is
+reachable on its own node IP.
+*/}}
+{{- if and
+       .Values.jvb.service.enabled
+       (not .Values.jvb.useHostPort)
+       (not .Values.jvb.useHostNetwork)
+       (gt (int .Values.jvb.replicaCount) 1)
+}}
+{{-   fail "jvb.replicaCount must be 1 when the JVB service is enabled. Use jvb.portRangeSize to run multiple JVBs." }}
+{{- end }}
+
 {{- $basePort := .Values.jvb.UDPPort }}
 {{- $rangeSize := .Values.jvb.portRangeSize | default 1 }}
 
