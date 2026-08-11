@@ -33,6 +33,23 @@ In this configuration, `jvb.replicaCount` must remain at 1. Increasing the
 replicas will cause UDP packets to be routed to random JVB instances, breaking
 the video connection.
 
+To run more than one JVB, use `jvb.portRangeSize`. Every JVB gets its own port
+and the same service publishes all of them, so a single LoadBalancer IP is
+enough:
+
+```yaml
+jvb:
+  # 3 JVBs, listening on 10000/UDP, 10001/UDP and 10002/UDP
+  UDPPort: 10000
+  portRangeSize: 3
+
+  service:
+    type: LoadBalancer
+
+  publicIPs:
+    - 1.2.3.4
+```
+
 ## Option 2: Using a NodePort service (public node IP or external LB)
 
 ```yaml
@@ -54,6 +71,26 @@ jvb:
 In this configuration, `jvb.replicaCount` must remain at 1. Increasing the
 replicas will cause UDP packets to be routed to random JVB instances, breaking
 the video connection.
+
+To run more than one JVB, use `jvb.portRangeSize`. `UDPPort` and `nodePort` then
+become the base of consecutive ranges. Keep them equal: JVB advertises `UDPPort`
+(plus its index), while clients reach it on the node port, so the two have to
+match. Every port in the range must be free and inside the cluster's NodePort
+range.
+
+```yaml
+jvb:
+  # 3 JVBs, listening on 32000/UDP, 32001/UDP and 32002/UDP
+  UDPPort: 32000
+  nodePort: 32000
+  portRangeSize: 3
+
+  service:
+    type: NodePort
+
+  publicIPs:
+    - 30.10.10.1
+```
 
 ## Option 3: Using hostPort (public node IP)
 

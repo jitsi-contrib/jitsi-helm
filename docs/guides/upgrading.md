@@ -84,6 +84,30 @@ picture and how to relax it.
   the public ports to those, so `coturn.service.ports.turn` and
   `coturn.service.ports.turns` now set only the _Service_ port; the container
   ports no longer follow them.
+- JVB's UDP container port is now named **`rtp-udp-0`** (was `rtp-udp`), and one
+  port is named per JVB. The JVB Service targets them by name, which is what lets
+  a single Service publish several JVBs. Update anything that refers to the old
+  name, such as a NetworkPolicy using named ports.
+
+### Scaling JVB behind a service
+
+`jvb.portRangeSize` is no longer limited to `useHostPort`. It now works with the
+JVB Service too: each JVB gets its own port and the same Service publishes all of
+them, so one LoadBalancer IP serves every JVB. See the
+[Scaling guide](/docs/guides/scaling.md).
+
+Two consequences when upgrading:
+
+- If you set `portRangeSize` greater than 1 **without** `useHostPort`, the value
+  used to be ignored and you got a single JVB. It is now honoured, so you will get
+  that many JVBs, pods and Service ports.
+- `jvb.replicaCount` greater than 1 while the JVB Service is enabled now **fails**
+  the render instead of deploying. All pods of a deployment are reachable on the
+  same Service port, so traffic could arrive at the wrong JVB. Use `portRangeSize`,
+  or keep `replicaCount` with `useHostPort`, where each pod is reachable on its own
+  node IP.
+- With a NodePort Service, `nodePort` is the base of a consecutive range. Keep it
+  equal to `UDPPort` so the advertised and the reachable port match.
 
 ### Removed
 
