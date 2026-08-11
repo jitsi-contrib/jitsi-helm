@@ -46,6 +46,30 @@ Please note that this chart doesn't allow to scale JVB into multiple
 zones/regions yet: all JVB pods will be part of the single OCTO region named
 `all`.
 
+## Scaling JVB behind a service
+
+The example above disables the JVB service and exposes the pods on their nodes.
+If you keep the service enabled, scale with `portRangeSize` instead: it deploys
+one JVB per port, and the same service publishes all of them.
+
+```yaml
+jvb:
+  # 3 JVBs, listening on 10000/UDP, 10001/UDP and 10002/UDP
+  UDPPort: 10000
+  portRangeSize: 3
+
+  service:
+    type: LoadBalancer
+
+octo:
+  enabled: true
+```
+
+`replicaCount` cannot be used for this: all pods of a deployment are reachable on
+the same service port, so the chart rejects a value greater than 1 while the
+service is enabled. See the [Exposing guide](/docs/guides/exposing.md) for the
+LoadBalancer and NodePort variants.
+
 ## Testing OCTO
 
 When OCTO is enabled, the participants of a single meeting are distributed

@@ -25,18 +25,26 @@ spec:
   ipFamilyPolicy: {{ . }}
   {{- end }}
   ports:
-    - name: rtp-udp
+    {{- $basePort := .Values.jvb.UDPPort | default 10000 }}
+    {{- $rangeSize := .Values.jvb.portRangeSize | default 1 }}
+    # Each JVB listens on its own port, so the Service maps one port per bridge.
+    # The targetPort is referenced by name: a named port resolves per pod, which
+    # keeps every Service port bound to exactly one JVB instance.
+    {{- range $i := until (int $rangeSize) }}
+    - name: rtp-udp-{{ $i }}
       protocol: UDP
-      port: {{ .Values.jvb.UDPPort | default 10000 }}
+      port: {{ add $basePort $i }}
+      targetPort: rtp-udp-{{ $i }}
       {{- if and
-             .Values.jvb.nodePort
+             $.Values.jvb.nodePort
              (or
-                (eq .Values.jvb.service.type "NodePort")
-                (eq .Values.jvb.service.type "LoadBalancer")
+                (eq $.Values.jvb.service.type "NodePort")
+                (eq $.Values.jvb.service.type "LoadBalancer")
              )
       }}
-      nodePort: {{ .Values.jvb.nodePort }}
+      nodePort: {{ add $.Values.jvb.nodePort $i }}
       {{- end }}
+    {{- end }}
     {{- with .Values.jvb.service.extraPorts }}
     {{ toYaml . | indent 4 | trim }}
     {{- end }}

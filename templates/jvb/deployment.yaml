@@ -1,9 +1,20 @@
-{{- $basePort := .Values.jvb.UDPPort }}
-
-{{- $rangeSize := 1 }}
-{{- if .Values.jvb.useHostPort }}
-{{-   $rangeSize = .Values.jvb.portRangeSize | default 1 }}
+{{/*
+All pods of a JVB Deployment are reachable on the same Service port, so they
+would receive each other's traffic. Use portRangeSize to run more than one JVB.
+This does not apply to hostPort/hostNetwork, where no Service is created and
+each pod is reachable on its own node IP.
+*/}}
+{{- if and
+       .Values.jvb.service.enabled
+       (not .Values.jvb.useHostPort)
+       (not .Values.jvb.useHostNetwork)
+       (gt (int .Values.jvb.replicaCount) 1)
+}}
+{{-   fail "jvb.replicaCount must be 1 when the JVB service is enabled. Use jvb.portRangeSize to run multiple JVBs." }}
 {{- end }}
+
+{{- $basePort := .Values.jvb.UDPPort }}
+{{- $rangeSize := .Values.jvb.portRangeSize | default 1 }}
 
 {{- range $i := until (int $rangeSize) }}
 {{- $udpPort := add $basePort $i }}
@@ -129,7 +140,7 @@ spec:
                   fieldPath: status.podIP
             {{- end }}
           ports:
-            - name: rtp-udp
+            - name: rtp-udp-{{ $i }}
               containerPort: {{ $udpPort }}
               {{- if $.Values.jvb.useHostPort }}
               hostPort: {{ $udpPort }}
