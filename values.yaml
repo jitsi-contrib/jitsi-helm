@@ -832,6 +832,12 @@ jvb:
     # If left empty (null), the default cluster controller will be used.
     # Example values: "service.k8s.aws/nlb", "loxilb.io/loxilb"
     #loadBalancerClass: null
+    # Optional: Ask the provider for a specific public IP. Kubernetes deprecated
+    # this field in v1.24 and some providers ignore it, expecting a
+    # provider-specific annotation instead. See annotations below.
+    # This only pins the address, it doesn't set the IP advertised by JVB.
+    # Set publicIPs to the same address as well.
+    #loadBalancerIP: 1.2.3.4
     # If type is set to LoadBalancer and the cluster is dual stack,
     # ipFamilyPolicy can be set to enable dual stack addressing for the service
     #ipFamilyPolicy: PreferDualStack
