@@ -65,8 +65,8 @@ octo:
   enabled: true
 ```
 
-`replicaCount` cannot be used for this: all pods of a deployment are reachable on
-the same service port, so the chart rejects a value greater than 1 while the
+`replicaCount` cannot be used for this: all pods of a deployment are reachable
+on the same service port, so the chart rejects a value greater than 1 while the
 service is enabled. See the [Exposing guide](/docs/guides/exposing.md) for the
 LoadBalancer and NodePort variants.
 
