@@ -50,6 +50,53 @@ jvb:
     - 1.2.3.4
 ```
 
+### Pinning the public IP
+
+`publicIPs` is what JVB advertises to clients. It has no influence on which
+address the provider actually assigns, and the chart cannot bridge the two: the
+assigned address only exists at runtime, in the Service status, while Helm
+renders before that. So the address has to be set in both places.
+
+If your provider can reserve an address up front, request it and skip the
+deploy-twice step. Either through `loadBalancerIP`:
+
+```yaml
+jvb:
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 1.2.3.4
+
+  publicIPs:
+    - 1.2.3.4
+```
+
+or, on providers that ignore that field, through their own annotation:
+
+```yaml
+jvb:
+  service:
+    type: LoadBalancer
+    annotations:
+      metallb.universe.tf/loadBalancerIPs: 1.2.3.4
+      #service.beta.kubernetes.io/azure-load-balancer-ipv4: 1.2.3.4
+      # On AWS the annotation takes an allocation ID, not an address.
+      #service.beta.kubernetes.io/aws-load-balancer-type: external
+      #service.beta.kubernetes.io/aws-load-balancer-eip-allocations: <alloc-id>
+
+  publicIPs:
+    - 1.2.3.4
+```
+
+Kubernetes deprecated `loadBalancerIP` in v1.24 in favour of these annotations.
+It still works with most controllers, but check yours before relying on it:
+where the field is ignored, the provider assigns an arbitrary address and JVB
+ends up advertising one that does not reach it.
+
+Leaving `publicIPs` unset does not work with a LoadBalancer service. JVB then
+falls back to STUN, and STUN reports the address JVB's own traffic appears to
+come from, which is the node's egress IP rather than the LoadBalancer's ingress
+IP. Signalling succeeds and media fails.
+
 ## Option 2: Using a NodePort service (public node IP or external LB)
 
 ```yaml
