@@ -1,0 +1,26 @@
+{{- if .Values.opusTranscriberProxy.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.prosody.fullname" . }}-transcription
+  labels:
+    {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
+data:
+  mod_force_async_transcription.lua: |
+    -- Forces asyncTranscription=true on every room's metadata.
+    -- Enable on the main MUC component (e.g. conference.<domain>).
+    local util = module:require 'util';
+    local is_healthcheck_room = util.is_healthcheck_room;
+
+    module:hook('muc-room-created', function(event)
+        local room = event.room;
+        if is_healthcheck_room(room.jid) then
+            return;
+        end
+        if not room.jitsiMetadata then
+            room.jitsiMetadata = {};
+        end
+        room.jitsiMetadata.asyncTranscription = true;
+        module:log('info', 'Forced asyncTranscription=true for room %s', room.jid);
+    end, -2); -- priority -2: after room_metadata_component (-1)
+{{- end }}

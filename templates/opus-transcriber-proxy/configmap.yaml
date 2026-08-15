@@ -1,0 +1,17 @@
+{{- if .Values.opusTranscriberProxy.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.opus-transcriber-proxy.configmap" . }}
+  labels:
+    {{- include "jitsi-meet.opus-transcriber-proxy.labels" . | nindent 4 }}
+data:
+  PORT: {{ .Values.opusTranscriberProxy.service.port | quote }}
+  HOST: {{ .Values.opusTranscriberProxy.host | quote }}
+
+  {{- range $key, $value := .Values.opusTranscriberProxy.extraEnvs }}
+  {{-   if not (kindIs "invalid" $value) }}
+  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-   end }}
+  {{- end }}
+{{- end }}

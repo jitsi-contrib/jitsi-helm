@@ -53,6 +53,7 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") $ | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jvb/configmap-extrafiles.yaml") $ | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") $ | sha256sum | quote }}
         {{- if and
                $.Values.jvb.metrics.enabled

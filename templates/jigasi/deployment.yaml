@@ -29,6 +29,7 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jigasi/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jigasi/configmap-extrafiles.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jigasi.podAnnotations) }}
         {{- toYaml . | nindent 8  }}

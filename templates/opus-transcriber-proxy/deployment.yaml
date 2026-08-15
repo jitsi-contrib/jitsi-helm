@@ -1,0 +1,129 @@
+{{- if and
+       .Values.transcriber.enabled
+       .Values.opusTranscriberProxy.enabled
+}}
+{{-   fail "transcriber.enabled and opusTranscriberProxy.enabled are mutually exclusive. Enable only one of them." }}
+{{- end }}
+{{- if .Values.opusTranscriberProxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}
+  labels:
+    {{- include "jitsi-meet.opus-transcriber-proxy.labels" . | nindent 4 }}
+    {{- with .Values.opusTranscriberProxy.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.opusTranscriberProxy.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "jitsi-meet.opus-transcriber-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jitsi-meet.opus-transcriber-proxy.selectorLabels" . | nindent 8 }}
+        {{- with (mergeOverwrite (dict) .Values.global.podLabels .Values.opusTranscriberProxy.podLabels) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        {{- if not .Values.opusTranscriberProxy.existingSecretName }}
+        checksum/secret: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/secret.yaml") . | sha256sum | quote }}
+        {{- else }}
+        checksum/secret: {{ printf "disabled-or-existing" | sha256sum | quote }}
+        {{- end }}
+        {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.opusTranscriberProxy.podAnnotations) }}
+        {{- toYaml . | nindent 8  }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.opusTranscriberProxy.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.opusTranscriberProxy.podSecurityContext | nindent 8 }}
+      volumes:
+        {{- if .Values.opusTranscriberProxy.extraFiles }}
+        - name: extra-files
+          configMap:
+            name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}-extrafiles
+            items:
+              {{- range $i, $f := .Values.opusTranscriberProxy.extraFiles }}
+              - key: extrafile-{{ $i }}
+                path: extrafile-{{ $i }}
+                {{- with $f.mode }}
+                mode: {{ . }}
+                {{- end }}
+              {{- end }}
+        {{- end }}
+        {{- with .Values.opusTranscriberProxy.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-opus-transcriber-proxy
+          image: "{{ .Values.opusTranscriberProxy.image.repository }}:{{ .Values.opusTranscriberProxy.image.tag }}"
+          imagePullPolicy: {{ pluck "pullPolicy" .Values.opusTranscriberProxy.image .Values.image | first }}
+          securityContext:
+            {{- toYaml .Values.opusTranscriberProxy.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ .Values.opusTranscriberProxy.service.port }}
+          envFrom:
+            - secretRef:
+                name: {{ include "jitsi-meet.opus-transcriber-proxy.secretName" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.opus-transcriber-proxy.configmap" . }}
+            {{- range .Values.opusTranscriberProxy.extraEnvFrom }}
+            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            {{- end }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
+          {{- with .Values.opusTranscriberProxy.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.opusTranscriberProxy.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.opusTranscriberProxy.resources | nindent 12 }}
+          volumeMounts:
+            {{- range $i, $f := .Values.opusTranscriberProxy.extraFiles }}
+            - name: extra-files
+              mountPath: {{ $f.path }}
+              subPath: extrafile-{{ $i }}
+              readOnly: true
+            {{- end }}
+            {{- with .Values.opusTranscriberProxy.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+      {{- with .Values.opusTranscriberProxy.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.opusTranscriberProxy.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.opusTranscriberProxy.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

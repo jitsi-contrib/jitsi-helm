@@ -5,7 +5,10 @@ metadata:
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
-  {{- if .Values.transcriber.enabled }}
+  {{- if or
+         .Values.transcriber.enabled
+         .Values.opusTranscriberProxy.enabled
+  }}
   ENABLE_TRANSCRIPTIONS: "true"
   {{- end }}
 

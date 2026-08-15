@@ -681,6 +681,8 @@ jicofo:
     defaults:
       _jicofo_conf: ""
       _logging_properties: ""
+    configs:
+      _custom_jicofo_conf: ""
 
   # Jicofo XMPP user credentials
   xmpp:
@@ -1034,6 +1036,91 @@ jigasi:
   tolerations: []
 
 ## #############################################################################
+## opus-transcriber-proxy configuration
+## #############################################################################
+opusTranscriberProxy:
+  # Enabling this rolls out the new bridge-based transcription pipeline
+  # (see https://jitsi.github.io/handbook/docs/devops-guide/transcription/).
+  # Mutually exclusive with transcriber.enabled (the old, deprecated
+  # Jigasi-based transcription path) - the chart refuses to render if both
+  # are true.
+  #
+  # Enabling this is not enough on its own. The chart mounts the Prosody
+  # module that marks the rooms, but doesn't enable it. Add it to the module
+  # list yourself, otherwise the bridge-based path stays unused silently:
+  #
+  #   prosody:
+  #     extraEnvs:
+  #       XMPP_MUC_MODULES: "force_async_transcription"
+  enabled: false
+
+  # Always one replica, hardcoded in opus-transcriber-proxy/deployment.yaml
+  # replicaCount: 1
+
+  image:
+    # opus-transcriber-proxy is released independently from Jitsi (unlike
+    # web/prosody/jicofo/jvb/jigasi/jibri, which are built together in
+    # docker-jitsi-meet and published to ghcr.io/jitsi/*), so the tag is
+    # pinned here rather than derived from Chart.AppVersion. It's also only
+    # published to Docker Hub, not ghcr.io.
+    #
+    # The project publishes no version tags, only "latest" and a tag per
+    # commit, and "latest" moves on every push. So a commit tag is pinned
+    # here. Append a digest (tag: <commit>@sha256:<hash>) if you want the
+    # image to be immutable.
+    repository: jitsi/opus-transcriber-proxy
+    tag: e74cae2
+
+  service:
+    port: 8080
+
+  # Interface opus-transcriber-proxy listens on inside the pod.
+  host: "0.0.0.0"
+
+  # API keys of the speech-to-text providers in use. Use the env var names
+  # documented at https://github.com/jitsi/opus-transcriber-proxy#readme.
+  apiKeys: {}
+  #  OPENAI_API_KEY: ""
+  #  DEEPGRAM_API_KEY: ""
+  # Alternatively provide a name for an externally managed secret containing
+  # the values for these keys
+  existingSecretName:
+
+  # Provider and runtime settings. Use the env var names documented at
+  # https://github.com/jitsi/opus-transcriber-proxy#readme. Don't set
+  # PORT/HOST here, use service.port and host above instead.
+  # These go into a configmap, use apiKeys above for the credentials.
+  extraEnvs: {}
+  #  PROVIDERS_PRIORITY: "openai"
+  #  OPENAI_MODEL: "gpt-4o-mini-transcribe"
+
+  livenessProbe:
+    tcpSocket:
+      port: http
+    periodSeconds: 10
+
+  readinessProbe:
+    tcpSocket:
+      port: http
+    periodSeconds: 10
+
+  affinity: {}
+  annotations: {}
+  extraEnvFrom: []
+  extraFiles: []
+  extraVolumes: []
+  extraVolumeMounts: []
+  hostAliases: []
+  labels: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+## #############################################################################
 ## Transcriber configuration
 ## #############################################################################
 transcriber:
@@ -1168,8 +1255,8 @@ skynet:
     repository: jitsi/skynet
     # Skynet is released independently from Jitsi, so the tag is pinned here
     # rather than derived from Chart.AppVersion. Only CPU images (the "-cpu"
-    # tag) are published, so the bundled Skynet runs on CPU.
-    tag: latest-cpu
+    # suffix) are published, so the bundled Skynet runs on CPU.
+    tag: 2026.4.1-cpu
 
   service:
     port: 8000

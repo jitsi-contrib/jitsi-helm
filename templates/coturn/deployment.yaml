@@ -38,6 +38,9 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/coturn/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-acme-proxy: {{ include (print $.Template.BasePath "/coturn/configmap-acme-proxy.yaml") . | sha256sum | quote }}
+        checksum/config-configs: {{ include (print $.Template.BasePath "/coturn/configmap-configs.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/coturn/configmap-extrafiles.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.coturn.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
