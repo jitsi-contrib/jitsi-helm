@@ -25,10 +25,11 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum | quote }}
-        checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
         checksum/config-configs: {{ include (print $.Template.BasePath "/jicofo/configmap-configs.yaml") . | sha256sum | quote }}
         checksum/config-continit: {{ include (print $.Template.BasePath "/jicofo/configmap-continit.yaml") . | sha256sum | quote }}
         checksum/config-defaults: {{ include (print $.Template.BasePath "/jicofo/configmap-defaults.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jicofo/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jicofo.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}

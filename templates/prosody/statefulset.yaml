@@ -28,6 +28,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/prosody/configmap.yaml") . | sha256sum | quote }}
         checksum/config-continit: {{ include (print $.Template.BasePath "/prosody/configmap-continit.yaml") . | sha256sum | quote }}
         checksum/config-defaults: {{ include (print $.Template.BasePath "/prosody/configmap-defaults.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/prosody/configmap-extrafiles.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/prosody/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jicofo: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jvb: {{ include (print $.Template.BasePath "/jvb/secret.yaml") . | sha256sum | quote }}

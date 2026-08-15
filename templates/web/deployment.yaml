@@ -27,6 +27,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum | quote }}
         checksum/config-conffiles: {{ include (print $.Template.BasePath "/web/configmap-conffiles.yaml") . | sha256sum | quote }}
         checksum/config-continit: {{ include (print $.Template.BasePath "/web/configmap-continit.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/web/configmap-extrafiles.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.web.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}

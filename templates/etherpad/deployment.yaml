@@ -23,6 +23,7 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/etherpad/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-extrafiles: {{ include (print $.Template.BasePath "/etherpad/configmap-extrafiles.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.etherpad.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
