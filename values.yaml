@@ -1089,14 +1089,22 @@ opusTranscriberProxy:
     # configuration instead of the block above (must also contain PORT/HOST).
     existingConfigMapName: ""
 
+  livenessProbe:
+    tcpSocket:
+      port: http
+    periodSeconds: 10
+
+  readinessProbe:
+    tcpSocket:
+      port: http
+    periodSeconds: 10
+
   affinity: {}
   annotations: {}
   extraEnvFrom: []
   extraEnvs: {}
   hostAliases: []
   labels: {}
-  livenessProbe: {}
-  readinessProbe: {}
   nodeSelector: {}
   resources: {}
   podAnnotations: {}
