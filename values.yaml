@@ -70,7 +70,7 @@ extraCommonEnvs: {}
 
 ## #############################################################################
 ## Web configuration
-## ######################Opus#######################################################
+## #############################################################################
 web:
   replicaCount: 1
 
@@ -1033,8 +1033,6 @@ jigasi:
       type: RuntimeDefault
   tolerations: []
 
-
-
 ## #############################################################################
 ## opus-transcriber-proxy configuration
 ## #############################################################################
@@ -1101,10 +1099,6 @@ opusTranscriberProxy:
   podSecurityContext: {}
   securityContext: {}
   tolerations: []
-
-
-
-
 
 ## #############################################################################
 ## Transcriber configuration
@@ -1209,7 +1203,6 @@ transcriber:
       type: RuntimeDefault
   tolerations: []
 
-
 ## #############################################################################
 ## Skynet configuration
 ## #############################################################################
@@ -1244,7 +1237,6 @@ skynet:
     # rather than derived from Chart.AppVersion. Only CPU images (the "-cpu"
     # tag) are published, so the bundled Skynet runs on CPU.
     tag: latest-cpu
-
 
   service:
     port: 8000
