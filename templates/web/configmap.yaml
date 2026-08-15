@@ -17,7 +17,7 @@ data:
   ETHERPAD_URL_BASE: 'http://{{ include "jitsi-meet.etherpad.server" . }}:{{ .Values.etherpad.service.port}}'
   {{- end }}
 
-  {{- if .Values.transcriber.enabled }}
+  {{- if or .Values.transcriber.enabled .Values.opusTranscriberProxy.enabled }}
   ENABLE_TRANSCRIPTIONS: "true"
   {{- end }}
 

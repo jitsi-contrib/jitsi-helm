@@ -19,7 +19,7 @@ data:
   JIGASI_SIP_URI: "available"
   {{- end }}
 
-  {{- if .Values.transcriber.enabled }}
+  {{- if or .Values.transcriber.enabled .Values.opusTranscriberProxy.enabled }}
   ENABLE_TRANSCRIPTIONS: "true"
   {{- end }}
 

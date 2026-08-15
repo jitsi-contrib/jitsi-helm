@@ -70,7 +70,7 @@ extraCommonEnvs: {}
 
 ## #############################################################################
 ## Web configuration
-## #############################################################################
+## ######################Opus#######################################################
 web:
   replicaCount: 1
 
@@ -1033,6 +1033,79 @@ jigasi:
       type: RuntimeDefault
   tolerations: []
 
+
+
+## #############################################################################
+## opus-transcriber-proxy configuration
+## #############################################################################
+opusTranscriberProxy:
+  # Enabling this rolls out the new bridge-based transcription pipeline
+  # (see https://jitsi.github.io/handbook/docs/devops-guide/transcription/).
+  # Mutually exclusive with transcriber.enabled (the old, deprecated
+  # Jigasi-based transcription path) - the chart refuses to render if both
+  # are true.
+  enabled: false
+
+  image:
+    # opus-transcriber-proxy is released independently from Jitsi (unlike
+    # web/prosody/jicofo/jvb/jigasi/jibri, which are built together in
+    # docker-jitsi-meet and published to ghcr.io/jitsi/*), so the tag is
+    # pinned here rather than derived from Chart.AppVersion. It's also only
+    # published to Docker Hub, not ghcr.io.
+    repository: jitsi/opus-transcriber-proxy
+    tag: latest
+
+  service:
+    port: 8080
+
+  # Interface opus-transcriber-proxy listens on inside the pod.
+  host: "0.0.0.0"
+
+  # API keys for whichever speech-to-text providers you use, stored in a
+  # Kubernetes Secret. Use the exact env var names documented at
+  # https://github.com/jitsi/opus-transcriber-proxy#readme, e.g.
+  # OPENAI_API_KEY, DEEPGRAM_API_KEY, GEMINI_API_KEY, XAI_API_KEY,
+  # OPENAI_TRANSLATION_API_KEY.
+  apiKey:
+    values:
+      OPENAI_API_KEY: ""
+    # Alternatively, reference an existing Secret containing these keys
+    # instead of the block above.
+    existingSecretName: ""
+
+  # Non-secret provider/runtime configuration, stored in a ConfigMap. Use the
+  # exact env var names documented at
+  # https://github.com/jitsi/opus-transcriber-proxy#readme, e.g.
+  # PROVIDERS_PRIORITY, OPENAI_MODEL, ENABLE_OPENAI_CUSTOM_PROVIDER. Do not
+  # set PORT/HOST here - use .service.port / .host above instead.
+  config:
+    values:
+      PROVIDERS_PRIORITY: "openai"
+      OPENAI_MODEL: "gpt-4o-mini-transcribe"
+    # Alternatively, reference an existing ConfigMap containing this
+    # configuration instead of the block above (must also contain PORT/HOST).
+    existingConfigMapName: ""
+
+  affinity: {}
+  annotations: {}
+  extraEnvFrom: []
+  extraEnvs: {}
+  hostAliases: []
+  labels: {}
+  livenessProbe: {}
+  readinessProbe: {}
+  nodeSelector: {}
+  resources: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  tolerations: []
+
+
+
+
+
 ## #############################################################################
 ## Transcriber configuration
 ## #############################################################################
@@ -1136,6 +1209,7 @@ transcriber:
       type: RuntimeDefault
   tolerations: []
 
+
 ## #############################################################################
 ## Skynet configuration
 ## #############################################################################
@@ -1170,6 +1244,7 @@ skynet:
     # rather than derived from Chart.AppVersion. Only CPU images (the "-cpu"
     # tag) are published, so the bundled Skynet runs on CPU.
     tag: latest-cpu
+
 
   service:
     port: 8000
