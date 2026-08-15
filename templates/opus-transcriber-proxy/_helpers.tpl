@@ -17,8 +17,8 @@ app.kubernetes.io/component: "opus-transcriber-proxy"
 {{- end -}}
 
 {{- define "jitsi-meet.opus-transcriber-proxy.secretName" -}}
-{{- if .Values.opusTranscriberProxy.apiKey.existingSecretName -}}
-{{    .Values.opusTranscriberProxy.apiKey.existingSecretName }}
+{{- if .Values.opusTranscriberProxy.existingSecretName -}}
+{{    .Values.opusTranscriberProxy.existingSecretName }}
 {{- else -}}
 {{    include "jitsi-meet.opus-transcriber-proxy.secret" . }}
 {{- end -}}
@@ -26,14 +26,6 @@ app.kubernetes.io/component: "opus-transcriber-proxy"
 
 {{- define "jitsi-meet.opus-transcriber-proxy.configmap" -}}
 {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}
-{{- end -}}
-
-{{- define "jitsi-meet.opus-transcriber-proxy.configMapName" -}}
-{{- if .Values.opusTranscriberProxy.config.existingConfigMapName -}}
-{{    .Values.opusTranscriberProxy.config.existingConfigMapName }}
-{{- else -}}
-{{    include "jitsi-meet.opus-transcriber-proxy.configmap" . }}
-{{- end -}}
 {{- end -}}
 
 {{- define "jitsi-meet.opus-transcriber-proxy.server" -}}

@@ -1,7 +1,4 @@
-{{- if and
-       .Values.opusTranscriberProxy.enabled
-       (not .Values.opusTranscriberProxy.config.existingConfigMapName)
-}}
+{{- if .Values.opusTranscriberProxy.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

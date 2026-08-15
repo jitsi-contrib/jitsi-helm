@@ -28,12 +28,8 @@ spec:
         {{- toYaml . | nindent 8  }}
         {{- end }}
       annotations:
-        {{- if not .Values.opusTranscriberProxy.config.existingConfigMapName }}
         checksum/config: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/configmap.yaml") . | sha256sum | quote }}
-        {{- else }}
-        checksum/config: {{ printf "disabled-or-existing" | sha256sum | quote }}
-        {{- end }}
-        {{- if not .Values.opusTranscriberProxy.apiKey.existingSecretName }}
+        {{- if not .Values.opusTranscriberProxy.existingSecretName }}
         checksum/secret: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/secret.yaml") . | sha256sum | quote }}
         {{- else }}
         checksum/secret: {{ printf "disabled-or-existing" | sha256sum | quote }}
@@ -67,7 +63,7 @@ spec:
             - secretRef:
                 name: {{ include "jitsi-meet.opus-transcriber-proxy.secretName" . }}
             - configMapRef:
-                name: {{ include "jitsi-meet.opus-transcriber-proxy.configMapName" . }}
+                name: {{ include "jitsi-meet.opus-transcriber-proxy.configmap" . }}
             {{- range .Values.opusTranscriberProxy.extraEnvFrom }}
             - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}

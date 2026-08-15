@@ -1067,26 +1067,19 @@ opusTranscriberProxy:
   # Interface opus-transcriber-proxy listens on inside the pod.
   host: "0.0.0.0"
 
-  # API keys for whichever speech-to-text providers you use, stored in a
-  # Kubernetes Secret. Use the exact env var names documented at
-  # https://github.com/jitsi/opus-transcriber-proxy#readme, e.g.
-  # OPENAI_API_KEY, DEEPGRAM_API_KEY, GEMINI_API_KEY, XAI_API_KEY,
-  # OPENAI_TRANSLATION_API_KEY.
-  apiKey:
-    values:
-      OPENAI_API_KEY: ""
-    # Alternatively, reference an existing Secret containing these keys
-    # instead of the block above.
-    existingSecretName: ""
-
-  config:
-    # Reference an existing ConfigMap instead of generating one from
-    # extraEnvs (it must also contain PORT/HOST).
-    existingConfigMapName: ""
+  # API keys of the speech-to-text providers in use. Use the env var names
+  # documented at https://github.com/jitsi/opus-transcriber-proxy#readme.
+  apiKeys: {}
+  #  OPENAI_API_KEY: ""
+  #  DEEPGRAM_API_KEY: ""
+  # Alternatively provide a name for an externally managed secret containing
+  # the values for these keys
+  existingSecretName:
 
   # Provider and runtime settings. Use the env var names documented at
   # https://github.com/jitsi/opus-transcriber-proxy#readme. Don't set
   # PORT/HOST here, use service.port and host above instead.
+  # These go into a configmap, use apiKeys above for the credentials.
   extraEnvs: {}
   #  PROVIDERS_PRIORITY: "openai"
   #  OPENAI_MODEL: "gpt-4o-mini-transcribe"
