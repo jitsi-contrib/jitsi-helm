@@ -33,6 +33,9 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-continit: {{ include (print $.Template.BasePath "/jibri/configmap-continit.yaml") . | sha256sum | quote }}
+        checksum/config-defaults: {{ include (print $.Template.BasePath "/jibri/configmap-defaults.yaml") . | sha256sum | quote }}
+        checksum/config-other: {{ include (print $.Template.BasePath "/jibri/configmap-other.yaml") . | sha256sum | quote }}
         checksum/secret-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum | quote }}
         checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jibri.podAnnotations) }}
