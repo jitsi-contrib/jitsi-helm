@@ -1050,8 +1050,13 @@ opusTranscriberProxy:
     # docker-jitsi-meet and published to ghcr.io/jitsi/*), so the tag is
     # pinned here rather than derived from Chart.AppVersion. It's also only
     # published to Docker Hub, not ghcr.io.
+    #
+    # The project publishes no version tags, only "latest" and a tag per
+    # commit, and "latest" moves on every push. So a commit tag is pinned
+    # here. Append a digest (tag: <commit>@sha256:<hash>) if you want the
+    # image to be immutable.
     repository: jitsi/opus-transcriber-proxy
-    tag: latest
+    tag: e74cae2
 
   service:
     port: 8080
@@ -1235,8 +1240,8 @@ skynet:
     repository: jitsi/skynet
     # Skynet is released independently from Jitsi, so the tag is pinned here
     # rather than derived from Chart.AppVersion. Only CPU images (the "-cpu"
-    # tag) are published, so the bundled Skynet runs on CPU.
-    tag: latest-cpu
+    # suffix) are published, so the bundled Skynet runs on CPU.
+    tag: 2026.4.1-cpu
 
   service:
     port: 8000
