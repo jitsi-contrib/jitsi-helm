@@ -49,6 +49,23 @@ spec:
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.opusTranscriberProxy.podSecurityContext | nindent 8 }}
+      volumes:
+        {{- if .Values.opusTranscriberProxy.extraFiles }}
+        - name: extra-files
+          configMap:
+            name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}-extrafiles
+            items:
+              {{- range $i, $f := .Values.opusTranscriberProxy.extraFiles }}
+              - key: extrafile-{{ $i }}
+                path: extrafile-{{ $i }}
+                {{- with $f.mode }}
+                mode: {{ . }}
+                {{- end }}
+              {{- end }}
+        {{- end }}
+        {{- with .Values.opusTranscriberProxy.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}-opus-transcriber-proxy
           image: "{{ .Values.opusTranscriberProxy.image.repository }}:{{ .Values.opusTranscriberProxy.image.tag }}"
@@ -82,6 +99,17 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.opusTranscriberProxy.resources | nindent 12 }}
+          volumeMounts:
+            {{- range $i, $f := .Values.opusTranscriberProxy.extraFiles }}
+            - name: extra-files
+              mountPath: {{ $f.path }}
+              subPath: extrafile-{{ $i }}
+              readOnly: true
+            {{- end }}
+            {{- with .Values.opusTranscriberProxy.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
       {{- with .Values.opusTranscriberProxy.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

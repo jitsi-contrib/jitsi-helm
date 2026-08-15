@@ -1,0 +1,16 @@
+{{- if and
+       .Values.opusTranscriberProxy.enabled
+       .Values.opusTranscriberProxy.extraFiles
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}-extrafiles
+  labels:
+    {{- include "jitsi-meet.opus-transcriber-proxy.labels" . | nindent 4 }}
+data:
+  {{- range $i, $f := .Values.opusTranscriberProxy.extraFiles }}
+  extrafile-{{ $i }}: |
+    {{- $f.content | nindent 4 }}
+  {{- end }}
+{{- end }}

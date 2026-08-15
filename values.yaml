@@ -1097,6 +1097,9 @@ opusTranscriberProxy:
   affinity: {}
   annotations: {}
   extraEnvFrom: []
+  extraFiles: []
+  extraVolumes: []
+  extraVolumeMounts: []
   hostAliases: []
   labels: {}
   nodeSelector: {}
