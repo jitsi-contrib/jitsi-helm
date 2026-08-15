@@ -1,0 +1,30 @@
+{{- if or
+       .Values.jicofo.custom.configs._custom_jicofo_conf
+       .Values.opusTranscriberProxy.enabled
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jicofo.fullname" . }}-configs
+  labels:
+    {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
+data:
+  {{- if .Values.jicofo.custom.configs._custom_jicofo_conf }}
+  custom-jicofo.conf: |
+    {{- .Values.jicofo.custom.configs._custom_jicofo_conf | nindent 4 }}
+    {{- if .Values.opusTranscriberProxy.enabled }}
+    jicofo {
+      transcription {
+        url-template = "{{ include "jitsi-meet.opus-transcriber-proxy.urlTemplate" . }}"
+      }
+    }
+    {{- end }}
+  {{- else if .Values.opusTranscriberProxy.enabled }}
+  custom-jicofo.conf: |
+    jicofo {
+      transcription {
+        url-template = "{{ include "jitsi-meet.opus-transcriber-proxy.urlTemplate" . }}"
+      }
+    }
+  {{- end }}
+{{- end }}

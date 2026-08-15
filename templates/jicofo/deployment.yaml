@@ -26,11 +26,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
-        {{- if .Values.opusTranscriberProxy.enabled }}
-        checksum/config-transcription: {{ include (print $.Template.BasePath "/jicofo/configmap-transcription.yaml") . | sha256sum | quote }}
-        {{- else }}
-        checksum/config-transcription: {{ printf "disabled" | sha256sum | quote }}
-        {{- end }}
+        checksum/config-configs: {{ include (print $.Template.BasePath "/jicofo/configmap-configs.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jicofo.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
@@ -58,10 +54,13 @@ spec:
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
-        {{- if .Values.opusTranscriberProxy.enabled }}
-        - name: transcription-config
+        {{- if or
+               .Values.jicofo.custom.configs._custom_jicofo_conf
+               .Values.opusTranscriberProxy.enabled
+        }}
+        - name: custom-configs
           configMap:
-            name: {{ include "jitsi-meet.jicofo.fullname" . }}-transcription
+            name: {{ include "jitsi-meet.jicofo.fullname" . }}-configs
         {{- end }}
         {{- if .Values.jicofo.extraFiles }}
         - name: extra-files
@@ -135,8 +134,11 @@ spec:
               mountPath: /defaults/logging.properties
               subPath: logging.properties
             {{- end }}
-            {{- if .Values.opusTranscriberProxy.enabled }}
-            - name: transcription-config
+            {{- if or
+                   .Values.jicofo.custom.configs._custom_jicofo_conf
+                   .Values.opusTranscriberProxy.enabled
+            }}
+            - name: custom-configs
               mountPath: /config/custom-jicofo.conf
               subPath: custom-jicofo.conf
               readOnly: true

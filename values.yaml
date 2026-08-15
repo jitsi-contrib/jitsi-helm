@@ -681,6 +681,8 @@ jicofo:
     defaults:
       _jicofo_conf: ""
       _logging_properties: ""
+    configs:
+      _custom_jicofo_conf: ""
 
   # Jicofo XMPP user credentials
   xmpp:
