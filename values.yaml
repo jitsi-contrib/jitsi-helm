@@ -1044,6 +1044,14 @@ opusTranscriberProxy:
   # Mutually exclusive with transcriber.enabled (the old, deprecated
   # Jigasi-based transcription path) - the chart refuses to render if both
   # are true.
+  #
+  # Enabling this is not enough on its own. The chart mounts the Prosody
+  # module that marks the rooms, but doesn't enable it. Add it to the module
+  # list yourself, otherwise the bridge-based path stays unused silently:
+  #
+  #   prosody:
+  #     extraEnvs:
+  #       XMPP_MUC_MODULES: "force_async_transcription"
   enabled: false
 
   # Always one replica, hardcoded in opus-transcriber-proxy/deployment.yaml
