@@ -1,4 +1,7 @@
-{{- if and .Values.transcriber.enabled .Values.opusTranscriberProxy.enabled }}
+{{- if and
+       .Values.transcriber.enabled
+       .Values.opusTranscriberProxy.enabled
+}}
 {{-   fail "transcriber.enabled and opusTranscriberProxy.enabled are mutually exclusive. Enable only one of them." }}
 {{- end }}
 {{- if .Values.opusTranscriberProxy.enabled }}
