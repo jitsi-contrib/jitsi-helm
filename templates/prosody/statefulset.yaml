@@ -66,6 +66,11 @@ spec:
         {{- else }}
         checksum/secret-transcriber: {{ printf "disabled-or-existing" | sha256sum | quote }}
         {{- end }}
+        {{- if .Values.opusTranscriberProxy.enabled }}
+        checksum/config-transcription: {{ include (print $.Template.BasePath "/prosody/configmap-transcription.yaml") . | sha256sum | quote }}
+        {{- else }}
+        checksum/config-transcription: {{ printf "disabled" | sha256sum | quote }}
+        {{- end }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.prosody.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
@@ -97,6 +102,11 @@ spec:
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.prosody.fullname" . }}-defaults
+        {{- if .Values.opusTranscriberProxy.enabled }}
+        - name: transcription-plugin
+          configMap:
+            name: {{ include "jitsi-meet.prosody.fullname" . }}-transcription
+        {{- end }}
         - name: prosody-data
           {{- if .Values.prosody.persistence.enabled }}
           persistentVolumeClaim:
@@ -259,6 +269,12 @@ spec:
             - name: custom-defaults
               mountPath: /defaults/conf.d/jitsi-meet.cfg.lua
               subPath: jitsi-meet.cfg.lua
+            {{- end }}
+            {{- if .Values.opusTranscriberProxy.enabled }}
+            - name: transcription-plugin
+              mountPath: /prosody-plugins-custom/mod_force_async_transcription.lua
+              subPath: mod_force_async_transcription.lua
+              readOnly: true
             {{- end }}
             {{- range $i, $f := .Values.prosody.extraFiles }}
             - name: extra-files

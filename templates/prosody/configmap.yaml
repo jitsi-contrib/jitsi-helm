@@ -5,12 +5,22 @@ metadata:
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
 data:
-  {{- if .Values.transcriber.enabled }}
+  {{- if or .Values.transcriber.enabled .Values.opusTranscriberProxy.enabled }}
   ENABLE_TRANSCRIPTIONS: "true"
+  {{- end }}
+
+  {{- if .Values.opusTranscriberProxy.enabled }}
+  {{- $modules := list "force_async_transcription" }}
+  {{- with (get .Values.prosody.extraEnvs "XMPP_MUC_MODULES") }}
+  {{-   $modules = concat $modules (splitList "," (tpl . $)) }}
+  {{- end }}
+  XMPP_MUC_MODULES: {{ $modules | uniq | join "," | quote }}
   {{- end }}
 
   {{- range $key, $value := .Values.prosody.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
-  {{      $key }}: {{ tpl $value $ | quote }}
+  {{-     if not (and $.Values.opusTranscriberProxy.enabled (eq $key "XMPP_MUC_MODULES")) }}
+  {{        $key }}: {{ tpl $value $ | quote }}
+  {{-     end }}
   {{-   end }}
   {{- end }}

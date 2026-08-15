@@ -26,6 +26,11 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
+        {{- if .Values.opusTranscriberProxy.enabled }}
+        checksum/config-transcription: {{ include (print $.Template.BasePath "/jicofo/configmap-transcription.yaml") . | sha256sum | quote }}
+        {{- else }}
+        checksum/config-transcription: {{ printf "disabled" | sha256sum | quote }}
+        {{- end }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jicofo.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
@@ -53,6 +58,11 @@ spec:
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
+        {{- if .Values.opusTranscriberProxy.enabled }}
+        - name: transcription-config
+          configMap:
+            name: {{ include "jitsi-meet.jicofo.fullname" . }}-transcription
+        {{- end }}
         {{- if .Values.jicofo.extraFiles }}
         - name: extra-files
           configMap:
@@ -124,6 +134,12 @@ spec:
             - name: custom-defaults
               mountPath: /defaults/logging.properties
               subPath: logging.properties
+            {{- end }}
+            {{- if .Values.opusTranscriberProxy.enabled }}
+            - name: transcription-config
+              mountPath: /config/custom-jicofo.conf
+              subPath: custom-jicofo.conf
+              readOnly: true
             {{- end }}
             {{- range $i, $f := .Values.jicofo.extraFiles }}
             - name: extra-files
