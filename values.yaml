@@ -1044,6 +1044,9 @@ opusTranscriberProxy:
   # are true.
   enabled: false
 
+  # Always one replica, hardcoded in opus-transcriber-proxy/deployment.yaml
+  # replicaCount: 1
+
   image:
     # opus-transcriber-proxy is released independently from Jitsi (unlike
     # web/prosody/jicofo/jvb/jigasi/jibri, which are built together in
@@ -1076,18 +1079,17 @@ opusTranscriberProxy:
     # instead of the block above.
     existingSecretName: ""
 
-  # Non-secret provider/runtime configuration, stored in a ConfigMap. Use the
-  # exact env var names documented at
-  # https://github.com/jitsi/opus-transcriber-proxy#readme, e.g.
-  # PROVIDERS_PRIORITY, OPENAI_MODEL, ENABLE_OPENAI_CUSTOM_PROVIDER. Do not
-  # set PORT/HOST here - use .service.port / .host above instead.
   config:
-    values:
-      PROVIDERS_PRIORITY: "openai"
-      OPENAI_MODEL: "gpt-4o-mini-transcribe"
-    # Alternatively, reference an existing ConfigMap containing this
-    # configuration instead of the block above (must also contain PORT/HOST).
+    # Reference an existing ConfigMap instead of generating one from
+    # extraEnvs (it must also contain PORT/HOST).
     existingConfigMapName: ""
+
+  # Provider and runtime settings. Use the env var names documented at
+  # https://github.com/jitsi/opus-transcriber-proxy#readme. Don't set
+  # PORT/HOST here, use service.port and host above instead.
+  extraEnvs: {}
+  #  PROVIDERS_PRIORITY: "openai"
+  #  OPENAI_MODEL: "gpt-4o-mini-transcribe"
 
   livenessProbe:
     tcpSocket:
@@ -1102,7 +1104,6 @@ opusTranscriberProxy:
   affinity: {}
   annotations: {}
   extraEnvFrom: []
-  extraEnvs: {}
   hostAliases: []
   labels: {}
   nodeSelector: {}

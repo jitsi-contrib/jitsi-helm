@@ -12,7 +12,7 @@ data:
   PORT: {{ .Values.opusTranscriberProxy.service.port | quote }}
   HOST: {{ .Values.opusTranscriberProxy.host | quote }}
 
-  {{- range $key, $value := .Values.opusTranscriberProxy.config.values }}
+  {{- range $key, $value := .Values.opusTranscriberProxy.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
   {{      $key }}: {{ tpl $value $ | quote }}
   {{-   end }}
