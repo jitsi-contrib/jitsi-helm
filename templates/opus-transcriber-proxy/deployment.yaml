@@ -1,5 +1,5 @@
 {{- if and .Values.transcriber.enabled .Values.opusTranscriberProxy.enabled }}
-{{-   fail "transcriber.enabled und opusTranscriberProxy.enabled schließen sich aus: opusTranscriberProxy ersetzt den alten, deprecateten Jigasi-Transcriber-Pfad. Bitte nur eine der beiden Optionen aktivieren." }}
+{{-   fail "transcriber.enabled and opusTranscriberProxy.enabled are mutually exclusive. Enable only one of them." }}
 {{- end }}
 {{- if .Values.opusTranscriberProxy.enabled }}
 apiVersion: apps/v1
