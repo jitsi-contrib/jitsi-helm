@@ -9,9 +9,7 @@ metadata:
   labels:
     {{- include "jitsi-meet.jicofo.labels" . | nindent 4 }}
 data:
-  {{- if .Values.jicofo.custom.configs._custom_jicofo_conf }}
   custom-jicofo.conf: |
-    {{- .Values.jicofo.custom.configs._custom_jicofo_conf | nindent 4 }}
     {{- if .Values.opusTranscriberProxy.enabled }}
     jicofo {
       transcription {
@@ -19,12 +17,7 @@ data:
       }
     }
     {{- end }}
-  {{- else if .Values.opusTranscriberProxy.enabled }}
-  custom-jicofo.conf: |
-    jicofo {
-      transcription {
-        url-template = "{{ include "jitsi-meet.opus-transcriber-proxy.urlTemplate" . }}"
-      }
-    }
-  {{- end }}
+    {{- with .Values.jicofo.custom.configs._custom_jicofo_conf }}
+    {{- . | nindent 4 }}
+    {{- end }}
 {{- end }}
