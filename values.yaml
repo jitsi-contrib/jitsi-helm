@@ -796,7 +796,8 @@ jvb:
   # advertises the address coturn sees: the public one if the request leaves
   # the cluster, the internal one if it does not. That internal address is
   # useful only when JVB is not publicly accessible at all, so the clients
-  # reach it through coturn's relay. Requires coturn.enabled and turnHost.
+  # reach it through coturn's relay. Requires coturn.enabled, turnHost and
+  # coturn.turn.transport: udp, since STUN queries are UDP.
   useInternalStun: false
   # Explicitly disable STUN, overriding useInternalStun and stunServers. Use
   # this when publicIPs (or useNodeIP) is set explicitly and JVB does not need
