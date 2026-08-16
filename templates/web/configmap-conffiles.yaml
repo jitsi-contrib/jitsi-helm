@@ -18,15 +18,17 @@ metadata:
   labels:
     {{- include "jitsi-meet.web.labels" . | nindent 4 }}
 data:
-  {{- if .Values.web.custom.configs._custom_config_js }}
+  {{- if or
+         .Values.web.custom.configs._custom_config_js
+         .Values.coturn.enabled
+  }}
   custom-config.js: |
-    {{- .Values.web.custom.configs._custom_config_js | nindent 4 }}
     {{- if .Values.coturn.enabled }}
     config.useTurnUdp=true;
     {{- end }}
-  {{- else if .Values.coturn.enabled }}
-  custom-config.js: |
-    config.useTurnUdp=true;
+    {{- with .Values.web.custom.configs._custom_config_js }}
+    {{- . | nindent 4 }}
+    {{- end }}
   {{- end }}
 
   {{- with .Values.web.custom.configs._custom_interface_config_js }}
