@@ -775,10 +775,9 @@ jvb:
   #publicIPs:
   #  - 1.2.3.4
   #  - 5.6.7.8
-  # Alternative option: auto-detect Node's external IP address.
-  # Recommended for OCTO setups (with either NodePort service
-  # or hostPort enabled) where every JVB pod should announce it's
-  # own IP address only.
+  # Alternative option: advertise the IP address of the node the pod runs on.
+  # This is the pod's status.hostIP, which is the node's InternalIP and not its
+  # ExternalIP.
   useNodeIP: false
 
   # STUN lets JVB discover its own public (server-reflexive) IP so it can

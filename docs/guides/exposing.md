@@ -157,7 +157,7 @@ jvb:
 While this allows `jvb.replicaCount` to be greater than 1, it requires exposing
 Node IPs and JVB ports directly to Internet.
 
-### Option 3.1: Using hostPort (auto-detected public node IP)
+### Option 3.1: Using hostPort (auto-detected node IP)
 
 ```yaml
 jvb:
@@ -170,9 +170,13 @@ jvb:
   UDPPort: 10000
 ```
 
-This is similar to Option 3, but every JVB pod will auto-detect its own external
-IP address based on the node it is running on. This option might be better
-suited for installations that use OCTO.
+This is similar to Option 3, but every JVB pod advertises the IP address of the
+node it runs on, so the addresses do not have to be listed by hand.
+
+The address comes from the pod's `status.hostIP`, which is the node's
+`InternalIP` and not its `ExternalIP`. Where the two differ, the clients
+cannot reach that address, but JVB also announces the one it finds through
+STUN, which is enabled by default.
 
 ### Option 3.2: Using hostPort with a port range
 

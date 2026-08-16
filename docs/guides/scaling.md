@@ -33,9 +33,13 @@ jvb:
   # only on nodes that actually have it:
   useHostPort: true
 
-  # Make every JVB pod announce its Node's external
-  # IP address and nothing more:
+  # Make every JVB pod announce the address of the
+  # node it runs on:
   useNodeIP: true
+
+  # Let every JVB pod find its external IP address
+  # through STUN:
+  stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
 
 octo:
   # Enable OCTO support for both JVB and Jicofo:
