@@ -4,7 +4,7 @@
        (or
           .Values.jibri.custom.defaults._jibri_conf
           .Values.jibri.custom.defaults._logging_properties
-          .Values.jibri.custom.defaults._jibri_autoscaler_sidecar_config
+          .Values.jibri.custom.defaults._autoscaler_sidecar_config
           .Values.jibri.custom.defaults._xorg_video_dummy_conf
        )
 }}
@@ -25,7 +25,7 @@ data:
     {{- . | nindent 4 }}
   {{- end }}
 
-  {{- with .Values.jibri.custom.defaults._jibri_autoscaler_sidecar_config }}
+  {{- with .Values.jibri.custom.defaults._autoscaler_sidecar_config }}
   autoscaler-sidecar.config: |
     {{- . | nindent 4 }}
   {{- end }}
