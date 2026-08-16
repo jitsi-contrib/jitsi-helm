@@ -780,23 +780,23 @@ jvb:
   # ExternalIP.
   useNodeIP: false
 
-  # STUN lets JVB discover its own public (server-reflexive) IP so it can
-  # advertise a reachable address to clients. The STUN server must be reachable
-  # over a public path: querying an in-cluster address would only report JVB's
-  # internal IP and defeat the purpose.
+  # JVB uses STUN to learn the address it is seen from, and advertises that
+  # address to the clients. A STUN server outside the cluster sees JVB's
+  # public address. One inside the cluster sees its internal address.
   #
   # Precedence (first match wins):
   #   1. disableStun: true          STUN disabled
-  #   2. useInternalStun (+ coturn) chart's coturn STUN, via the public turnHost
+  #   2. useInternalStun (+ coturn) the chart's coturn, through turnHost
   #   3. stunServers (non-empty)    that external STUN server
   #   4. otherwise                  STUN disabled
 
   # External STUN server used to find JVB's external IP.
   stunServers: "meet-jit-si-turnrelay.jitsi.net:443"
-  # Use the coturn STUN deployed by this chart instead of stunServers. Despite
-  # the name, this targets the PUBLIC turnHost (not an internal ClusterIP),
-  # because STUN must observe JVB from outside. Requires coturn.enabled and
-  # turnHost.
+  # Use the chart's own coturn as the STUN server, through turnHost. JVB then
+  # advertises the address coturn sees: the public one if the request leaves
+  # the cluster, the internal one if it does not. That internal address is
+  # useful only when JVB is not publicly accessible at all, so the clients
+  # reach it through coturn's relay. Requires coturn.enabled and turnHost.
   useInternalStun: false
   # Explicitly disable STUN, overriding useInternalStun and stunServers. Use
   # this when publicIPs (or useNodeIP) is set explicitly and JVB does not need
