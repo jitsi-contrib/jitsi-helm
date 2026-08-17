@@ -11,3 +11,11 @@ app.kubernetes.io/component: "etherpad"
 {{ include "jitsi-meet.selectorLabels" . }}
 app.kubernetes.io/component: "etherpad"
 {{- end -}}
+
+{{- define "jitsi-meet.etherpad.server" -}}
+{{- if .Values.global.clusterDomain -}}
+{{    include "jitsi-meet.etherpad.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{- else -}}
+{{    include "jitsi-meet.etherpad.fullname" . }}.{{ .Release.Namespace }}.svc
+{{- end -}}
+{{- end -}}

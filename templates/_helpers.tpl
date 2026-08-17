@@ -68,27 +68,16 @@ app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
 {{- end -}}
 
+{{/*
+The XMPP server every component talks to, which is Prosody's Service. Kept
+here rather than in prosody/_helpers.tpl because six components consume it as
+an XMPP endpoint, not as "the prosody host".
+*/}}
 {{- define "jitsi-meet.xmpp.server" -}}
 {{- if .Values.global.clusterDomain -}}
-{{    include "jitsi-meet.fullname" . }}-prosody.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{    include "jitsi-meet.prosody.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
 {{- else -}}
-{{    include "jitsi-meet.fullname" . }}-prosody.{{ .Release.Namespace }}.svc
-{{- end -}}
-{{- end -}}
-
-{{- define "jitsi-meet.excalidraw.server" -}}
-{{- if .Values.global.clusterDomain -}}
-{{    include "jitsi-meet.fullname" . }}-excalidraw.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
-{{- else -}}
-{{    include "jitsi-meet.fullname" . }}-excalidraw.{{ .Release.Namespace }}.svc
-{{- end -}}
-{{- end -}}
-
-{{- define "jitsi-meet.etherpad.server" -}}
-{{- if .Values.global.clusterDomain -}}
-{{    include "jitsi-meet.fullname" . }}-etherpad.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
-{{- else -}}
-{{    include "jitsi-meet.fullname" . }}-etherpad.{{ .Release.Namespace }}.svc
+{{    include "jitsi-meet.prosody.fullname" . }}.{{ .Release.Namespace }}.svc
 {{- end -}}
 {{- end -}}
 

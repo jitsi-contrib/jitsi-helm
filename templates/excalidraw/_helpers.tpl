@@ -11,3 +11,11 @@ app.kubernetes.io/component: "excalidraw"
 {{ include "jitsi-meet.selectorLabels" . }}
 app.kubernetes.io/component: "excalidraw"
 {{- end -}}
+
+{{- define "jitsi-meet.excalidraw.server" -}}
+{{- if .Values.global.clusterDomain -}}
+{{    include "jitsi-meet.excalidraw.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{- else -}}
+{{    include "jitsi-meet.excalidraw.fullname" . }}.{{ .Release.Namespace }}.svc
+{{- end -}}
+{{- end -}}

@@ -14,9 +14,9 @@ app.kubernetes.io/component: "skynet"
 
 {{- define "jitsi-meet.skynet.server" -}}
 {{- if .Values.global.clusterDomain -}}
-{{    include "jitsi-meet.fullname" . }}-skynet.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
+{{    include "jitsi-meet.skynet.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
 {{- else -}}
-{{    include "jitsi-meet.fullname" . }}-skynet.{{ .Release.Namespace }}.svc
+{{    include "jitsi-meet.skynet.fullname" . }}.{{ .Release.Namespace }}.svc
 {{- end -}}
 {{- end -}}
 
