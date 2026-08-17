@@ -22,8 +22,7 @@ and for DNS to propagate.
   And wait for the EXTERNAL-IP to be assigned, then visit that IP in your browser
 
 {{-   else if contains "ClusterIP" .Values.web.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "jitsi-meet.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=web" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "jitsi-meet.web.fullname" . }} 8080:{{ .Values.web.service.port }}
 
   And visit: http://127.0.0.1:8080
 {{-   end }}
