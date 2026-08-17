@@ -242,7 +242,7 @@ etherpad:
 
   image:
     repository: etherpad/etherpad
-    tag: 3.3.2
+    tag: 3.3.3
 
   service:
     type: ClusterIP
