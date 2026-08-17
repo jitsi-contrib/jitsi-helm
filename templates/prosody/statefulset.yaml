@@ -111,21 +111,6 @@ spec:
         {{- with .Values.prosody.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      initContainers:
-        - name: chown-data
-          image: "{{ .Values.prosody.initContainers.busybox.image }}"
-          imagePullPolicy: {{ pluck "pullPolicy" .Values.prosody.initContainers.busybox .Values.image | first }}
-          resources:
-            {{- toYaml .Values.prosody.resources | nindent 12 }}
-          securityContext:
-            {{- toYaml .Values.prosody.initContainers.busybox.securityContext | nindent 12 }}
-          command:
-            - sh
-            - -c
-            - chown -R {{ .Values.prosody.securityContext.runAsUser | default 1000 }}:{{ .Values.prosody.podSecurityContext.fsGroup | default 1000 }} /var/lib/prosody
-          volumeMounts:
-            - name: prosody-data
-              mountPath: /var/lib/prosody
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.prosody.image.repository }}:{{ .Values.prosody.image.tag | default .Chart.AppVersion }}"

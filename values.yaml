@@ -603,34 +603,14 @@ prosody:
 
   # Persistence is needed if user accounts are stored in Prosody.
   # e.g. internal_hashed as authentication.
-  # The volume is mounted at /var/lib/prosody, Prosody's data path.
+  # The volume is mounted at /var/lib/prosody. Prosody keeps its data in the
+  # data subfolder.
   persistence:
     enabled: false
     size: 3G
     # Set this to existing PVC name if you have one.
     existingClaim:
     storageClassName:
-
-  # Prosody requires its data path to be owned by the container user, which
-  # Kubernetes cannot set on a volume. This init container fixes the ownership
-  # and is the only container in this chart that runs as root.
-  initContainers:
-    busybox:
-      image: busybox:1.38.0
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-          add:
-            - CHOWN
-        privileged: false
-        readOnlyRootFilesystem: true
-        runAsGroup: 1000
-        runAsNonRoot: false
-        runAsUser: 0
-        seccompProfile:
-          type: RuntimeDefault
 
   extraVolumes: []
   #  - name: prosody-modules
