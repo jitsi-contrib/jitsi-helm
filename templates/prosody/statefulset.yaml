@@ -208,16 +208,16 @@ spec:
             - configMapRef:
                 name: {{ include "jitsi-meet.prosody.fullname" . }}
             {{- range .Values.prosody.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
           env:
             {{- range .Values.prosody.extraSecrets }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.prosody.metrics.enabled }}
             - name: PROSODY_ENABLE_METRICS

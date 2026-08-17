@@ -184,29 +184,29 @@ spec:
             - configMapRef:
                 name: {{ include "jitsi-meet.coturn.fullname" . }}
             {{- range .Values.coturn.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
           ports:
             - name: tcp-turn
+              containerPort: 3478
               protocol: TCP
-              containerPort: 3478
             - name: udp-turn
-              protocol: UDP
               containerPort: 3478
+              protocol: UDP
             {{- if .Values.coturn.turns.enabled }}
             - name: tcp-turns
-              protocol: TCP
               containerPort: 5349
+              protocol: TCP
             {{- end }}
             {{- if .Values.coturn.metrics.enabled }}
             - name: tcp-metrics
-              protocol: TCP
               containerPort: 9641
+              protocol: TCP
             {{- end }}
           {{- with .Values.coturn.livenessProbe }}
           livenessProbe:

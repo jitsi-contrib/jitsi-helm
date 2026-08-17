@@ -96,8 +96,8 @@ web:
       _ssl_conf: ""
       _system_config_js: ""
     configs:
-      _custom_interface_config_js: ""
       _custom_config_js: ""
+      _custom_interface_config_js: ""
 
   extraFiles: []
   # - path: /config/nginx-custom/oidc.conf
@@ -983,6 +983,9 @@ jvb:
       type: RuntimeDefault
   tolerations: []
 
+## #############################################################################
+## Octo configuration
+## #############################################################################
 octo:
   enabled: false
 
@@ -1189,7 +1192,7 @@ transcriber:
   # Use external Transcriber installation.
   # This setting skips the creation of Transcriber Deployment altogether,
   # instead creating just the config secret and enabling services.
-  # Defaults to disabled (use bundled Trabsciber).
+  # Defaults to disabled (use bundled Transcriber).
   useExternalTranscriber: false
 
   # Always one replica, hardcoded in transcriber/deployment.yaml
@@ -1201,7 +1204,7 @@ transcriber:
     #tag:
 
   # Transcriber XMPP user credentials
-  # Transcriber also requires credentials for Jigasi, even its pod is disabled.
+  # Transcriber also requires credentials for Jigasi, even if its pod is disabled.
   xmpp:
     user: transcriber
     password:
@@ -1447,7 +1450,6 @@ jibri:
     existingSecretName:
 
   livenessProbe:
-    periodSeconds: 10
     exec:
       command:
         - /bin/bash
@@ -1456,9 +1458,9 @@ jibri:
             curl -sq localhost:2222/jibri/api/v1.0/health
             | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
             | grep -qP 'HEALTHY (IDLE|BUSY)'
+    periodSeconds: 10
 
   readinessProbe:
-    periodSeconds: 10
     exec:
       command:
         - /bin/bash
@@ -1467,6 +1469,7 @@ jibri:
             curl -sq localhost:2222/jibri/api/v1.0/health
             | jq '"\(.status.health.healthStatus) \(.status.busyStatus)"'
             | grep -qP 'HEALTHY (IDLE|BUSY)'
+    periodSeconds: 10
 
   # Enable single-use mode for Jibri.
   # With this setting enabled, every Jibri instance

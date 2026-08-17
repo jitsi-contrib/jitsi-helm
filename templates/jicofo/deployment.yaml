@@ -100,11 +100,11 @@ spec:
             - configMapRef:
                 name: {{ include "jitsi-meet.jicofo.fullname" . }}
             {{- range .Values.jicofo.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
           ports:

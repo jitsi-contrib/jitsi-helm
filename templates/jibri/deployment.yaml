@@ -125,11 +125,11 @@ spec:
             - configMapRef:
                 name: {{ include "jitsi-meet.jibri.fullname" . }}
             {{- range .Values.jibri.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
           env:
@@ -141,7 +141,7 @@ spec:
                   fieldPath: metadata.name
             {{- end }}
             {{- range .Values.jibri.extraSecrets }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
           ports:
             - name: http-internal

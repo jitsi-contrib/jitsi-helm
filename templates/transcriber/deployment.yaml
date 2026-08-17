@@ -111,7 +111,7 @@ spec:
             - configMapRef:
                 name: {{ include "jitsi-meet.transcriber.fullname" . }}
             {{- range .Values.transcriber.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}

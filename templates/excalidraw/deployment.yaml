@@ -68,22 +68,22 @@ spec:
             {{- toYaml .Values.excalidraw.securityContext | nindent 12 }}
           ports:
             - name: http
-              protocol: TCP
               containerPort: {{ .Values.excalidraw.service.port }}
-            - name: metrics
               protocol: TCP
+            - name: metrics
               containerPort: 9090
+              protocol: TCP
           envFrom:
             - configMapRef:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.excalidraw.fullname" . }}
             {{- range .Values.excalidraw.extraEnvFrom }}
-            - {{  tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{  tpl (toYaml .) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}
             {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
-            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            - {{    tpl (toYaml .) $ | indent 14 | trim }}
             {{-   end }}
             {{- end }}
           {{- with .Values.excalidraw.livenessProbe }}
