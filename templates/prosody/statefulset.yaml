@@ -30,7 +30,6 @@ spec:
         checksum/config-coturn: {{ include (print $.Template.BasePath "/prosody/configmap-coturn.yaml") . | sha256sum | quote }}
         checksum/config-defaults: {{ include (print $.Template.BasePath "/prosody/configmap-defaults.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/prosody/configmap-extrafiles.yaml") . | sha256sum | quote }}
-        checksum/config-transcription: {{ include (print $.Template.BasePath "/prosody/configmap-transcription.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/prosody/secret.yaml") . | sha256sum | quote }}
         checksum/secret-coturn: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jibri-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum | quote }}
@@ -71,11 +70,6 @@ spec:
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.prosody.fullname" . }}-defaults
-        {{- if .Values.opusTranscriberProxy.enabled }}
-        - name: transcription-plugin
-          configMap:
-            name: {{ include "jitsi-meet.prosody.fullname" . }}-transcription
-        {{- end }}
         {{- if not .Values.prosody.persistence.enabled }}
         - name: prosody-data
           emptyDir: {}
@@ -229,12 +223,6 @@ spec:
             - name: custom-defaults
               mountPath: /defaults/conf.d/jitsi-meet.cfg.lua
               subPath: jitsi-meet.cfg.lua
-            {{- end }}
-            {{- if .Values.opusTranscriberProxy.enabled }}
-            - name: transcription-plugin
-              mountPath: /prosody-plugins-custom/mod_force_async_transcription.lua
-              subPath: mod_force_async_transcription.lua
-              readOnly: true
             {{- end }}
             {{- range $i, $f := .Values.prosody.extraFiles }}
             - name: extra-files

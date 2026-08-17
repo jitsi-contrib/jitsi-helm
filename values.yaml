@@ -1085,9 +1085,9 @@ opusTranscriberProxy:
   # Jigasi-based transcription path) - the chart refuses to render if both
   # are true.
   #
-  # Enabling this is not enough on its own. The chart mounts the Prosody
-  # module that marks the rooms, but doesn't enable it. Add it to the module
-  # list yourself, otherwise the bridge-based path stays unused silently:
+  # Enabling this is not enough on its own. The Prosody module that marks the
+  # rooms ships with the image, but is not enabled. Add it to the module list
+  # yourself, otherwise the bridge-based path stays unused silently:
   #
   #   prosody:
   #     extraEnvs:
