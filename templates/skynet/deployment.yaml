@@ -81,6 +81,8 @@ spec:
               containerPort: {{ .Values.skynet.service.port }}
           envFrom:
             - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
                 name: {{ include "jitsi-meet.skynet.fullname" . }}
             {{- range .Values.skynet.extraEnvFrom }}
             - {{  tpl (toYaml . ) $ | indent 14 | trim }}

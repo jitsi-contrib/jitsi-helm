@@ -71,9 +71,8 @@ spec:
               protocol: TCP
               containerPort: {{ .Values.etherpad.service.port }}
           envFrom:
-            # Note: check if really needed
-            #- configMapRef:
-            #    name: {{ include "jitsi-meet.common" . }}
+            - configMapRef:
+                name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.etherpad.fullname" . }}
             {{- range .Values.etherpad.extraEnvFrom }}
