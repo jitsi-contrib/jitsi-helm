@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "jitsi-meet.opus-transcriber-proxy.configmap" . }}
+  name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}
   labels:
     {{- include "jitsi-meet.opus-transcriber-proxy.labels" . | nindent 4 }}
 data:

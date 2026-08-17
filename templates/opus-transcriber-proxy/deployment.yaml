@@ -84,7 +84,7 @@ spec:
             - secretRef:
                 name: {{ include "jitsi-meet.opus-transcriber-proxy.secretName" . }}
             - configMapRef:
-                name: {{ include "jitsi-meet.opus-transcriber-proxy.configmap" . }}
+                name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}
             {{- range .Values.opusTranscriberProxy.extraEnvFrom }}
             - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}

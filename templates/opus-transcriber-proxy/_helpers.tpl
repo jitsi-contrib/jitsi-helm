@@ -24,10 +24,6 @@ app.kubernetes.io/component: "opus-transcriber-proxy"
 {{- end -}}
 {{- end -}}
 
-{{- define "jitsi-meet.opus-transcriber-proxy.configmap" -}}
-{{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}
-{{- end -}}
-
 {{- define "jitsi-meet.opus-transcriber-proxy.server" -}}
 {{- if .Values.global.clusterDomain -}}
 {{    include "jitsi-meet.opus-transcriber-proxy.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}
