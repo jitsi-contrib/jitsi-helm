@@ -57,8 +57,6 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: 16Mi
-        - name: config
-          emptyDir: {}
         - name: custom-scripts
           configMap:
             defaultMode: 0755
@@ -131,9 +129,6 @@ spec:
               mountPath: /run
             - name: tmp
               mountPath: /tmp
-            # to support readOnlyRootFilesystem
-            - name: config
-              mountPath: /config
             {{- if .Values.jicofo.custom.scripts._config }}
             - name: custom-scripts
               mountPath: /etc/s6-overlay/scripts/config

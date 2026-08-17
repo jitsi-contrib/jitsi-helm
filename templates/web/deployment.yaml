@@ -55,8 +55,6 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: 16Mi
-        - name: config
-          emptyDir: {}
         - name: custom-scripts
           configMap:
             defaultMode: 0755
@@ -128,8 +126,6 @@ spec:
               mountPath: /run
             - name: tmp
               mountPath: /tmp
-            - name: config
-              mountPath: /config
             {{- if .Values.web.custom.scripts._config }}
             - name: custom-scripts
               mountPath: /etc/s6-overlay/scripts/config

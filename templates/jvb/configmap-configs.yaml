@@ -1,0 +1,11 @@
+{{- if .Values.jvb.custom.configs._custom_jvb_conf }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jvb.fullname" . }}-configs
+  labels:
+    {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+data:
+  custom-jvb.conf: |
+    {{- .Values.jvb.custom.configs._custom_jvb_conf | nindent 4 }}
+{{- end }}

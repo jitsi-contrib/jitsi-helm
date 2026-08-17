@@ -791,6 +791,8 @@ jvb:
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jvb/rootfs
   custom:
+    configs:
+      _custom_jvb_conf: ""
     defaults:
       _autoscaler_sidecar_config: ""
       _jvb_conf: ""
