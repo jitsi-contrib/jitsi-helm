@@ -30,6 +30,6 @@ data:
 
   {{- range $key, $value := .Values.web.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
-  {{      $key }}: {{ tpl $value $ | quote }}
+  {{      $key }}: {{ tpl (toString $value) $ | quote }}
   {{-   end }}
   {{- end }}

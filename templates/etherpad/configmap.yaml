@@ -10,7 +10,7 @@ data:
 
   {{- range $key, $value := .Values.etherpad.extraEnvs }}
   {{-   if not (kindIs "invalid" $value) }}
-  {{      $key }}: {{ tpl $value $ | quote }}
+  {{      $key }}: {{ tpl (toString $value) $ | quote }}
   {{-   end }}
   {{- end }}
 {{- end }}
