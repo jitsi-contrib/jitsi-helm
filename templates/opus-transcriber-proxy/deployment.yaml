@@ -33,11 +33,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/configmap.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/configmap-extrafiles.yaml") . | sha256sum | quote }}
-        {{- if not .Values.opusTranscriberProxy.existingSecretName }}
         checksum/secret: {{ include (print $.Template.BasePath "/opus-transcriber-proxy/secret.yaml") . | sha256sum | quote }}
-        {{- else }}
-        checksum/secret: {{ printf "disabled-or-existing" | sha256sum | quote }}
-        {{- end }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.opusTranscriberProxy.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
