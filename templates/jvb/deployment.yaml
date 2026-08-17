@@ -70,6 +70,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with $.Values.jvb.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" $ }}
       securityContext:
         {{- toYaml $.Values.jvb.podSecurityContext | nindent 8 }}
