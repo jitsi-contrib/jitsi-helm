@@ -10,11 +10,9 @@ metadata:
   name: {{ include "jitsi-meet.jibri.fullname" . }}
   labels:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-    - ReadWriteOnce
-    - ReadWriteMany
+    {{- toYaml .Values.jibri.persistence.accessModes | nindent 4 }}
   resources:
     requests:
       storage: {{ .Values.jibri.persistence.size | quote }}

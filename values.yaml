@@ -1430,6 +1430,12 @@ jibri:
   persistence:
     enabled: false
     size: 4Gi
+    # Every Jibri replica writes its recordings to this one volume, and the
+    # replicas usually land on different nodes, so it has to allow multi-node
+    # access. Set this to [ReadWriteOnce] only when running a single Jibri on
+    # block storage, which cannot serve ReadWriteMany.
+    accessModes:
+      - ReadWriteMany
     # Set this to existing PVC name if you have one.
     existingClaim:
     storageClassName:
