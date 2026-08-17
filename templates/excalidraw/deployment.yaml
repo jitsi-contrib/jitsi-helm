@@ -5,6 +5,9 @@ metadata:
   name: {{ include "jitsi-meet.excalidraw.fullname" . }}
   labels:
     {{- include "jitsi-meet.excalidraw.labels" . | nindent 4 }}
+    {{- with .Values.excalidraw.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.excalidraw.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

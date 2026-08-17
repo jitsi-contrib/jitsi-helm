@@ -5,6 +5,9 @@ metadata:
   name: {{ include "jitsi-meet.etherpad.fullname" . }}
   labels:
     {{- include "jitsi-meet.etherpad.labels" . | nindent 4 }}
+    {{- with .Values.etherpad.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- with .Values.etherpad.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
