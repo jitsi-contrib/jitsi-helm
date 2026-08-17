@@ -58,7 +58,7 @@ spec:
           emptyDir: {}
         - name: config
           configMap:
-            name: {{ include "jitsi-meet.coturn.fullname" . }}-config
+            name: {{ include "jitsi-meet.coturn.fullname" . }}-configs
         {{- if .Values.coturn.turns.enabled }}
         - name: tls
           secret:
@@ -178,8 +178,6 @@ spec:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.coturn.fullname" . }}
-            - configMapRef:
-                name: {{ include "jitsi-meet.coturn.fullname" . }}-config
             {{- range .Values.coturn.extraEnvFrom }}
             - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}
