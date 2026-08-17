@@ -249,13 +249,13 @@ etherpad:
   livenessProbe:
     httpGet:
       path: /
-      port: 9001
+      port: http
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
-      port: 9001
+      port: http
     periodSeconds: 10
 
   affinity: {}
@@ -313,13 +313,13 @@ excalidraw:
   livenessProbe:
     httpGet:
       path: /
-      port: 9002
+      port: http
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /
-      port: 9002
+      port: http
     periodSeconds: 10
 
   metrics:
@@ -434,12 +434,12 @@ coturn:
 
   livenessProbe:
     tcpSocket:
-      port: 3478
+      port: tcp-turn
     periodSeconds: 10
 
   readinessProbe:
     tcpSocket:
-      port: 3478
+      port: tcp-turn
     periodSeconds: 10
 
   initContainers:
@@ -702,12 +702,12 @@ jicofo:
 
   livenessProbe:
     tcpSocket:
-      port: 8888
+      port: http
     periodSeconds: 10
 
   readinessProbe:
     tcpSocket:
-      port: 8888
+      port: http
     periodSeconds: 10
 
   metrics:
@@ -871,13 +871,13 @@ jvb:
   livenessProbe:
     httpGet:
       path: /about/health
-      port: 8080
+      port: http
     periodSeconds: 10
 
   readinessProbe:
     httpGet:
       path: /about/health
-      port: 8080
+      port: http
     periodSeconds: 10
 
   metrics:
@@ -1300,7 +1300,7 @@ skynet:
   livenessProbe: {}
   readinessProbe:
     tcpSocket:
-      port: 8000
+      port: http
     initialDelaySeconds: 10
     periodSeconds: 10
 
