@@ -8,6 +8,7 @@ metadata:
     helm.sh/hook: "test"
     helm.sh/hook-delete-policy: "hook-succeeded"
 spec:
+  automountServiceAccountToken: false
   containers:
     - name: web-smoke-test
       image: busybox:1.38.0
