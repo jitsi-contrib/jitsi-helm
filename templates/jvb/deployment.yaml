@@ -101,21 +101,13 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: 16Mi
-        {{- if $.Values.jvb.custom.scripts._config }}
         - name: custom-scripts
           configMap:
             defaultMode: 0755
             name: {{ include "jitsi-meet.jvb.fullname" $ }}-scripts
-        {{- end }}
-        {{- if or
-               $.Values.jvb.custom.defaults._autoscaler_sidecar_config
-               $.Values.jvb.custom.defaults._jvb_conf
-               $.Values.jvb.custom.defaults._logging_properties
-        }}
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jvb.fullname" $ }}-defaults
-        {{- end }}
         {{- if $.Values.jvb.extraFiles }}
         - name: extra-files
           configMap:

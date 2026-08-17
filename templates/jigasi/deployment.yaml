@@ -62,24 +62,13 @@ spec:
             # Larger than the 16Mi most components use, from what Jigasi needs
             # on real deployments.
             sizeLimit: 128Mi
-        {{- if .Values.jigasi.custom.scripts._config }}
         - name: custom-scripts
           configMap:
             defaultMode: 0755
             name: {{ include "jitsi-meet.jigasi.fullname" . }}-scripts
-        {{- end }}
-        {{- if or
-               .Values.jigasi.custom.defaults._autoscaler_sidecar_config
-               .Values.jigasi.custom.defaults._logging_properties
-               .Values.jigasi.custom.defaults._sip_communicator_properties
-               .Values.jigasi.custom.defaults._sipserver_sip_communicator_properties
-               .Values.jigasi.custom.defaults._transcriber_sip_communicator_properties
-               .Values.jigasi.custom.defaults._xmpp_sip_communicator_properties
-        }}
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jigasi.fullname" . }}-defaults
-        {{- end }}
         {{- if .Values.jigasi.extraFiles }}
         - name: extra-files
           configMap:
