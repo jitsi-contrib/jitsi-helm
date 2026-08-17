@@ -4,31 +4,41 @@ metadata:
   name: {{ include "jitsi-meet.prosody.fullname" . }}
   labels:
     {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
+  {{- with .Values.prosody.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.prosody.service.type }}
   ports:
     - name: tcp-bosh-insecure
       protocol: TCP
       port: {{ index .Values.prosody.service.ports "bosh-insecure" }}
+      targetPort: bosh-insecure
     - name: tcp-bosh-secure
       protocol: TCP
       port: {{ index .Values.prosody.service.ports "bosh-secure" }}
+      targetPort: bosh-secure
     - name: tcp-xmpp-component
       protocol: TCP
       port: {{ index .Values.prosody.service.ports "xmpp-component" }}
+      targetPort: xmpp-component
     - name: tcp-xmpp-c2
       protocol: TCP
       port: {{ index .Values.prosody.service.ports "xmpp-c2s" }}
+      targetPort: xmpp-c2s
       {{- if .Values.prosody.service.ports.xmppc2snodePort }}
       nodePort: {{ index .Values.prosody.service.ports "xmppc2snodePort" }}
       {{- end }}
     - name: tcp-xmpp-s2
       protocol: TCP
       port: {{ index .Values.prosody.service.ports "xmpp-s2s" }}
+      targetPort: xmpp-s2s
     {{- if .Values.prosody.metrics.enabled }}
     - name: metrics
       protocol: TCP
       port: 8889
+      targetPort: metrics
     {{- end }}
   selector:
     {{- include "jitsi-meet.prosody.selectorLabels" . | nindent 4 }}

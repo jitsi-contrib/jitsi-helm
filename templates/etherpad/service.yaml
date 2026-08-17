@@ -5,12 +5,17 @@ metadata:
   name: {{ include "jitsi-meet.etherpad.fullname" . }}
   labels:
     {{- include "jitsi-meet.etherpad.labels" . | nindent 4 }}
+  {{- with .Values.etherpad.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.etherpad.service.type }}
   ports:
     - name: http
       protocol: TCP
       port: {{ .Values.etherpad.service.port }}
+      targetPort: http
   selector:
     {{- include "jitsi-meet.etherpad.selectorLabels" . | nindent 4 }}
 {{- end }}

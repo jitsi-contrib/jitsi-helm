@@ -8,15 +8,21 @@ metadata:
   name: {{ include "jitsi-meet.jibri.fullname" . }}
   labels:
     {{- include "jitsi-meet.jibri.labels" . | nindent 4 }}
+  {{- with .Values.jibri.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.jibri.service.type }}
   ports:
     - name: http-internal
       protocol: TCP
       port: 3333
+      targetPort: http-internal
     - name: http-api
       protocol: TCP
       port: 2222
+      targetPort: http-api
   selector:
     {{- include "jitsi-meet.jibri.selectorLabels" . | nindent 4 }}
 {{- end }}

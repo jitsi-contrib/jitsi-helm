@@ -244,7 +244,10 @@ etherpad:
     tag: 3.3.2
 
   service:
+    type: ClusterIP
     port: 9001
+    # Annotations to be added to the service
+    annotations: {}
 
   livenessProbe:
     httpGet:
@@ -308,7 +311,10 @@ excalidraw:
     tag: 2026.3.0
 
   service:
+    type: ClusterIP
     port: 9002
+    # Annotations to be added to the service
+    annotations: {}
 
   livenessProbe:
     httpGet:
@@ -553,6 +559,8 @@ prosody:
       xmpp-c2s: 5222
       xmpp-s2s: 5269
       xmpp-component: 5347
+    # Annotations to be added to the service
+    annotations: {}
 
   livenessProbe:
     httpGet:
@@ -1087,7 +1095,10 @@ opusTranscriberProxy:
     tag: e74cae2
 
   service:
+    type: ClusterIP
     port: 8080
+    # Annotations to be added to the service
+    annotations: {}
 
   # Interface opus-transcriber-proxy listens on inside the pod.
   host: "0.0.0.0"
@@ -1275,7 +1286,10 @@ skynet:
     tag: 2026.4.1-cpu
 
   service:
+    type: ClusterIP
     port: 8000
+    # Annotations to be added to the service
+    annotations: {}
 
   whisper:
     # Whisper model name, pulled from HuggingFace at runtime. Defaults to the
@@ -1364,6 +1378,13 @@ jibri:
 
   breweryMuc: jibribrewery
   timeout: 90
+
+  # The service exposes Jibri's internal (3333) and API (2222) ports for
+  # in-cluster access only, so the ports themselves are not configurable.
+  service:
+    type: ClusterIP
+    # Annotations to be added to the service
+    annotations: {}
 
   # Jibri XMPP user credentials
   xmpp:

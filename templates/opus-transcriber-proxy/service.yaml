@@ -5,12 +5,17 @@ metadata:
   name: {{ include "jitsi-meet.opus-transcriber-proxy.fullname" . }}
   labels:
     {{- include "jitsi-meet.opus-transcriber-proxy.labels" . | nindent 4 }}
+  {{- with .Values.opusTranscriberProxy.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.opusTranscriberProxy.service.type }}
   ports:
     - name: http
       protocol: TCP
       port: {{ .Values.opusTranscriberProxy.service.port }}
+      targetPort: http
   selector:
     {{- include "jitsi-meet.opus-transcriber-proxy.selectorLabels" . | nindent 4 }}
 {{- end }}
