@@ -70,6 +70,11 @@ spec:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.excalidraw.fullname" . }}
+            {{- if .Values.global.releaseSecretsOverride.enabled }}
+            {{-   range .Values.global.releaseSecretsOverride.extraEnvFrom }}
+            - {{    tpl (toYaml . ) $ | indent 14 | trim }}
+            {{-   end }}
+            {{- end }}
           {{- with .Values.excalidraw.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

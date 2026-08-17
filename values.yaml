@@ -11,11 +11,13 @@ global:
   podAnnotations: {}
   releaseSecretsOverride:
     enabled: false
-    # Support environment variables from pre-created secrets, such as 1Password
-    # operator.
+    # Environment variables from secrets created outside the chart, for example
+    # by the 1Password or the External Secrets operator. Every component gets
+    # these sources, and they come last, so they override the values the chart
+    # provides itself. The list is ignored unless enabled is true as well.
     #extraEnvFrom:
     #  - secretRef:
-    #      name: '{{ include "prosody.fullname" . }}-overrides'
+    #      name: '{{ .Release.Name }}-overrides'
     #      optional: true
 
 nameOverride: ""
