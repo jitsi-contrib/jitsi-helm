@@ -123,7 +123,7 @@ spec:
                 name: {{ include "jitsi-meet.common" . }}
             - configMapRef:
                 name: {{ include "jitsi-meet.jibri.fullname" . }}
-            {{- range .Values.jibri.extraSecretsFrom }}
+            {{- range .Values.jibri.extraEnvFrom }}
             - {{  tpl (toYaml . ) $ | indent 14 | trim }}
             {{- end }}
             {{- if .Values.global.releaseSecretsOverride.enabled }}

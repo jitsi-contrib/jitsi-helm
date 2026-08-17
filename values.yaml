@@ -1438,10 +1438,10 @@ jibri:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
   extraSecrets: []
-  extraSecretsFrom: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
