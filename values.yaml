@@ -1402,11 +1402,15 @@ skynet:
   resources: {}
   podAnnotations: {}
   podLabels: {}
-  podSecurityContext: {}
+  # The image runs as uid 1001, so the models volume has to be group-writable
+  # by it. Without this a PersistentVolumeClaim is root-owned and the model
+  # download fails.
+  podSecurityContext:
+    fsGroup: 1001
   # Hardening that holds regardless of the image. Unlike the jitsi components,
-  # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
-  # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
-  # live test shows which user it runs as and which paths it writes to.
+  # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot and
+  # readOnlyRootFilesystem stay unset until a live test shows which paths it
+  # writes to.
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
