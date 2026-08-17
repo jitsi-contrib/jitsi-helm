@@ -293,7 +293,18 @@ etherpad:
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
-  securityContext: {}
+  # Hardening that holds regardless of the image. Unlike the jitsi components,
+  # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
+  # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
+  # live test shows which user it runs as and which paths it writes to.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -351,7 +362,18 @@ excalidraw:
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
-  securityContext: {}
+  # Hardening that holds regardless of the image. Unlike the jitsi components,
+  # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
+  # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
+  # live test shows which user it runs as and which paths it writes to.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -1143,7 +1165,18 @@ opusTranscriberProxy:
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
-  securityContext: {}
+  # Hardening that holds regardless of the image. Unlike the jitsi components,
+  # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
+  # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
+  # live test shows which user it runs as and which paths it writes to.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
@@ -1334,7 +1367,18 @@ skynet:
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
-  securityContext: {}
+  # Hardening that holds regardless of the image. Unlike the jitsi components,
+  # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
+  # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
+  # live test shows which user it runs as and which paths it writes to.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    seccompProfile:
+      type: RuntimeDefault
   tolerations: []
 
 ## #############################################################################
