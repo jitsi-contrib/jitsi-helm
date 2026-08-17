@@ -56,6 +56,9 @@ spec:
       securityContext:
         {{- toYaml .Values.jibri.podSecurityContext | nindent 8 }}
       volumes:
+        # Jibri needs far more scratch space than the other components, which
+        # get by on 16Mi. Both limits come from what Jibri uses on real
+        # deployments, so don't shrink them to match the others.
         - name: run
           emptyDir:
             sizeLimit: 256Mi

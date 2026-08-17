@@ -53,6 +53,8 @@ spec:
             sizeLimit: 16Mi
         - name: tmp
           emptyDir:
+            # Larger than the 16Mi most components use, from what Jigasi needs
+            # on real deployments.
             sizeLimit: 128Mi
         {{- if .Values.jigasi.extraFiles }}
         - name: extra-files

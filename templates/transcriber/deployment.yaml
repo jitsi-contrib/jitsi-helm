@@ -54,6 +54,8 @@ spec:
             sizeLimit: 16Mi
         - name: tmp
           emptyDir:
+            # Larger than the 16Mi most components use, from what the
+            # Transcriber needs on real deployments.
             sizeLimit: 128Mi
         - name: transcriber-data
           {{- if .Values.transcriber.persistence.enabled }}
