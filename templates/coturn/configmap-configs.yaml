@@ -13,8 +13,6 @@ data:
     log-file=stdout
     use-auth-secret
     no-multicast-peers
-    no-cli
-    no-loopback-peers
     no-tcp-relay
     no-dtls
     {{- if .Values.coturn.turns.enabled }}
