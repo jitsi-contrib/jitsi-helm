@@ -572,6 +572,8 @@ prosody:
   persistence:
     enabled: false
     size: 3G
+    # Set this to existing PVC name if you have one.
+    existingClaim:
     storageClassName:
 
   # Prosody requires its data path to be owned by the container user, which

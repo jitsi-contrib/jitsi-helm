@@ -112,12 +112,18 @@ spec:
             name: {{ include "jitsi-meet.prosody.fullname" . }}-transcription
         {{- end }}
         {{- if not .Values.prosody.persistence.enabled }}
-        # With persistence enabled the prosody-data volume comes from the
-        # volumeClaimTemplate below, which the StatefulSet controller adds to
-        # every pod itself.
         - name: prosody-data
           emptyDir: {}
+        {{- else if .Values.prosody.persistence.existingClaim }}
+        - name: prosody-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.prosody.persistence.existingClaim }}
         {{- end }}
+        {{- /*
+             With persistence enabled and no existingClaim, the prosody-data
+             volume comes from the volumeClaimTemplate below, which the
+             StatefulSet controller adds to every pod itself.
+        */}}
         {{- if .Values.prosody.metrics.enabled }}
         - name: metrics-config
           configMap:
@@ -321,7 +327,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
-  {{- if .Values.prosody.persistence.enabled }}
+  {{- if and
+         .Values.prosody.persistence.enabled
+         (not .Values.prosody.persistence.existingClaim)
+  }}
   volumeClaimTemplates:
     - metadata:
         name: prosody-data
