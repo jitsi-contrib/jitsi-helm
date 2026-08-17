@@ -193,6 +193,7 @@ web:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs: {}
   extraVolumes: []
   extraVolumeMounts: []
@@ -259,6 +260,7 @@ etherpad:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs:
     NODE_ENV: production
     ADMIN_PASSWORD: admin
@@ -330,6 +332,7 @@ excalidraw:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
   extraVolumes: []
@@ -479,6 +482,7 @@ coturn:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
   extraVolumes: []
@@ -724,6 +728,7 @@ jicofo:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
   extraVolumes: []
@@ -915,6 +920,7 @@ jvb:
 
   affinity: {}
   annotations: {}
+  extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
   extraVolumes: []
