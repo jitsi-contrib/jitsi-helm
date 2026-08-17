@@ -26,10 +26,10 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/prosody/configmap.yaml") . | sha256sum | quote }}
-        checksum/config-continit: {{ include (print $.Template.BasePath "/prosody/configmap-continit.yaml") . | sha256sum | quote }}
         checksum/config-coturn: {{ include (print $.Template.BasePath "/prosody/configmap-coturn.yaml") . | sha256sum | quote }}
         checksum/config-defaults: {{ include (print $.Template.BasePath "/prosody/configmap-defaults.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/prosody/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/prosody/configmap-scripts.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/prosody/secret.yaml") . | sha256sum | quote }}
         checksum/secret-coturn: {{ include (print $.Template.BasePath "/coturn/secret.yaml") . | sha256sum | quote }}
         checksum/secret-jibri-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum | quote }}
@@ -63,10 +63,10 @@ spec:
             sizeLimit: 16Mi
         - name: config
           emptyDir: {}
-        - name: custom-continit
+        - name: custom-scripts
           configMap:
             defaultMode: 0755
-            name: {{ include "jitsi-meet.prosody.fullname" . }}-continit
+            name: {{ include "jitsi-meet.prosody.fullname" . }}-scripts
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.prosody.fullname" . }}-defaults
@@ -204,10 +204,10 @@ spec:
             # Prosody's data path
             - name: prosody-data
               mountPath: /var/lib/prosody
-            {{- if .Values.prosody.custom.contInit._10_config }}
-            - name: custom-continit
-              mountPath: /etc/cont-init.d/10-config
-              subPath: 10-config
+            {{- if .Values.prosody.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
             {{- end }}
             {{- if .Values.prosody.custom.defaults._prosody_cfg_lua }}
             - name: custom-defaults

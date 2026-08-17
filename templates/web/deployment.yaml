@@ -30,8 +30,8 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum | quote }}
         checksum/config-conffiles: {{ include (print $.Template.BasePath "/web/configmap-conffiles.yaml") . | sha256sum | quote }}
-        checksum/config-continit: {{ include (print $.Template.BasePath "/web/configmap-continit.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/web/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/web/configmap-scripts.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.web.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
         {{- end }}
@@ -57,10 +57,10 @@ spec:
             sizeLimit: 16Mi
         - name: config
           emptyDir: {}
-        - name: custom-continit
+        - name: custom-scripts
           configMap:
             defaultMode: 0755
-            name: {{ include "jitsi-meet.web.fullname" . }}-continit
+            name: {{ include "jitsi-meet.web.fullname" . }}-scripts
         - name: custom-conffiles
           configMap:
             name: {{ include "jitsi-meet.web.fullname" . }}-conffiles
@@ -130,10 +130,10 @@ spec:
               mountPath: /tmp
             - name: config
               mountPath: /config
-            {{- if .Values.web.custom.contInit._10_config }}
-            - name: custom-continit
-              mountPath: /etc/cont-init.d/10-config
-              subPath: 10-config
+            {{- if .Values.web.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
             {{- end }}
             {{- if or
                    .Values.web.custom.configs._custom_config_js

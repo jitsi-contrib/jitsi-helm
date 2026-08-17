@@ -1,0 +1,11 @@
+{{- if .Values.prosody.custom.scripts._config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.prosody.fullname" . }}-scripts
+  labels:
+    {{- include "jitsi-meet.prosody.labels" . | nindent 4 }}
+data:
+  config: |
+    {{- .Values.prosody.custom.scripts._config | nindent 4 }}
+{{- end }}

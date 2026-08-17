@@ -1,0 +1,11 @@
+{{- if .Values.web.custom.scripts._config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.web.fullname" . }}-scripts
+  labels:
+    {{- include "jitsi-meet.web.labels" . | nindent 4 }}
+data:
+  config: |
+    {{- .Values.web.custom.scripts._config | nindent 4 }}
+{{- end }}

@@ -33,10 +33,10 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jibri/configmap.yaml") . | sha256sum | quote }}
-        checksum/config-continit: {{ include (print $.Template.BasePath "/jibri/configmap-continit.yaml") . | sha256sum | quote }}
         checksum/config-defaults: {{ include (print $.Template.BasePath "/jibri/configmap-defaults.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jibri/configmap-extrafiles.yaml") . | sha256sum | quote }}
         checksum/config-other: {{ include (print $.Template.BasePath "/jibri/configmap-other.yaml") . | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/jibri/configmap-scripts.yaml") . | sha256sum | quote }}
         checksum/secret-xmpp: {{ include (print $.Template.BasePath "/jibri/secret-xmpp.yaml") . | sha256sum | quote }}
         checksum/secret-recorder: {{ include (print $.Template.BasePath "/jibri/secret-recorder.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jibri.podAnnotations) }}
@@ -67,10 +67,10 @@ spec:
             sizeLimit: 256Mi
         - name: config
           emptyDir: {}
-        - name: custom-continit
+        - name: custom-scripts
           configMap:
             defaultMode: 0755
-            name: {{ include "jitsi-meet.jibri.fullname" . }}-continit
+            name: {{ include "jitsi-meet.jibri.fullname" . }}-scripts
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jibri.fullname" . }}-defaults
@@ -170,10 +170,10 @@ spec:
               mountPath: /tmp
             - name: config
               mountPath: /config
-            {{- if .Values.jibri.custom.contInit._10_config }}
-            - name: custom-continit
-              mountPath: /etc/cont-init.d/10-config
-              subPath: 10-config
+            {{- if .Values.jibri.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
             {{- end }}
             {{- if .Values.jibri.custom.defaults._jibri_conf }}
             - name: custom-defaults
@@ -189,6 +189,11 @@ spec:
             - name: custom-defaults
               mountPath: /defaults/autoscaler-sidecar.config
               subPath: autoscaler-sidecar.config
+            {{- end }}
+            {{- if .Values.jibri.custom.defaults._xmpp_conf }}
+            - name: custom-defaults
+              mountPath: /defaults/xmpp.conf
+              subPath: xmpp.conf
             {{- end }}
             {{- if .Values.jibri.custom.defaults._xorg_video_dummy_conf }}
             - name: custom-defaults

@@ -30,9 +30,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jicofo/configmap.yaml") . | sha256sum | quote }}
         checksum/config-configs: {{ include (print $.Template.BasePath "/jicofo/configmap-configs.yaml") . | sha256sum | quote }}
-        checksum/config-continit: {{ include (print $.Template.BasePath "/jicofo/configmap-continit.yaml") . | sha256sum | quote }}
         checksum/config-defaults: {{ include (print $.Template.BasePath "/jicofo/configmap-defaults.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jicofo/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/jicofo/configmap-scripts.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jicofo/secret.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jicofo.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
@@ -59,10 +59,10 @@ spec:
             sizeLimit: 16Mi
         - name: config
           emptyDir: {}
-        - name: custom-continit
+        - name: custom-scripts
           configMap:
             defaultMode: 0755
-            name: {{ include "jitsi-meet.jicofo.fullname" . }}-continit
+            name: {{ include "jitsi-meet.jicofo.fullname" . }}-scripts
         - name: custom-defaults
           configMap:
             name: {{ include "jitsi-meet.jicofo.fullname" . }}-defaults
@@ -134,10 +134,10 @@ spec:
             # to support readOnlyRootFilesystem
             - name: config
               mountPath: /config
-            {{- if .Values.jicofo.custom.contInit._10_config }}
-            - name: custom-continit
-              mountPath: /etc/cont-init.d/10-config
-              subPath: 10-config
+            {{- if .Values.jicofo.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
             {{- end }}
             {{- if .Values.jicofo.custom.defaults._jicofo_conf }}
             - name: custom-defaults

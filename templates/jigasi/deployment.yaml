@@ -33,7 +33,9 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jigasi/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-defaults: {{ include (print $.Template.BasePath "/jigasi/configmap-defaults.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jigasi/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/jigasi/configmap-scripts.yaml") . | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.jigasi.podAnnotations) }}
         {{- toYaml . | nindent 8  }}
@@ -60,6 +62,24 @@ spec:
             # Larger than the 16Mi most components use, from what Jigasi needs
             # on real deployments.
             sizeLimit: 128Mi
+        {{- if .Values.jigasi.custom.scripts._config }}
+        - name: custom-scripts
+          configMap:
+            defaultMode: 0755
+            name: {{ include "jitsi-meet.jigasi.fullname" . }}-scripts
+        {{- end }}
+        {{- if or
+               .Values.jigasi.custom.defaults._autoscaler_sidecar_config
+               .Values.jigasi.custom.defaults._logging_properties
+               .Values.jigasi.custom.defaults._sip_communicator_properties
+               .Values.jigasi.custom.defaults._sipserver_sip_communicator_properties
+               .Values.jigasi.custom.defaults._transcriber_sip_communicator_properties
+               .Values.jigasi.custom.defaults._xmpp_sip_communicator_properties
+        }}
+        - name: custom-defaults
+          configMap:
+            name: {{ include "jitsi-meet.jigasi.fullname" . }}-defaults
+        {{- end }}
         {{- if .Values.jigasi.extraFiles }}
         - name: extra-files
           configMap:
@@ -134,6 +154,41 @@ spec:
               mountPath: /run
             - name: tmp
               mountPath: /tmp
+            {{- if .Values.jigasi.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
+            {{- end }}
+            {{- if .Values.jigasi.custom.defaults._autoscaler_sidecar_config }}
+            - name: custom-defaults
+              mountPath: /defaults/autoscaler-sidecar.config
+              subPath: autoscaler-sidecar.config
+            {{- end }}
+            {{- if .Values.jigasi.custom.defaults._logging_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/logging.properties
+              subPath: logging.properties
+            {{- end }}
+            {{- if .Values.jigasi.custom.defaults._sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/sip-communicator.properties
+              subPath: sip-communicator.properties
+            {{- end }}
+            {{- if .Values.jigasi.custom.defaults._sipserver_sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/sipserver-sip-communicator.properties
+              subPath: sipserver-sip-communicator.properties
+            {{- end }}
+            {{- if .Values.jigasi.custom.defaults._transcriber_sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/transcriber-sip-communicator.properties
+              subPath: transcriber-sip-communicator.properties
+            {{- end }}
+            {{- if .Values.jigasi.custom.defaults._xmpp_sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/xmpp-sip-communicator.properties
+              subPath: xmpp-sip-communicator.properties
+            {{- end }}
             {{- range $i, $f := .Values.jigasi.extraFiles }}
             - name: extra-files
               mountPath: {{ $f.path }}

@@ -1,0 +1,15 @@
+{{- if and
+       .Values.jigasi.enabled
+       (not .Values.jigasi.useExternalJigasi)
+       .Values.jigasi.custom.scripts._config
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jigasi.fullname" . }}-scripts
+  labels:
+    {{- include "jitsi-meet.jigasi.labels" . | nindent 4 }}
+data:
+  config: |
+    {{- .Values.jigasi.custom.scripts._config | nindent 4 }}
+{{- end }}

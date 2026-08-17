@@ -1,0 +1,27 @@
+{{- if or
+       .Values.jvb.custom.defaults._autoscaler_sidecar_config
+       .Values.jvb.custom.defaults._jvb_conf
+       .Values.jvb.custom.defaults._logging_properties
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.jvb.fullname" . }}-defaults
+  labels:
+    {{- include "jitsi-meet.jvb.labels" . | nindent 4 }}
+data:
+  {{- with .Values.jvb.custom.defaults._autoscaler_sidecar_config }}
+  autoscaler-sidecar.config: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.jvb.custom.defaults._jvb_conf }}
+  jvb.conf: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.jvb.custom.defaults._logging_properties }}
+  logging.properties: |
+    {{- . | nindent 4 }}
+  {{- end }}
+{{- end }}

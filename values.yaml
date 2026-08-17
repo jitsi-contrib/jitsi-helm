@@ -84,8 +84,9 @@ web:
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/web/rootfs
   custom:
-    contInit:
-      _10_config: ""
+    configs:
+      _custom_config_js: ""
+      _custom_interface_config_js: ""
     defaults:
       _default: ""
       _ffdhe2048_txt: ""
@@ -95,9 +96,8 @@ web:
       _settings_config_js: ""
       _ssl_conf: ""
       _system_config_js: ""
-    configs:
-      _custom_config_js: ""
-      _custom_interface_config_js: ""
+    scripts:
+      _config: ""
 
   extraFiles: []
   # - path: /config/nginx-custom/oidc.conf
@@ -108,7 +108,7 @@ web:
   #           proxy_set_header X-Forwarded-For $remote_addr;
   #           proxy_set_header Host $http_host;
   #       }
-  # - path: /etc/cont-init.d/20-custom
+  # - path: /etc/s6-overlay/scripts/my-helper
   #   mode: "0755"
   #   content: |
   #     #!/usr/bin/env bash
@@ -563,12 +563,12 @@ prosody:
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/prosody/rootfs
   custom:
-    contInit:
-      _10_config: ""
     defaults:
+      _jitsi_meet_cfg_lua: ""
       _prosody_cfg_lua: ""
       _saslauthd_conf: ""
-      _jitsi_meet_cfg_lua: ""
+    scripts:
+      _config: ""
 
   # JWT secret.
   # Required only if authentication type is "token" or "hybrid_matrix_token"
@@ -702,13 +702,13 @@ jicofo:
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jicofo/rootfs
   custom:
-    contInit:
-      _10_config: ""
+    configs:
+      _custom_jicofo_conf: ""
     defaults:
       _jicofo_conf: ""
       _logging_properties: ""
-    configs:
-      _custom_jicofo_conf: ""
+    scripts:
+      _config: ""
 
   # Jicofo XMPP user credentials
   xmpp:
@@ -787,6 +787,16 @@ jvb:
     repository: ghcr.io/jitsi/jvb
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
+
+  # Override the image-provided configuration files:
+  # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jvb/rootfs
+  custom:
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _jvb_conf: ""
+      _logging_properties: ""
+    scripts:
+      _config: ""
 
   breweryMuc: jvbbrewery
 
@@ -1000,6 +1010,19 @@ jigasi:
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
 
+  # Override the image-provided configuration files:
+  # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jigasi/rootfs
+  custom:
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _logging_properties: ""
+      _sip_communicator_properties: ""
+      _sipserver_sip_communicator_properties: ""
+      _transcriber_sip_communicator_properties: ""
+      _xmpp_sip_communicator_properties: ""
+    scripts:
+      _config: ""
+
   breweryMuc: jigasibrewery
 
   # Jigasi XMPP user credentials
@@ -1195,6 +1218,20 @@ transcriber:
     repository: ghcr.io/jitsi/jigasi
     # If the tag is not set here then it is retrieved from Chart.yaml
     #tag:
+
+  # Override the image-provided configuration files. The Transcriber runs the
+  # Jigasi image:
+  # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jigasi/rootfs
+  custom:
+    defaults:
+      _autoscaler_sidecar_config: ""
+      _logging_properties: ""
+      _sip_communicator_properties: ""
+      _sipserver_sip_communicator_properties: ""
+      _transcriber_sip_communicator_properties: ""
+      _xmpp_sip_communicator_properties: ""
+    scripts:
+      _config: ""
 
   # Transcriber XMPP user credentials
   # Transcriber also requires credentials for Jigasi, even if its pod is
@@ -1413,15 +1450,16 @@ jibri:
   # Override the image-provided configuration files:
   # See https://github.com/jitsi/docker-jitsi-meet/tree/master/jibri/rootfs
   custom:
-    contInit:
-      _10_config: ""
     defaults:
       _autoscaler_sidecar_config: ""
       _jibri_conf: ""
       _logging_properties: ""
+      _xmpp_conf: ""
       _xorg_video_dummy_conf: ""
     other:
       _finalize_sh: ""
+    scripts:
+      _config: ""
 
   breweryMuc: jibribrewery
   timeout: 90

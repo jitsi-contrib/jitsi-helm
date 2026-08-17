@@ -63,7 +63,9 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/jvb/configmap.yaml") $ | sha256sum | quote }}
+        checksum/config-defaults: {{ include (print $.Template.BasePath "/jvb/configmap-defaults.yaml") $ | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/jvb/configmap-extrafiles.yaml") $ | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/jvb/configmap-scripts.yaml") $ | sha256sum | quote }}
         checksum/secret: {{ include (print $.Template.BasePath "/jvb/secret.yaml") $ | sha256sum | quote }}
         {{- if and
                $.Values.jvb.metrics.enabled
@@ -99,6 +101,21 @@ spec:
         - name: tmp
           emptyDir:
             sizeLimit: 16Mi
+        {{- if $.Values.jvb.custom.scripts._config }}
+        - name: custom-scripts
+          configMap:
+            defaultMode: 0755
+            name: {{ include "jitsi-meet.jvb.fullname" $ }}-scripts
+        {{- end }}
+        {{- if or
+               $.Values.jvb.custom.defaults._autoscaler_sidecar_config
+               $.Values.jvb.custom.defaults._jvb_conf
+               $.Values.jvb.custom.defaults._logging_properties
+        }}
+        - name: custom-defaults
+          configMap:
+            name: {{ include "jitsi-meet.jvb.fullname" $ }}-defaults
+        {{- end }}
         {{- if $.Values.jvb.extraFiles }}
         - name: extra-files
           configMap:
@@ -184,6 +201,26 @@ spec:
               mountPath: /run
             - name: tmp
               mountPath: /tmp
+            {{- if $.Values.jvb.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
+            {{- end }}
+            {{- if $.Values.jvb.custom.defaults._autoscaler_sidecar_config }}
+            - name: custom-defaults
+              mountPath: /defaults/autoscaler-sidecar.config
+              subPath: autoscaler-sidecar.config
+            {{- end }}
+            {{- if $.Values.jvb.custom.defaults._jvb_conf }}
+            - name: custom-defaults
+              mountPath: /defaults/jvb.conf
+              subPath: jvb.conf
+            {{- end }}
+            {{- if $.Values.jvb.custom.defaults._logging_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/logging.properties
+              subPath: logging.properties
+            {{- end }}
             {{- range $i, $f := $.Values.jvb.extraFiles }}
             - name: extra-files
               mountPath: {{ $f.path }}

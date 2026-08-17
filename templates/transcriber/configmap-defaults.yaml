@@ -1,0 +1,49 @@
+{{- if and
+       .Values.transcriber.enabled
+       (not .Values.transcriber.useExternalTranscriber)
+       (or
+          .Values.transcriber.custom.defaults._autoscaler_sidecar_config
+          .Values.transcriber.custom.defaults._logging_properties
+          .Values.transcriber.custom.defaults._sip_communicator_properties
+          .Values.transcriber.custom.defaults._sipserver_sip_communicator_properties
+          .Values.transcriber.custom.defaults._transcriber_sip_communicator_properties
+          .Values.transcriber.custom.defaults._xmpp_sip_communicator_properties
+       )
+}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jitsi-meet.transcriber.fullname" . }}-defaults
+  labels:
+    {{- include "jitsi-meet.transcriber.labels" . | nindent 4 }}
+data:
+  {{- with .Values.transcriber.custom.defaults._autoscaler_sidecar_config }}
+  autoscaler-sidecar.config: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.transcriber.custom.defaults._logging_properties }}
+  logging.properties: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.transcriber.custom.defaults._sip_communicator_properties }}
+  sip-communicator.properties: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.transcriber.custom.defaults._sipserver_sip_communicator_properties }}
+  sipserver-sip-communicator.properties: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.transcriber.custom.defaults._transcriber_sip_communicator_properties }}
+  transcriber-sip-communicator.properties: |
+    {{- . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.transcriber.custom.defaults._xmpp_sip_communicator_properties }}
+  xmpp-sip-communicator.properties: |
+    {{- . | nindent 4 }}
+  {{- end }}
+{{- end }}

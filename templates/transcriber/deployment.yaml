@@ -33,7 +33,9 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/transcriber/configmap.yaml") . | sha256sum | quote }}
+        checksum/config-defaults: {{ include (print $.Template.BasePath "/transcriber/configmap-defaults.yaml") . | sha256sum | quote }}
         checksum/config-extrafiles: {{ include (print $.Template.BasePath "/transcriber/configmap-extrafiles.yaml") . | sha256sum | quote }}
+        checksum/config-scripts: {{ include (print $.Template.BasePath "/transcriber/configmap-scripts.yaml") . | sha256sum | quote }}
         checksum/secret-jigasi: {{ include (print $.Template.BasePath "/jigasi/secret.yaml") . | sha256sum | quote }}
         checksum/secret-transcriber: {{ include (print $.Template.BasePath "/transcriber/secret.yaml") . | sha256sum | quote }}
         {{- with (mergeOverwrite (dict) .Values.global.podAnnotations .Values.transcriber.podAnnotations) }}
@@ -61,6 +63,24 @@ spec:
             # Larger than the 16Mi most components use, from what the
             # Transcriber needs on real deployments.
             sizeLimit: 128Mi
+        {{- if .Values.transcriber.custom.scripts._config }}
+        - name: custom-scripts
+          configMap:
+            defaultMode: 0755
+            name: {{ include "jitsi-meet.transcriber.fullname" . }}-scripts
+        {{- end }}
+        {{- if or
+               .Values.transcriber.custom.defaults._autoscaler_sidecar_config
+               .Values.transcriber.custom.defaults._logging_properties
+               .Values.transcriber.custom.defaults._sip_communicator_properties
+               .Values.transcriber.custom.defaults._sipserver_sip_communicator_properties
+               .Values.transcriber.custom.defaults._transcriber_sip_communicator_properties
+               .Values.transcriber.custom.defaults._xmpp_sip_communicator_properties
+        }}
+        - name: custom-defaults
+          configMap:
+            name: {{ include "jitsi-meet.transcriber.fullname" . }}-defaults
+        {{- end }}
         - name: transcriber-data
           {{- if .Values.transcriber.persistence.enabled }}
           persistentVolumeClaim:
@@ -144,6 +164,41 @@ spec:
               mountPath: /run
             - name: tmp
               mountPath: /tmp
+            {{- if .Values.transcriber.custom.scripts._config }}
+            - name: custom-scripts
+              mountPath: /etc/s6-overlay/scripts/config
+              subPath: config
+            {{- end }}
+            {{- if .Values.transcriber.custom.defaults._autoscaler_sidecar_config }}
+            - name: custom-defaults
+              mountPath: /defaults/autoscaler-sidecar.config
+              subPath: autoscaler-sidecar.config
+            {{- end }}
+            {{- if .Values.transcriber.custom.defaults._logging_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/logging.properties
+              subPath: logging.properties
+            {{- end }}
+            {{- if .Values.transcriber.custom.defaults._sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/sip-communicator.properties
+              subPath: sip-communicator.properties
+            {{- end }}
+            {{- if .Values.transcriber.custom.defaults._sipserver_sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/sipserver-sip-communicator.properties
+              subPath: sipserver-sip-communicator.properties
+            {{- end }}
+            {{- if .Values.transcriber.custom.defaults._transcriber_sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/transcriber-sip-communicator.properties
+              subPath: transcriber-sip-communicator.properties
+            {{- end }}
+            {{- if .Values.transcriber.custom.defaults._xmpp_sip_communicator_properties }}
+            - name: custom-defaults
+              mountPath: /defaults/xmpp-sip-communicator.properties
+              subPath: xmpp-sip-communicator.properties
+            {{- end }}
             # must always exist, even without persistence
             - name: transcriber-data
               mountPath: /tmp/transcripts
