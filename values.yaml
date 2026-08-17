@@ -228,6 +228,7 @@ web:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -305,6 +306,7 @@ etherpad:
     privileged: false
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -374,6 +376,7 @@ excalidraw:
     privileged: false
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -541,6 +544,7 @@ coturn:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -788,6 +792,7 @@ jicofo:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -981,6 +986,8 @@ jvb:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  # Ignored when useHostPort is set, where Recreate is forced.
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -1081,6 +1088,7 @@ jigasi:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -1180,6 +1188,7 @@ opusTranscriberProxy:
     privileged: false
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -1284,6 +1293,7 @@ transcriber:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -1382,6 +1392,10 @@ skynet:
     privileged: false
     seccompProfile:
       type: RuntimeDefault
+  # Set type: Recreate here when persistence is enabled on a ReadWriteOnce
+  # storage class: the new pod cannot mount the models volume until the old
+  # one releases it.
+  strategy: {}
   tolerations: []
 
 ## #############################################################################
@@ -1517,14 +1531,6 @@ jibri:
     #useHost: false
     #size: 2Gi
 
-  # Configure the update strategy for Jibri deployment.
-  # This may be useful depending on your persistence settings,
-  # e.g. when you use ReadWriteOnce PVCs.
-  # Default strategy is "RollingUpdate", which keeps
-  # the old instances up until the new ones are ready.
-  #strategy:
-  #  type: RollingUpdate
-
   affinity: {}
   annotations: {}
   extraEnvFrom: []
@@ -1553,4 +1559,9 @@ jibri:
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault
+  # Update strategy for the Deployment. Defaults to RollingUpdate, which
+  # keeps the old pods up until the new ones are ready. Set Recreate when
+  # that cannot work, e.g. with a ReadWriteOnce PVC the new pod cannot
+  # mount until the old one releases it.
+  strategy: {}
   tolerations: []

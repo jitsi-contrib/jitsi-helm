@@ -20,6 +20,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.transcriber.selectorLabels" . | nindent 6 }}
+  {{- with .Values.transcriber.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

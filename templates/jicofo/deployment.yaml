@@ -16,6 +16,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.jicofo.selectorLabels" . | nindent 6 }}
+  {{- with .Values.jicofo.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

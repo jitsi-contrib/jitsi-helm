@@ -29,6 +29,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.coturn.selectorLabels" . | nindent 6 }}
+  {{- with .Values.coturn.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

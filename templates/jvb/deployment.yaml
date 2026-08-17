@@ -40,8 +40,18 @@ spec:
       {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 6 }}
       instance: {{ $i | quote }}
   {{- if $.Values.jvb.useHostPort }}
+  {{- /*
+       Forced, not configurable: a rolling update cannot start the new pod
+       while the old one still holds the hostPort, so the old one has to go
+       first. jvb.strategy applies only without hostPort.
+  */}}
   strategy:
     type: Recreate
+  {{- else }}
+  {{-   with $.Values.jvb.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{-   end }}
   {{- end }}
   template:
     metadata:

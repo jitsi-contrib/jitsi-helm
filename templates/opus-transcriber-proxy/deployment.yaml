@@ -23,6 +23,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.opus-transcriber-proxy.selectorLabels" . | nindent 6 }}
+  {{- with .Values.opusTranscriberProxy.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

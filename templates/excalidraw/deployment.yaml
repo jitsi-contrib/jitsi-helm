@@ -17,6 +17,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.excalidraw.selectorLabels" . | nindent 6 }}
+  {{- with .Values.excalidraw.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

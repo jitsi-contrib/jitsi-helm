@@ -17,6 +17,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.etherpad.selectorLabels" . | nindent 6 }}
+  {{- with .Values.etherpad.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:

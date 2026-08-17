@@ -20,6 +20,10 @@ spec:
   selector:
     matchLabels:
       {{- include "jitsi-meet.jigasi.selectorLabels" . | nindent 6 }}
+  {{- with .Values.jigasi.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       labels:
