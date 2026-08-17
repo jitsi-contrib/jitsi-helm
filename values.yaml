@@ -988,7 +988,7 @@ jigasi:
   livenessProbe:
     httpGet:
       path: /about/health
-      port: 8788
+      port: http
       httpHeaders:
         - name: Accept
           value: application/json
@@ -997,7 +997,7 @@ jigasi:
   readinessProbe:
     httpGet:
       path: /about/health
-      port: 8788
+      port: http
       httpHeaders:
         - name: Accept
           value: application/json
@@ -1166,7 +1166,7 @@ transcriber:
   livenessProbe:
     httpGet:
       path: /about/health
-      port: 8788
+      port: http
       httpHeaders:
         - name: Accept
           value: application/json
@@ -1175,7 +1175,7 @@ transcriber:
   readinessProbe:
     httpGet:
       path: /about/health
-      port: 8788
+      port: http
       httpHeaders:
         - name: Accept
           value: application/json
