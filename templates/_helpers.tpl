@@ -47,6 +47,26 @@ app.kubernetes.io/name: {{ include "jitsi-meet.name" . | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
 
+{{/*
+The value a key already has in a Secret this chart created earlier, so that a
+generated password survives an upgrade instead of being replaced by a fresh
+one, which would roll every pod that consumes it.
+
+Returns "" when there is no such Secret, when it has no such key, or when
+there is no cluster to ask: `lookup` is empty during `helm template` and
+`--dry-run`, and callers fall back to generating a value.
+
+Usage:
+  include "jitsi-meet.existingSecretValue"
+    (dict "ctx" $ "name" <secret name> "key" <KEY>)
+*/}}
+{{- define "jitsi-meet.existingSecretValue" -}}
+{{- $secret := lookup "v1" "Secret" .ctx.Release.Namespace .name -}}
+{{- if and $secret $secret.data (index $secret.data .key) -}}
+{{-   index $secret.data .key | b64dec -}}
+{{- end -}}
+{{- end -}}
+
 {{/* Create the name of the service account to use */}}
 {{- define "jitsi-meet.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}

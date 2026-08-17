@@ -398,6 +398,7 @@ coturn:
       _turnserver_conf: ""
 
   staticAuth:
+    # Generated when unset, then kept across upgrades.
     secret:
     # Alternatively provide a name for an externally managed secret containing
     # the value for TURN_CREDENTIALS
@@ -731,6 +732,7 @@ jicofo:
 
   # Jicofo XMPP user credentials
   xmpp:
+    # Generated when unset, then kept across upgrades.
     password:
     # Alternatively provide a name for an externally managed secret containing
     # the values for JICOFO_AUTH_PASSWORD
@@ -811,6 +813,7 @@ jvb:
   # JVB XMPP user credentials
   xmpp:
     user: jvb
+    # Generated when unset, then kept across upgrades.
     password:
     # Alternatively provide a name for an externally managed secret containing
     # the values for JVB_AUTH_USER, JVB_AUTH_PASSWORD
@@ -1022,6 +1025,7 @@ jigasi:
   # Jigasi XMPP user credentials
   xmpp:
     user: jigasi
+    # Generated when unset, then kept across upgrades.
     password:
     # Alternatively provide a name for an externally managed secret containing
     # the values for JIGASI_XMPP_USER and JIGASI_XMPP_PASSWORD
@@ -1213,9 +1217,11 @@ transcriber:
     #tag:
 
   # Transcriber XMPP user credentials
-  # Transcriber also requires credentials for Jigasi, even if its pod is disabled.
+  # Transcriber also requires credentials for Jigasi, even if its pod is
+  # disabled.
   xmpp:
     user: transcriber
+    # Generated when unset, then kept across upgrades.
     password:
     # Alternatively provide a name for an externally managed secret containing
     # the values for JIGASI_TRANSCRIBER_USER and JIGASI_TRANSCRIBER_PASSWORD
@@ -1450,6 +1456,7 @@ jibri:
   # Jibri XMPP user credentials
   xmpp:
     user: jibri
+    # Generated when unset, then kept across upgrades.
     password:
     # Alternatively provide a name for an externally managed secret containing
     # the values for JIBRI_XMPP_USER and JIBRI_XMPP_PASSWORD
@@ -1458,6 +1465,7 @@ jibri:
   # Recorder XMPP user credentials
   recorder:
     user: recorder
+    # Generated when unset, then kept across upgrades.
     password:
     # Alternatively provide a name for an externally managed secret containing
     # the values for JIBRI_RECORDER_USER and JIBRI_RECORDER_PASSWORD
