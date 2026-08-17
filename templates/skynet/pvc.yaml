@@ -13,8 +13,10 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: {{ .Values.skynet.persistence.storageClass | quote }}
   resources:
     requests:
-      storage: {{ .Values.skynet.persistence.size | default "10Gi" }}
+      storage: {{ .Values.skynet.persistence.size | quote }}
+  {{- with .Values.skynet.persistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
 {{- end }}

@@ -1178,9 +1178,10 @@ transcriber:
 
   persistence:
     enabled: false
-    #storageClass: ""
-    #size: 10Gi
-    #existingClaim: ""
+    size: 10Gi
+    # Set this to existing PVC name if you have one.
+    existingClaim:
+    storageClassName:
 
   whisper:
     customService: ""
@@ -1281,9 +1282,10 @@ skynet:
   # re-downloading the model on every pod recreation.
   persistence:
     enabled: false
-    #storageClass: ""
-    #size: 10Gi
-    #existingClaim: ""
+    size: 10Gi
+    # Set this to existing PVC name if you have one.
+    existingClaim:
+    storageClassName:
 
   # No liveness probe by default: Skynet downloads the model on first start,
   # and a failing liveness probe would restart the container mid-download in a

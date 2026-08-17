@@ -13,9 +13,11 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: {{ .Values.transcriber.persistence.storageClass | quote }}
   resources:
     requests:
-      storage: {{ .Values.transcriber.persistence.size | default "10Gi" }}
+      storage: {{ .Values.transcriber.persistence.size | quote }}
+  {{- with .Values.transcriber.persistence.storageClassName }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
 {{- end }}
 
