@@ -45,7 +45,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" . }}
-      automountServiceAccountToken: false
+      automountServiceAccountToken: {{ .Values.web.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       volumes:

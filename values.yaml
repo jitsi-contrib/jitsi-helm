@@ -193,6 +193,7 @@ web:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraVolumes: []
@@ -264,6 +265,7 @@ etherpad:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs:
     NODE_ENV: production
@@ -352,6 +354,7 @@ excalidraw:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -516,6 +519,7 @@ coturn:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -663,6 +667,7 @@ prosody:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvs: {}
   extraFiles: []
   hostAliases: []
@@ -749,6 +754,7 @@ jicofo:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -956,6 +962,7 @@ jvb:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -1072,6 +1079,7 @@ jigasi:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -1174,6 +1182,7 @@ opusTranscriberProxy:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraFiles: []
   extraVolumes: []
@@ -1293,6 +1302,7 @@ transcriber:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -1393,6 +1403,7 @@ skynet:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
@@ -1565,6 +1576,7 @@ jibri:
 
   affinity: {}
   annotations: {}
+  automountServiceAccountToken: false
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
