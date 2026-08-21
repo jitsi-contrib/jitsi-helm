@@ -15,6 +15,12 @@ can deploy for you (Option 1) or wire to an existing instance (Option 2). You
 can also point the Transcriber at any other Jigasi-supported backend yourself
 (Option 3). **Skynet is not required.**
 
+> **Deprecated upstream:** the Jigasi-based transcription described here is
+> deprecated in Jitsi and will be removed in a future release. The successor is
+> a bridge-based transcription architecture. Existing setups keep working; plan
+> to migrate once this chart supports the new path. See the
+> [upgrading guide](/docs/guides/upgrading.md#deprecations).
+
 > **Note:** when this chart deploys Skynet it enables only the
 > `streaming_whisper` module, which does not require Redis. Skynet's
 > summaries/assistant modules are out of scope for this chart.

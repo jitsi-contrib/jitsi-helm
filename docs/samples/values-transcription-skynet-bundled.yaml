@@ -26,5 +26,5 @@ skynet:
   # Enable for large models to avoid re-downloading on every pod recreation.
   persistence:
     enabled: false
-    #storageClass: ""
+    #storageClassName: ""
     #size: 10Gi

@@ -41,3 +41,11 @@ jibri:
 
 The above example will allow your Jitsi users to make local recordings, as well
 as live streams of their meetings.
+
+With more than one replica the jibri pods share the recordings volume, so
+`jibri.persistence.accessModes` defaults to `[ReadWriteMany]`. Storage that only
+offers `ReadWriteOnce` leaves the claim Pending: either use an RWX-capable class
+(NFS, CephFS), or set `accessModes: [ReadWriteOnce]` and keep `replicaCount: 1`.
+A PVC's access modes cannot be changed afterwards, so pin them before the volume
+is created. Note that NFS ignores `fsGroup`, so the export itself has to be
+writable by GID 1000.

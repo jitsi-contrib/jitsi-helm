@@ -64,7 +64,7 @@ excalidraw:
       drop:
         - ALL
     readOnlyRootFilesystem: true
-    runAsNonRoot: false
+    runAsNonRoot: true
     runAsUser: 1000
     seccompProfile:
       type: RuntimeDefault

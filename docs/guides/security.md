@@ -44,9 +44,39 @@ These pods satisfy the Pod Security Admission `restricted` profile.
 
 ## What is not covered
 
-Etherpad, Excalidraw and Skynet are third-party images that this chart does not
-harden. They keep an empty `securityContext` and can be configured through their
-own `securityContext` / `podSecurityContext` values.
+Etherpad, Excalidraw, Skynet and the Opus transcriber proxy are third-party
+images. They get the image-agnostic half of the hardening -
+`allowPrivilegeEscalation: false`, `privileged: false`, all capabilities
+dropped, `seccompProfile: RuntimeDefault` - but not the identity or filesystem
+half, so they do not satisfy `restricted` as shipped:
+
+- Etherpad and Skynet run as their image's own user (5001 and 1001).
+- Excalidraw and the Opus transcriber proxy run as **root**.
+- None of them sets `readOnlyRootFilesystem`.
+- Skynet is the only one with a `podSecurityContext`: `fsGroup: 1001`, which is
+  what makes its models PVC writable.
+
+All of it is configurable through their own `securityContext` /
+`podSecurityContext` values. `docs/samples/values-hardened.yaml` has worked
+examples for Etherpad and Excalidraw, including the volumes each of them needs
+to run non-root.
+
+## ServiceAccount tokens
+
+No pod mounts a ServiceAccount token. Nothing in the chart talks to the
+Kubernetes API, so every workload sets `automountServiceAccountToken: false`.
+
+If you add a sidecar, an extra container or a hook that does need the API,
+enable it for that component alone:
+
+```yaml
+jvb:
+  automountServiceAccountToken: true
+```
+
+It is a per-component value on purpose: all components share one ServiceAccount,
+so any RBAC bound to it is reachable from every pod that mounts a token. Setting
+it to `null` omits the field and falls back to the ServiceAccount default.
 
 ## One thing worth knowing
 
