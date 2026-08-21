@@ -81,15 +81,15 @@ picture and how to relax it.
 - PVC-backed volumes (prosody, jibri, transcriber) are made writable through
   `fsGroup: 1000`. If your storage class ignores `fsGroup`, you may need
   `fsGroupChangePolicy`.
-- Prosody gains a short-lived root init container (`chown-data`) that fixes the
-  ownership of its data volume.
 
 ### Changed paths
 
 - Prosody's data path moved from `/config/data` to `/var/lib/prosody`, and
-  `prosody.dataDir` was removed. The same PVC is reused and only its mount path
-  changes, so the data should carry over. If you store user accounts in Prosody
-  (`internal_hashed`), back the volume up before upgrading.
+  `prosody.dataDir` was removed. The same PVC is reused, but Prosody now keeps
+  its data in the `data` subfolder of the mount point, one level below where
+  2.x stored it. Service accounts re-register themselves. If you store user
+  accounts in Prosody (`internal_hashed`), back the volume up before upgrading,
+  then move the existing content into `data/`.
 - Jibri recordings moved from `/data/recordings` to `/storage/recordings`.
 - `jibri.shm.enabled` now defaults to `true`, and jibri no longer requests the
   `SYS_ADMIN` capability.

@@ -40,8 +40,7 @@ its image expects that UID.
 - coturn, including its `init-coturn` and `acme-proxy` init containers
 - the metrics sidecars (prosody, jicofo, jvb)
 
-These pods satisfy the Pod Security Admission `restricted` profile, with the one
-exception below.
+These pods satisfy the Pod Security Admission `restricted` profile.
 
 ## What is not covered
 
@@ -49,7 +48,7 @@ Etherpad, Excalidraw and Skynet are third-party images that this chart does not
 harden. They keep an empty `securityContext` and can be configured through their
 own `securityContext` / `podSecurityContext` values.
 
-## Two things worth knowing
+## One thing worth knowing
 
 **Do not relax `allowPrivilegeEscalation`.** It looks like a setting to loosen
 when something breaks, but it is required. The images ship a setgid
@@ -61,13 +60,6 @@ unprivileged. Setting it to `true` re-enables the setgid bit, s6 then attempts
 ```
 s6-overlay-suexec: fatal: unable to setgid to root: Operation not permitted
 ```
-
-**Prosody has one root init container.** `chown-data` runs as root with every
-capability dropped except `CHOWN`, sets the ownership of `/var/lib/prosody`, and
-exits. It exists because Kubernetes cannot set the _owner_ of a volume
-(`fsGroup` only sets the group), while `prosodyctl` refuses to write to a data
-directory it does not own - without it, Prosody cannot generate its
-certificates. The long-running Prosody container is fully hardened.
 
 ## Privileged ports
 
