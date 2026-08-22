@@ -61,6 +61,11 @@ All of it is configurable through their own `securityContext` /
 examples for Etherpad and Excalidraw, including the volumes each of them needs
 to run non-root.
 
+Containers you supply yourself, through `<component>.extraInitContainers` or
+`web.extraContainers`, are rendered as written. The chart adds no
+`securityContext` to them, so the `restricted` claim above covers chart-owned
+containers only.
+
 ## ServiceAccount tokens
 
 No pod mounts a ServiceAccount token. Nothing in the chart talks to the

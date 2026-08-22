@@ -102,6 +102,9 @@ spec:
                 sleep 1;
               done;
               echo ">> Prosody is available"
+        {{- with .Values.jigasi.extraInitContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.jigasi.image.repository }}:{{ .Values.jigasi.image.tag | default .Chart.AppVersion }}"

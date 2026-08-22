@@ -71,6 +71,10 @@ spec:
         {{- with .Values.opusTranscriberProxy.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.opusTranscriberProxy.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-opus-transcriber-proxy
           image: "{{ .Values.opusTranscriberProxy.image.repository }}:{{ .Values.opusTranscriberProxy.image.tag }}"

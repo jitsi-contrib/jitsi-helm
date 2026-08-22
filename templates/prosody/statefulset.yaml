@@ -103,6 +103,10 @@ spec:
         {{- with .Values.prosody.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.prosody.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.prosody.image.repository }}:{{ .Values.prosody.image.tag | default .Chart.AppVersion }}"

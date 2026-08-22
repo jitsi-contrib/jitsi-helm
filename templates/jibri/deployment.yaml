@@ -110,6 +110,10 @@ spec:
         {{- with .Values.jibri.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.jibri.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.jibri.image.repository }}:{{ .Values.jibri.image.tag | default .Chart.AppVersion }}"
