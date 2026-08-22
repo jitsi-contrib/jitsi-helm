@@ -74,6 +74,10 @@ spec:
         {{- with .Values.skynet.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.skynet.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-skynet
           image: "{{ .Values.skynet.image.repository }}:{{ .Values.skynet.image.tag }}"

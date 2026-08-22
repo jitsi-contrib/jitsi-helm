@@ -88,6 +88,10 @@ spec:
         {{- with .Values.jicofo.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.jicofo.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.jicofo.image.repository }}:{{ .Values.jicofo.image.tag | default .Chart.AppVersion }}"

@@ -64,6 +64,10 @@ spec:
         {{- with .Values.etherpad.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.etherpad.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.etherpad.image.repository }}:{{ .Values.etherpad.image.tag }}"

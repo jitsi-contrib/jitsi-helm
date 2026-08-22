@@ -164,6 +164,19 @@ web:
   # Use this option if you want to override the nameserver IP.
   #resolverIP: 10.43.0.10
 
+  # User-supplied init containers, appended after any the chart adds itself.
+  # Not templated and not hardened by the chart, each entry brings its own
+  # securityContext.
+  #
+  # Each entry runs to completion before the main container starts. An entry
+  # that sets "restartPolicy: Always" is a native sidecar instead. It only has
+  # to start, then keeps running beside the main container and is stopped after
+  # it (Kubernetes 1.29 and later).
+  extraInitContainers: []
+  #  - name: init-example
+  #    image: busybox:1.38.0
+  #    command: ["sh", "-c", "echo init"]
+
   extraContainers: []
   #  - name: jitsi-oidc-adapter
   #    image: ghcr.io/jitsi-contrib/jitsi-oidc-adapter
@@ -287,6 +300,7 @@ etherpad:
     DISABLE_IP_LOGGING: "true"
     TRUST_PROXY: "true"
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -358,6 +372,7 @@ excalidraw:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -523,6 +538,7 @@ coturn:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -670,6 +686,7 @@ prosody:
   automountServiceAccountToken: false
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   hostAliases: []
   labels: {}
   nodeSelector: {}
@@ -758,6 +775,7 @@ jicofo:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -966,6 +984,7 @@ jvb:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -1083,6 +1102,7 @@ jigasi:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -1185,6 +1205,7 @@ opusTranscriberProxy:
   automountServiceAccountToken: false
   extraEnvFrom: []
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -1306,6 +1327,7 @@ transcriber:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -1407,6 +1429,7 @@ skynet:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraVolumes: []
   extraVolumeMounts: []
   hostAliases: []
@@ -1580,6 +1603,7 @@ jibri:
   extraEnvFrom: []
   extraEnvs: {}
   extraFiles: []
+  extraInitContainers: []
   extraSecrets: []
   extraVolumes: []
   extraVolumeMounts: []

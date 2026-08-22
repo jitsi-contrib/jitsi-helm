@@ -162,6 +162,9 @@ spec:
               mountPath: /etc/coturn/tls
               readOnly: true
             {{- end }}
+        {{- with .Values.coturn.extraInitContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"

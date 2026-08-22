@@ -110,6 +110,9 @@ spec:
                 sleep 1;
               done;
               echo ">> Prosody is available"
+        {{- with .Values.transcriber.extraInitContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}-transcriber
           image: "{{ .Values.transcriber.image.repository }}:{{ .Values.transcriber.image.tag | default .Chart.AppVersion }}"

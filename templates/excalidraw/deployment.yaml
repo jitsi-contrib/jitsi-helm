@@ -64,6 +64,10 @@ spec:
         {{- with .Values.excalidraw.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      {{- with .Values.excalidraw.extraInitContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.excalidraw.image.repository }}:{{ .Values.excalidraw.image.tag }}"
