@@ -117,11 +117,10 @@ web:
   service:
     type: ClusterIP
     port: 8000
-    # If you want to expose the Jitsi Web service directly
-    # (bypassing gateway or ingress), use this:
-    #type: NodePort
+    # Use a pre-defined external port for NodePort or LoadBalancer service,
+    # if needed. Will allocate a random port from allowed range if unset.
+    # (Default NodePort range for K8s is 30000-32767)
     #nodePort: 30580
-    #port: 8000
     externalIPs: []
     # Annotations to be added to the service (if LoadBalancer is used)
     # An example below is needed for GKE IAP enablement
