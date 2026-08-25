@@ -37,6 +37,32 @@ A config change rolls the affected pods automatically: the chart adds a checksum
 of each component's config to its pod template, so pods restart when their
 ConfigMap or Secret changes during the upgrade.
 
+## Breaking change in the web Service port
+
+`web.service.port` now defaults to **8000** (was 80), matching the port the web
+container listens on. Every other component already publishes its container port
+on the Service, and the mismatch on web was a frequent source of confusion.
+
+Nothing changes inside the pod: the container still listens on 8000 and the
+Service still targets it by the port name `http`.
+
+The chart's own Ingress and Gateway resources follow `web.service.port`, so they
+keep working. Update anything outside the chart that addresses the web Service
+on port 80:
+
+- an Ingress, HTTPRoute or backend config you manage yourself,
+- a parent chart or service mesh route pointing at the Service,
+- probes, scrape configs or NetworkPolicies using the Service port,
+- `kubectl port-forward svc/<release>-web 8080:80`.
+
+To keep the old port, set it explicitly:
+
+```yaml
+web:
+  service:
+    port: 80
+```
+
 ## Breaking changes when running multiple JVBs behind a service
 
 `jvb.portRangeSize` is no longer limited to `useHostPort`. It now works with the
@@ -96,10 +122,11 @@ picture and how to relax it.
 
 ### Changed ports
 
-- The web container listens on **8000** (was 80). The Service still publishes 80
-  and maps to it, so Ingress and Gateway users are unaffected. Anything
-  targeting the pod directly - a custom Service, NetworkPolicy or scrape config
-  - must be updated.
+- The web container listens on **8000** (was 80). The Service published 80 and
+  mapped to it, so Ingress and Gateway users were unaffected. Anything targeting
+  the pod directly - a custom Service, NetworkPolicy or scrape config - must be
+  updated. The Service port itself changed later, see
+  [the web Service port](#breaking-change-in-the-web-service-port).
 - `web.httpsEnabled` was **removed**. Terminate TLS at your ingress, gateway or
   external load balancer.
 - coTURN listens on **3478** and **5349** inside the container. The Service maps

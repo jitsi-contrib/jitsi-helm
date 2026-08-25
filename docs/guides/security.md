@@ -102,8 +102,8 @@ A non-root container cannot bind a port below 1024, and `capabilities.add` does
 not change that: Kubernetes does not set _ambient_ capabilities, so a capability
 is dropped when the entrypoint `exec`s. The chart therefore listens on
 unprivileged ports inside the container and lets the Service map the public port
-to it - for example web listens on 8000 behind a Service on 80, and coTURN
-listens on 5349 behind a Service on 443.
+to it - for example web listens on 8000, and coTURN listens on 5349 behind a
+Service on 443.
 
 If you expose a component with `hostNetwork` or `hostPort`, there is no Service
 doing that translation, so a public port below 1024 would need `runAsUser: 0`
