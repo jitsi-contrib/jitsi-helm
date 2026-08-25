@@ -116,12 +116,12 @@ web:
 
   service:
     type: ClusterIP
-    port: 80
+    port: 8000
     # If you want to expose the Jitsi Web service directly
     # (bypassing gateway or ingress), use this:
     #type: NodePort
     #nodePort: 30580
-    #port: 80
+    #port: 8000
     externalIPs: []
     # Annotations to be added to the service (if LoadBalancer is used)
     # An example below is needed for GKE IAP enablement
