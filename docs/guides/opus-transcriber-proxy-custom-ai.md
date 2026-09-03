@@ -20,9 +20,12 @@ self-hosted inference servers ship only the REST side, so confirm this before
 configuring anything else.
 
 The Opus audio stops at the proxy: JVB sends Opus, the proxy decodes it and your
-service receives a Realtime session opened by the proxy's OpenAI backend. The
-credential is presented the way that API expects rather than as an
-`Authorization` header.
+service receives a Realtime session opened by the proxy's OpenAI backend.
+
+Your service will not see an `Authorization: Bearer` header. The proxy passes
+the key the way OpenAI's Realtime API does, on the WebSocket handshake, so your
+service has to accept it in that form. `src/backends/OpenAIBackend.ts` in the
+proxy shows the exact mechanism for the version you deploy.
 
 The proxy uses your `openaiCustomUrl` verbatim, so the path and query are
 whatever your service expects. The samples here use
