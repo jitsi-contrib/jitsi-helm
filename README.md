@@ -72,13 +72,22 @@ configuration.
 
 ## Transcription support
 
-The chart supports near real-time transcription (subtitles) via the Transcriber
-(Jigasi in transcriber mode), with a pluggable speech-to-text backend. It has
-first-class support for [Skynet](https://github.com/jitsi/skynet) (bundled or
-external) and can also use any other Jigasi-supported backend.
+The chart supports near real-time transcription (subtitles). The current path is
+bridge-based: Jicofo tells JVB which transcription service a conference should
+use. JVB streams the audio to `opus-transcriber-proxy` and the proxy relays it
+to a speech-to-text provider (OpenAI, Deepgram, Gemini) or to your own
+OpenAI-compatible service. Enabling it takes `opusTranscriberProxy.enabled` plus
+the `force_async_transcription` Prosody module, which the chart does not switch
+on for you.
 
-See the [Transcription guide](/docs/guides/transcription.md) for setup and
-backend options.
+See the
+[custom AI service guide](/docs/guides/opus-transcriber-proxy-custom-ai.md) for
+the full configuration.
+
+The older Transcriber (Jigasi in transcriber mode) with
+[Skynet](https://github.com/jitsi/skynet) or another Jigasi-supported backend
+still works, but it is deprecated upstream. See the
+[Transcriber and Skynet guide](/docs/guides/transcriber-skynet.md).
 
 ## Scaling your installation
 

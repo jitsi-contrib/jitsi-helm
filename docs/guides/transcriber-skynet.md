@@ -1,4 +1,4 @@
-# Transcription support
+# Transcription with the Transcriber and Skynet
 
 This chart supports near real-time transcription (subtitles), performed by the
 _Transcriber_ (Jigasi running in transcriber mode). Enabling it is just:
@@ -17,9 +17,11 @@ can also point the Transcriber at any other Jigasi-supported backend yourself
 
 > **Deprecated upstream:** the Jigasi-based transcription described here is
 > deprecated in Jitsi and will be removed in a future release. The successor is
-> a bridge-based transcription architecture. Existing setups keep working; plan
-> to migrate once this chart supports the new path. See the
-> [upgrading guide](/docs/guides/upgrading.md#deprecations).
+> the bridge-based path, which this chart already supports through
+> `opusTranscriberProxy`. Existing setups keep working, but new deployments
+> should start there. See the
+> [custom AI service guide](/docs/guides/opus-transcriber-proxy-custom-ai.md)
+> and the [upgrading guide](/docs/guides/upgrading.md#deprecations).
 
 > **Note:** when this chart deploys Skynet it enables only the
 > `streaming_whisper` module, which does not require Redis. Skynet's

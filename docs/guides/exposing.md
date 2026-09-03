@@ -174,9 +174,9 @@ This is similar to Option 3, but every JVB pod advertises the IP address of the
 node it runs on, so the addresses do not have to be listed by hand.
 
 The address comes from the pod's `status.hostIP`, which is the node's
-`InternalIP` and not its `ExternalIP`. Where the two differ, the clients
-cannot reach that address, but JVB also announces the one it finds through
-STUN, which is enabled by default.
+`InternalIP` and not its `ExternalIP`. Where the two differ, the clients cannot
+reach that address, but JVB also announces the one it finds through STUN, which
+is enabled by default.
 
 ### Option 3.2: Using hostPort with a port range
 

@@ -112,10 +112,10 @@ picture and how to relax it.
 
 - Prosody's data path moved from `/config/data` to `/var/lib/prosody`, and
   `prosody.dataDir` was removed. The same PVC is reused, but Prosody now keeps
-  its data in the `data` subfolder of the mount point, one level below where
-  2.x stored it. Service accounts re-register themselves. If you store user
-  accounts in Prosody (`internal_hashed`), back the volume up before upgrading,
-  then move the existing content into `data/`.
+  its data in the `data` subfolder of the mount point, one level below where 2.x
+  stored it. Service accounts re-register themselves. If you store user accounts
+  in Prosody (`internal_hashed`), back the volume up before upgrading, then move
+  the existing content into `data/`.
 - Jibri recordings moved from `/data/recordings` to `/storage/recordings`.
 - `jibri.shm.enabled` now defaults to `true`, and jibri no longer requests the
   `SYS_ADMIN` capability.
@@ -150,6 +150,7 @@ picture and how to relax it.
 
 - Jigasi-based transcription (the path the Transcriber and Skynet use) is
   deprecated upstream and will be removed in a future Jitsi release. The
-  successor is a bridge-based transcription architecture. Existing Transcriber
-  and Skynet setups keep working for now; plan to migrate once this chart adds
-  support for the new path.
+  successor is the bridge-based path, which this chart supports through
+  `opusTranscriberProxy`. Existing Transcriber and Skynet setups keep working
+  for now, but new deployments should start on the new path. See the
+  [custom AI service guide](/docs/guides/opus-transcriber-proxy-custom-ai.md).
