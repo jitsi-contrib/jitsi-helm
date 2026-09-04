@@ -399,8 +399,9 @@ excalidraw:
 ## #############################################################################
 ## Coturn configuration
 ## #############################################################################
-# STUN and TURN over UDP/3478. Media packages are still encrypted with DTLS-SRTP
-# Optional TURNS (TURN over TLS on TCP/443) support.
+# STUN and TURN over UDP/443, optionally TCP/443 too. Media packages are still
+# encrypted with DTLS-SRTP.
+# Optional TURNS (TURN over TLS on TCP/443) support, on the same port.
 coturn:
   enabled: false
 
@@ -422,6 +423,18 @@ coturn:
     existingSecretName:
 
   turn:
+    # Comma separated list of the transports offered for plain TURN, all served
+    # on coturn.service.ports.turn:
+    #
+    #   udp      Clients prefer it and it handles packet loss far better than
+    #            relaying over TCP.
+    #   udp,tcp  Adds a fallback for networks that block UDP entirely.
+    #   tcp      For a LoadBalancer that cannot carry TCP and UDP in a single
+    #            Service.
+    #
+    # udp,tcp needs a LoadBalancer that accepts TCP and UDP in a single
+    # Service. So does udp together with turns.enabled, because TURNS is TCP.
+    # See docs/guides/turns.md.
     transport: "udp"
 
   # TURNS (TURN over TLS) configuration
@@ -462,7 +475,11 @@ coturn:
     # NodePort allocation when using LoadBalancer service
     allocateLoadBalancerNodePorts: true
     ports:
-      turn: 3478
+      # 443 is the only port reliably open on restricted networks and Chrome
+      # refuses TURN on anything but 53, 80, 443 and 1024 or above. When turn
+      # and turns are equal, one TCP Service port serves both: Coturn
+      # recognises TLS from the first bytes of the connection.
+      turn: 443
       turns: 443
     # Optional: Specifies the LoadBalancer controller to use (since K8s v1.24).
     # If left empty (null), the default cluster controller will be used.
@@ -863,7 +880,7 @@ jvb:
   # the cluster, the internal one if it does not. That internal address is
   # useful only when JVB is not publicly accessible at all, so the clients
   # reach it through coturn's relay. Requires coturn.enabled, turnHost and
-  # coturn.turn.transport: udp, since STUN queries are UDP.
+  # udp to be one of coturn.turn.transport, since STUN queries are UDP.
   useInternalStun: false
   # Explicitly disable STUN, overriding useInternalStun and stunServers. Use
   # this when publicIPs (or useNodeIP) is set explicitly and JVB does not need
