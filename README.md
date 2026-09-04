@@ -110,7 +110,7 @@ See the [Prosody plugins guide](/docs/guides/prosody-plugins.md) for an example.
 
 Each feature section above links to its detailed guide. See also:
 
-- [TURNS (TURN over TLS)](/docs/guides/turns.md)
+- [TURN and TURNS on port 443](/docs/guides/turns.md)
 - [Security hardening](/docs/guides/security.md)
 - [Troubleshooting](/docs/guides/troubleshooting.md)
 - [Upgrading](/docs/guides/upgrading.md)
