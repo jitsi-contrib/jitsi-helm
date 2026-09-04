@@ -40,7 +40,7 @@ spec:
     - name: tcp-turns
       protocol: TCP
       port: {{ .Values.coturn.service.ports.turns }}
-      targetPort: tcp-turns
+      targetPort: tcp-turn
     {{- end }}
     {{- if and
            .Values.coturn.turns.enabled

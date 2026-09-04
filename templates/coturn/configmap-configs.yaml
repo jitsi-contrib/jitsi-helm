@@ -16,7 +16,7 @@ data:
     no-tcp-relay
     no-dtls
     {{- if .Values.coturn.turns.enabled }}
-    tls-listening-port=5349
+    tls-listening-port=3478
     cert=/tls/tls.crt
     pkey=/tls/tls.key
     min-port={{ .Values.coturn.turns.relayPortRange.min }}
