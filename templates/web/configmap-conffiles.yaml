@@ -25,7 +25,7 @@ data:
   custom-config.js: |
     {{- if and
            .Values.coturn.enabled
-           (has "udp" (splitList "," .Values.coturn.turn.transport))
+           (has "udp" (splitList "," (include "jitsi-meet.coturn.transports" .)))
     }}
     config.useTurnUdp=true;
     {{- end }}

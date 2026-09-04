@@ -24,7 +24,7 @@ spec:
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
-    {{- $transports := splitList "," .Values.coturn.turn.transport }}
+    {{- $transports := splitList "," (include "jitsi-meet.coturn.transports" .) }}
     {{- $turnPort := int .Values.coturn.service.ports.turn }}
     {{- $turnsPort := int .Values.coturn.service.ports.turns }}
     {{- if has "udp" $transports }}
