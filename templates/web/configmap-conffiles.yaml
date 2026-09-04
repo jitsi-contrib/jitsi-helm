@@ -23,7 +23,10 @@ data:
          .Values.coturn.enabled
   }}
   custom-config.js: |
-    {{- if .Values.coturn.enabled }}
+    {{- if and
+           .Values.coturn.enabled
+           (has "udp" (splitList "," .Values.coturn.turn.transport))
+    }}
     config.useTurnUdp=true;
     {{- end }}
     {{- with .Values.web.custom.configs._custom_config_js }}

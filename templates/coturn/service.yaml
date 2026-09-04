@@ -24,22 +24,29 @@ spec:
   loadBalancerClass: {{ . }}
   {{- end }}
   ports:
-    {{- if eq .Values.coturn.turn.transport "tcp" }}
-    - name: tcp-turn
-      protocol: TCP
-      port: {{ .Values.coturn.service.ports.turn }}
-      targetPort: tcp-turn
-    {{- end }}
-    {{- if eq .Values.coturn.turn.transport "udp" }}
+    {{- $transports := splitList "," .Values.coturn.turn.transport }}
+    {{- $turnPort := int .Values.coturn.service.ports.turn }}
+    {{- $turnsPort := int .Values.coturn.service.ports.turns }}
+    {{- if has "udp" $transports }}
     - name: udp-turn
       protocol: UDP
-      port: {{ .Values.coturn.service.ports.turn }}
+      port: {{ $turnPort }}
       targetPort: udp-turn
     {{- end }}
-    {{- if .Values.coturn.turns.enabled }}
+    {{- if has "tcp" $transports }}
+    - name: tcp-turn
+      protocol: TCP
+      port: {{ $turnPort }}
+      targetPort: tcp-turn
+    {{- end }}
+    {{- /* Skip when a plain TCP port already covers the same public port */}}
+    {{- if and
+           .Values.coturn.turns.enabled
+           (not (and (has "tcp" $transports) (eq $turnsPort $turnPort)))
+    }}
     - name: tcp-turns
       protocol: TCP
-      port: {{ .Values.coturn.service.ports.turns }}
+      port: {{ $turnsPort }}
       targetPort: tcp-turn
     {{- end }}
     {{- if and
