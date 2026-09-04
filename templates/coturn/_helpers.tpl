@@ -14,6 +14,14 @@
 {{- end -}}
 {{- end -}}
 
+{{/*
+The transports offered for plain TURN, with any whitespace removed so that
+"udp, tcp" behaves the same as "udp,tcp". Split it on "," to get the list.
+*/}}
+{{- define "jitsi-meet.coturn.transports" -}}
+{{ nospace .Values.coturn.turn.transport }}
+{{- end -}}
+
 {{- define "jitsi-meet.coturn.labels" -}}
 {{ include "jitsi-meet.labels" . }}
 app.kubernetes.io/component: "coturn"

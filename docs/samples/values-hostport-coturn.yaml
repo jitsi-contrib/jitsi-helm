@@ -5,6 +5,7 @@
 # - There are 3 JVBs using UDP/10000.
 #   But JVB's port is not publicly accessible in this scenario.
 #   So, Coturn will forward media traffic to JVBs.
+# - Coturn is published on UDP/443 and TCP/443, the default ports.
 # - OCTO is enabled to allow big meetings.
 # - Excalidraw (whiteboard) is enabled.
 # -----------------------------------------------------------------------------
@@ -43,7 +44,10 @@ coturn:
   enabled: true
 
   turn:
-    transport: "udp"
+    # Offer plain TURN over both transports, so clients on networks that block
+    # UDP still get a relay. This makes the Service carry TCP and UDP on 443,
+    # which the NLB annotations below account for.
+    transport: "udp,tcp"
 
   service:
     annotations:
@@ -54,6 +58,11 @@ coturn:
       #
       # Sample annotations for AWS:
       external-dns.alpha.kubernetes.io/hostname: "turn.example.com"
+      # A TCP and a UDP port on the same number become one TCP_UDP listener.
+      # Needs AWS Load Balancer Controller v2.13.0 or later.
+      service.beta.kubernetes.io/aws-load-balancer-enable-tcp-udp-listener: "true"
+      # With target type "ip" the health check port is the container port, not
+      # the published 443. Coturn listens on 3478 inside the pod.
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "3478"
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "tcp"
       service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"

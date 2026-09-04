@@ -37,6 +37,48 @@ A config change rolls the affected pods automatically: the chart adds a checksum
 of each component's config to its pod template, so pods restart when their
 ConfigMap or Secret changes during the upgrade.
 
+## Breaking change in the coTURN ports
+
+`coturn.service.ports.turn` now defaults to **443** (was 3478). Port 3478 is
+blocked on most restricted networks, which is exactly where TURN is needed, and
+Chrome refuses TURN on any port other than 53, 80, 443 or 1024 and above. Plain
+TURN and TURNS now share one public port, so a firewall request is a single
+line: allow outbound access to the TURN host on 443.
+
+Before upgrading, make sure 443 is open to the coTURN Service IP. To keep the
+old public port instead:
+
+```yaml
+coturn:
+  service:
+    ports:
+      turn: 3478
+```
+
+Inside the container coTURN now listens on **3478 only**. The TLS listener
+shares that port rather than binding 5349, because coTURN recognises TLS from
+the first bytes of a TCP connection and serves plain TURN and TURNS on the same
+socket. Anything addressing the pod directly on 5349 - a NetworkPolicy, a custom
+Service or a scrape config - must be updated.
+
+`coturn.turn.transport` now takes a comma separated list, so plain TURN can be
+offered over both transports:
+
+```yaml
+coturn:
+  turn:
+    transport: "udp,tcp"
+```
+
+The default is still `udp` alone, so a plain TURN install keeps a single
+protocol Service. Offering both transports, or offering `udp` together with
+`turns.enabled`, needs a LoadBalancer that carries TCP and UDP in one Service.
+See the [TURN guide](/docs/guides/turns.md) for which implementations can.
+
+Prosody no longer advertises a `stun:` URL when `udp` is not offered. The STUN
+entry is always UDP, so with `transport: "tcp"` it pointed at a port nothing
+answered on.
+
 ## Breaking change in the web Service port
 
 `web.service.port` now defaults to **8000** (was 80), matching the port the web

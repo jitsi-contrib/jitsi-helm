@@ -42,8 +42,9 @@ on renewal. See the [TURNS guide](/docs/guides/turns.md).
 
 ## TURN works on some ports but not others
 
-TURN relaying works with the default ports, but fails after you move it to a
-custom port - even though the port is reachable with `nc` or `turnutils`.
+TURN relaying works with the default ports, which are 443 and always allowed,
+but fails after you move it to a custom port - even though the port is reachable
+with `nc` or `turnutils`.
 
 Chrome only allows a TURN server on port **53, 80, 443, or 1024 and above**. On
 any other port it refuses to even open a socket, so nothing reaches coTURN and
@@ -53,6 +54,26 @@ fails only in Chrome is a good confirmation.
 Open `chrome://webrtc-internals` while joining: the fingerprint is an
 `icecandidateerror` with `Attempt to start allocation to a disallowed port`. Use
 one of the allowed ports.
+
+## The coTURN Service never gets an external IP
+
+The coTURN Service stays in `<pending>`, or it gets an IP but only one of its
+two ports actually answers.
+
+A Service that carries both TCP and UDP needs a LoadBalancer implementation that
+supports mixed protocols. That is the case whenever `coturn.turn.transport`
+includes `udp` and something publishes a TCP port too, which `turns.enabled`
+always does. Kubernetes accepts the Service either way, so the rejection shows
+up in the controller, not in `kubectl apply`:
+
+```
+kubectl describe svc <release>-jitsi-meet-coturn
+kubectl logs -n <ns> deploy/<your load balancer controller>
+```
+
+See the [TURN guide](/docs/guides/turns.md) for which implementations can do it
+and what they need. Where yours cannot, run a single protocol:
+`coturn.turn.transport: "tcp"` with TURNS, or `"udp"` with TURNS disabled.
 
 ## Image pull failures (ImagePullBackOff / ErrImagePull)
 

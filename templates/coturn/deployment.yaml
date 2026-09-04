@@ -205,11 +205,6 @@ spec:
             - name: udp-turn
               containerPort: 3478
               protocol: UDP
-            {{- if .Values.coturn.turns.enabled }}
-            - name: tcp-turns
-              containerPort: 5349
-              protocol: TCP
-            {{- end }}
             {{- if .Values.coturn.metrics.enabled }}
             - name: tcp-metrics
               containerPort: 9641
