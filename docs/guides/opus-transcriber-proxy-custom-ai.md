@@ -8,8 +8,11 @@ talks to OpenAI, Deepgram, Gemini or xAI directly.
 
 This guide covers the other case: sending the audio to your own service through
 the proxy's `openai_custom` provider. That provider takes its endpoint and its
-credential per connection instead of from the proxy's environment, so most of
-the configuration ends up under `jicofo`, not under `opusTranscriberProxy`.
+credential per connection, meaning per WebSocket that JVB opens to the proxy,
+rather than from the proxy's environment. Those connections are server side, so
+the values stay inside the cluster and never reach a browser. What it does mean
+is that most of the configuration ends up under `jicofo`, not under
+`opusTranscriberProxy`.
 
 ## What your service must implement
 
