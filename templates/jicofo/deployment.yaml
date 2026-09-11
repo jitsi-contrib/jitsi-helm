@@ -53,7 +53,7 @@ spec:
       volumes:
         - name: run
           emptyDir:
-            sizeLimit: 16Mi
+            sizeLimit: 32Mi
         - name: tmp
           emptyDir:
             sizeLimit: 16Mi

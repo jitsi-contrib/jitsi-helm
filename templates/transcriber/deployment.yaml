@@ -57,7 +57,7 @@ spec:
       volumes:
         - name: run
           emptyDir:
-            sizeLimit: 16Mi
+            sizeLimit: 32Mi
         - name: tmp
           emptyDir:
             # Larger than the 16Mi most components use, from what the
