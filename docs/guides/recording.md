@@ -35,7 +35,7 @@ jibri:
 
   shm:
     ## Set to true to enable "/dev/shm" mount.
-    ## May be required by built-in Chromium.
+    ## Required by the bundled browser.
     enabled: true
 ```
 

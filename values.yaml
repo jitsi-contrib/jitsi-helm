@@ -1606,7 +1606,7 @@ jibri:
 
   shm:
     # Set to true to enable "/dev/shm" mount.
-    # Required by the built-in Chromium.
+    # Required by the bundled browser.
     enabled: true
     # If "true", will use host's shared memory dir,
     # and if "false", an emptyDir mount.
