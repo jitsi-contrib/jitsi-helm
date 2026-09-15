@@ -1,16 +1,14 @@
 {{/*
-All pods of a JVB Deployment are reachable on the same Service port, so they
-would receive each other's traffic. Use portRangeSize to run more than one JVB.
-This does not apply to hostPort/hostNetwork, where no Service is created and
-each pod is reachable on its own node IP.
+More than one JVB is only reachable with hostPort or hostNetwork, where each
+pod has its own node IP. Otherwise all pods of a Deployment answer on the same
+Service port and would receive each other's traffic.
 */}}
 {{- if and
-       .Values.jvb.service.enabled
        (not .Values.jvb.useHostPort)
        (not .Values.jvb.useHostNetwork)
        (gt (int .Values.jvb.replicaCount) 1)
 }}
-{{-   fail "jvb.replicaCount must be 1 when the JVB service is enabled. Use jvb.portRangeSize to run multiple JVBs." }}
+{{-   fail "jvb.replicaCount above 1 requires jvb.useHostPort or jvb.useHostNetwork. Use jvb.portRangeSize to run multiple JVBs." }}
 {{- end }}
 
 {{- $basePort := .Values.jvb.UDPPort }}
@@ -212,7 +210,9 @@ spec:
                Drain the bridge before it goes away: jicofo stops selecting it
                for new conferences while the running ones finish. Not rendered
                behind the service, where the draining pod and its replacement
-               share a port and UDP would be split between two bridges.
+               share a port and UDP would be split between two bridges. Wider
+               than the guards above on purpose: draining needs no service in
+               front, not a per-pod address.
           */}}
           lifecycle:
             preStop:

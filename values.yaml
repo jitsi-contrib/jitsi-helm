@@ -821,6 +821,8 @@ jicofo:
 ## JVB configuration
 ## #############################################################################
 jvb:
+  # Above 1 requires useHostPort or useHostNetwork. Otherwise use portRangeSize,
+  # since all pods of a deployment share one service port.
   replicaCount: 1
 
   # Scale the JVB deployments with a HorizontalPodAutoscaler. Requires
