@@ -34,7 +34,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not $.Values.jvb.autoscaling.enabled }}
   replicas: {{ $.Values.jvb.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 6 }}

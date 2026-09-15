@@ -1,0 +1,41 @@
+{{- if .Values.jvb.autoscaling.enabled }}
+
+{{/*
+An autoscaler may only add pods that clients can reach and each pod gets its
+own address only with hostPort or hostNetwork.
+*/}}
+{{- if and
+       (not .Values.jvb.useHostPort)
+       (not .Values.jvb.useHostNetwork)
+}}
+{{-   fail "jvb.autoscaling requires jvb.useHostPort or jvb.useHostNetwork." }}
+{{- end }}
+
+{{- $rangeSize := .Values.jvb.portRangeSize | default 1 }}
+
+{{- range $i := until (int $rangeSize) }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "jitsi-meet.jvb.fullname" $ }}-{{ $i }}
+  labels:
+    {{- include "jitsi-meet.jvb.labels" $ | nindent 4 }}
+    instance: {{ $i | quote }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "jitsi-meet.jvb.fullname" $ }}-{{ $i }}
+  minReplicas: {{ $.Values.jvb.autoscaling.minReplicas }}
+  maxReplicas: {{ $.Values.jvb.autoscaling.maxReplicas }}
+  {{- with $.Values.jvb.autoscaling.metrics }}
+  metrics:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $.Values.jvb.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

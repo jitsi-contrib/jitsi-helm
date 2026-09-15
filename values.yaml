@@ -823,6 +823,36 @@ jicofo:
 jvb:
   replicaCount: 1
 
+  # Scale the JVB deployments with a HorizontalPodAutoscaler. Requires
+  # useHostPort or useHostNetwork, where no service is created and every pod
+  # has its own address. replicaCount is ignored while this is enabled and the
+  # limits below count per port.
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    # With hostPort a node carries only one JVB per port, so this cannot
+    # usefully exceed the number of schedulable nodes.
+    maxReplicas: 3
+    # Passed to the HPA verbatim. Measure a bridge under the load and correct
+    # the target. It is an absolute CPU value, so it does not follow node size.
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: AverageValue
+            averageValue: 1500m
+    # Passed to the HPA verbatim. Scaling up uses the Kubernetes defaults.
+    # Scaling down removes a bridge and ends the conferences on it. So it is
+    # deliberately slow.
+    behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 1800
+        policies:
+          - type: Pods
+            value: 1
+            periodSeconds: 600
+
   image:
     repository: ghcr.io/jitsi/jvb
     # If the tag is not set here then it is retrieved from Chart.yaml
