@@ -1055,6 +1055,11 @@ jvb:
       type: RuntimeDefault
   # Ignored when useHostPort is set, where Recreate is forced.
   strategy: {}
+  # Cap on the drain a JVB does before it is terminated: the bridge stops
+  # taking new conferences and waits for the running ones to end. Only applies
+  # where the chart creates no service. Lower it when there is a single bridge,
+  # which jicofo keeps using while it drains, so the drain never ends.
+  terminationGracePeriodSeconds: 7200
   tolerations: []
 
 ## #############################################################################

@@ -91,6 +91,13 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" $ }}
       automountServiceAccountToken: {{ $.Values.jvb.automountServiceAccountToken }}
+      {{- if or
+             (not $.Values.jvb.service.enabled)
+             $.Values.jvb.useHostPort
+             $.Values.jvb.useHostNetwork
+      }}
+      terminationGracePeriodSeconds: {{ $.Values.jvb.terminationGracePeriodSeconds }}
+      {{- end }}
       securityContext:
         {{- toYaml $.Values.jvb.podSecurityContext | nindent 8 }}
       {{- if $.Values.jvb.useHostNetwork }}
@@ -195,6 +202,30 @@ spec:
           {{- with $.Values.jvb.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if or
+                 (not $.Values.jvb.service.enabled)
+                 $.Values.jvb.useHostPort
+                 $.Values.jvb.useHostNetwork
+          }}
+          {{- /*
+               Drain the bridge before it goes away: jicofo stops selecting it
+               for new conferences while the running ones finish. Not rendered
+               behind the service, where the draining pod and its replacement
+               share a port and UDP would be split between two bridges.
+          */}}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    curl -sf -XPOST http://localhost:8080/colibri/drain/enable || exit 0
+                    while stats=$(curl -sf http://localhost:8080/colibri/stats); do
+                      [ "$(printf '%s' "$stats" | jq -r '.conferences')" = "0" ] && exit 0
+                      sleep 10
+                    done
           {{- end }}
           resources:
             {{- toYaml $.Values.jvb.resources | nindent 12 }}
