@@ -74,6 +74,72 @@ on the same service port, so the chart rejects a value greater than 1 while the
 service is enabled. See the [Exposing guide](/docs/guides/exposing.md) for the
 LoadBalancer and NodePort variants.
 
+## Autoscaling JVB
+
+`jvb.autoscaling` creates a HorizontalPodAutoscaler per `portRangeSize` index.
+It requires `useHostPort` or `useHostNetwork`.
+
+```yaml
+jvb:
+  useHostPort: true
+  useNodeIP: true
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+
+octo:
+  enabled: true
+```
+
+`replicaCount` is ignored while this is enabled. `minReplicas` and `maxReplicas`
+count per port, so `portRangeSize: 3` with `maxReplicas: 4` allows up to 12
+bridges.
+
+`maxReplicas` cannot usefully exceed the number of schedulable nodes. A node
+carries one JVB per port, so anything above that stays `Pending`.
+
+Enable `octo` as well, otherwise a new bridge only takes new meetings and cannot
+relieve one that is already busy.
+
+### Choosing the target
+
+The default scales on CPU per bridge and needs metrics-server, which is not
+installed on every cluster. To find the right number, put one bridge under the
+load you care about and watch:
+
+```bash
+kubectl exec <jvb-pod> -c jitsi-meet -- \
+  sh -c 'curl -s localhost:8080/colibri/stats | jq "{stress_level, participants}"'
+
+kubectl top pods -l app.kubernetes.io/component=jvb
+```
+
+Take the CPU where `stress_level` reaches 0.8, the point a bridge counts as
+overloaded, and set the target a little below it. Measure with your real codec
+and simulcast settings: an audio-only room costs a fraction of a video one.
+
+## Draining a JVB before it is removed
+
+Where the chart creates no service - `useHostPort`, `useHostNetwork` or
+`service.enabled: false` - a pod drains before it goes away. It stops taking new
+meetings and stays alive until the ones on it end, so scaling in costs no calls.
+Pods behind a service are not drained.
+
+`jvb.terminationGracePeriodSeconds` caps the wait. When it expires the pod is
+killed and whatever is still on it drops, so it has to cover a whole meeting.
+
+A draining pod holds its node port until it finishes, so its replacement is not
+scheduled on that node before then. With a single bridge the wait lasts until a
+gap between meetings.
+
+On uninstall a draining pod can outlive the rest of the release. If one lingers:
+
+```bash
+kubectl delete pod -l app.kubernetes.io/component=jvb --grace-period=0 --force
+```
+
 ## Testing OCTO
 
 When OCTO is enabled, the participants of a single meeting are distributed

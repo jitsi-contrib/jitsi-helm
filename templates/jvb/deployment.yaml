@@ -1,16 +1,14 @@
 {{/*
-All pods of a JVB Deployment are reachable on the same Service port, so they
-would receive each other's traffic. Use portRangeSize to run more than one JVB.
-This does not apply to hostPort/hostNetwork, where no Service is created and
-each pod is reachable on its own node IP.
+More than one JVB is only reachable with hostPort or hostNetwork, where each
+pod has its own node IP. Otherwise all pods of a Deployment answer on the same
+Service port and would receive each other's traffic.
 */}}
 {{- if and
-       .Values.jvb.service.enabled
        (not .Values.jvb.useHostPort)
        (not .Values.jvb.useHostNetwork)
        (gt (int .Values.jvb.replicaCount) 1)
 }}
-{{-   fail "jvb.replicaCount must be 1 when the JVB service is enabled. Use jvb.portRangeSize to run multiple JVBs." }}
+{{-   fail "jvb.replicaCount above 1 requires jvb.useHostPort or jvb.useHostNetwork. Use jvb.portRangeSize to run multiple JVBs." }}
 {{- end }}
 
 {{- $basePort := .Values.jvb.UDPPort }}
@@ -34,7 +32,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not $.Values.jvb.autoscaling.enabled }}
   replicas: {{ $.Values.jvb.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "jitsi-meet.jvb.selectorLabels" $ | nindent 6 }}
@@ -89,6 +89,13 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "jitsi-meet.serviceAccountName" $ }}
       automountServiceAccountToken: {{ $.Values.jvb.automountServiceAccountToken }}
+      {{- if or
+             (not $.Values.jvb.service.enabled)
+             $.Values.jvb.useHostPort
+             $.Values.jvb.useHostNetwork
+      }}
+      terminationGracePeriodSeconds: {{ $.Values.jvb.terminationGracePeriodSeconds }}
+      {{- end }}
       securityContext:
         {{- toYaml $.Values.jvb.podSecurityContext | nindent 8 }}
       {{- if $.Values.jvb.useHostNetwork }}
@@ -193,6 +200,36 @@ spec:
           {{- with $.Values.jvb.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if or
+                 (not $.Values.jvb.service.enabled)
+                 $.Values.jvb.useHostPort
+                 $.Values.jvb.useHostNetwork
+          }}
+          {{- /*
+               Drain the bridge before it goes away: jicofo stops selecting it
+               for new conferences while the running ones finish. Not rendered
+               behind the service, where the draining pod and its replacement
+               share a port and UDP would be split between two bridges. Wider
+               than the guards above on purpose: draining needs no service in
+               front, not a per-pod address. A bridge that has dropped out of
+               the brewery is orphaned, so it gives up instead of draining.
+          */}}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    curl -sf -m 5 -XPOST http://localhost:8080/colibri/drain/enable || exit 0
+                    while :; do
+                      m=$(curl -sf -m 5 http://localhost:8080/colibri/stats | jq -r '.mucs_joined' 2>/dev/null)
+                      case "$m" in 0) exit 0 ;; esac
+                      n=$(curl -sf -m 5 http://localhost:8080/colibri/stats | jq -r '.conferences' 2>/dev/null)
+                      case "$n" in [1-9]*) ;; *) exit 0 ;; esac
+                      sleep 10
+                    done
           {{- end }}
           resources:
             {{- toYaml $.Values.jvb.resources | nindent 12 }}

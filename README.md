@@ -93,10 +93,11 @@ still works, but it is deprecated upstream. See the
 
 Jitsi Web, Jibri, and Coturn are stateless and scale freely via `replicaCount`.
 JVB scales via the OCTO relay feature, which spreads the participants of one
-meeting across multiple bridges.
+meeting across multiple bridges. It can also follow the load on its own, and it
+drains before a bridge is removed so that scaling in costs no calls.
 
 See the [Scaling guide](/docs/guides/scaling.md) for replica settings, the OCTO
-configuration, and how to test it.
+configuration, autoscaling, draining, and how to test it.
 
 ## Adding custom Prosody plugins
 
