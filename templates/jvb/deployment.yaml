@@ -221,9 +221,9 @@ spec:
                   - /bin/sh
                   - -c
                   - |
-                    curl -sf -XPOST http://localhost:8080/colibri/drain/enable || exit 0
+                    curl -sf -m 5 -XPOST http://localhost:8080/colibri/drain/enable || exit 0
                     while :; do
-                      n=$(curl -sf http://localhost:8080/colibri/stats | jq -r '.conferences' 2>/dev/null)
+                      n=$(curl -sf -m 5 http://localhost:8080/colibri/stats | jq -r '.conferences' 2>/dev/null)
                       case "$n" in [1-9]*) ;; *) exit 0 ;; esac
                       sleep 10
                     done
