@@ -212,7 +212,8 @@ spec:
                behind the service, where the draining pod and its replacement
                share a port and UDP would be split between two bridges. Wider
                than the guards above on purpose: draining needs no service in
-               front, not a per-pod address.
+               front, not a per-pod address. A bridge that has dropped out of
+               the brewery is orphaned, so it gives up instead of draining.
           */}}
           lifecycle:
             preStop:
@@ -223,6 +224,8 @@ spec:
                   - |
                     curl -sf -m 5 -XPOST http://localhost:8080/colibri/drain/enable || exit 0
                     while :; do
+                      m=$(curl -sf -m 5 http://localhost:8080/colibri/stats | jq -r '.mucs_joined' 2>/dev/null)
+                      case "$m" in 0) exit 0 ;; esac
                       n=$(curl -sf -m 5 http://localhost:8080/colibri/stats | jq -r '.conferences' 2>/dev/null)
                       case "$n" in [1-9]*) ;; *) exit 0 ;; esac
                       sleep 10
