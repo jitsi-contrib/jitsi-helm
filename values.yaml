@@ -835,8 +835,10 @@ jvb:
     # With hostPort a node carries only one JVB per port, so this cannot
     # usefully exceed the number of schedulable nodes.
     maxReplicas: 3
-    # Passed to the HPA verbatim. Measure a bridge under the load and correct
-    # the target. It is an absolute CPU value, so it does not follow node size.
+    # Passed to the HPA verbatim. The default needs metrics-server, which is
+    # not installed on every cluster. Measure a bridge under the load and
+    # correct the target. It is an absolute CPU value, so it does not follow
+    # node size.
     metrics:
       - type: Resource
         resource:
