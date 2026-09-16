@@ -1061,8 +1061,8 @@ jvb:
   strategy: {}
   # Cap on the drain a JVB does before it is terminated: the bridge stops
   # taking new conferences and waits for the running ones to end. Only applies
-  # where the chart creates no service. Lower it when there is a single bridge,
-  # which jicofo keeps using while it drains, so the drain never ends.
+  # where the chart creates no service. With a single bridge jicofo keeps using
+  # it while it drains, so the wait lasts until a gap between meetings.
   terminationGracePeriodSeconds: 7200
   tolerations: []
 
