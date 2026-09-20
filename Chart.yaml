@@ -3,6 +3,9 @@ name: jitsi-meet
 type: application
 description: Jitsi Meet packaged for Kubernetes
 icon: https://jitsi-contrib.github.io/jitsi-helm/jitsi-meet.png
+home: https://github.com/jitsi-contrib/jitsi-helm
+sources:
+  - https://github.com/jitsi-contrib/jitsi-helm
 
 # This is the *chart* version.
 # This version number should be incremented each time you make
