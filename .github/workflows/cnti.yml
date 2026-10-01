@@ -1,0 +1,36 @@
+# Installs the chart on a kind cluster every night, runs the CNTi Test
+# Suite's cert tests against it and publishes the result as the badge in
+# the README. The workflow does not write to this repository: the badge is
+# GitHub's own workflow badge. https://github.com/lfn-cnti/testsuite-action
+name: CNTi cert
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  cert:
+    # Forks that enable scheduled workflows do not run it.
+    if: github.repository == 'jitsi-contrib/jitsi-helm'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - uses: lfn-cnti/testsuite-action@05a9860905f31c6813f735d25e5cefd7c62a1e5a # v1.1.0
+        with:
+          version: v2.1.0
+          cnf_config: .github/cnti/cnti-testsuite.yaml
+          tests: cert
+
+      # Why did a component not come up? Pod state and events from the kind
+      # cluster the action created; it lives until the job ends.
+      - name: Diagnostics
+        if: failure()
+        run: |
+          set +e
+          kubectl get pods -A -o wide
+          kubectl get events -n jitsi-cnti --sort-by=.lastTimestamp | tail -40

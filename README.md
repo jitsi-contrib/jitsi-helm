@@ -1,6 +1,7 @@
 # Helm Chart for Jitsi Meet
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jitsi-meet)](https://artifacthub.io/packages/search?repo=jitsi-meet)
+[![CNTi cert](https://github.com/jitsi-contrib/jitsi-helm/actions/workflows/cnti.yml/badge.svg)](https://github.com/jitsi-contrib/jitsi-helm/actions/workflows/cnti.yml)
 ![GitHub Release](https://img.shields.io/github/v/release/jitsi-contrib/jitsi-helm?logo=helm&logoColor=white&label=Latest%20release)
 ![GitHub Release Date](https://img.shields.io/github/release-date/jitsi-contrib/jitsi-helm?display_date=published_at&logo=git&logoColor=white&label=Released%20at)
 

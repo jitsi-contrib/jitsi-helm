@@ -1,0 +1,21 @@
+# CNTi Test Suite configuration for the Jitsi Meet chart: the value the
+# chart requires, and the image tags the version-change tests move between.
+# Nothing here changes a practice the cert tests judge.
+config_version: "v2"
+common:
+  container_names:
+    # Every component's container is named jitsi-meet and all images share
+    # one stable-* tag, so one entry covers the rolling update, downgrade
+    # and rollback tests.
+    - name: jitsi-meet
+      rolling_update_test_tag: "stable-11146-2"
+      rolling_downgrade_test_tag: "stable-11146"
+      rolling_version_change_test_tag: "stable-11146-2"
+      rollback_from_tag: "stable-11146-2"
+deployments:
+  helm_dirs:
+    - name: jitsi-meet
+      # Relative to this file: the chart is the repository root.
+      helm_directory: ../..
+      namespace: jitsi-cnti
+      helm_values: --set publicURL=https://meet.cnti.test
