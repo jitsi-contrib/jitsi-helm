@@ -113,6 +113,7 @@ Each feature section above links to its detailed guide. See also:
 
 - [TURN and TURNS on port 443](/docs/guides/turns.md)
 - [Security hardening](/docs/guides/security.md)
+- [Custom CA certificates](/docs/guides/custom-ca.md)
 - [Troubleshooting](/docs/guides/troubleshooting.md)
 - [Upgrading](/docs/guides/upgrading.md)
 - [Sample values files](/docs/samples/)
