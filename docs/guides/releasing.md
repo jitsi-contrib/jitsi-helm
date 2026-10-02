@@ -4,6 +4,8 @@ Overall, the release process looks like this:
 
 - Apply your changes.
 - Update `appVersion` in [Chart.yaml](/Chart.yaml) if Jitsi images are upgraded.
+- Set the image tags in
+  [.github/cnti/cnti-testsuite.yaml](/.github/cnti/cnti-testsuite.yaml)
 - Upgrade the image versions of external components (_such as `coturn`,
   `excalidraw-backend`, etc._) in [values.yaml](/values.yaml) if necessary.
 - Test these changes on a test environment.
