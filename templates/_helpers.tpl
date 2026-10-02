@@ -131,3 +131,44 @@ an XMPP endpoint, not as "the prosody host".
 
 {{- end -}}
 {{- end -}}
+
+{{/*
+A memory quantity in MiB, rounded up. "jvm" true reads a JVM size such as
+the -Xmx value (k, m, g or t, all binary; plain bytes otherwise); false
+reads a Kubernetes quantity (Ki, Mi, Gi, Ti binary, k, M, G, T decimal).
+*/}}
+{{- define "jitsi-meet.memoryMiB" -}}
+{{- $q := toString .q | trim -}}
+{{- $num := regexFind "^[0-9]+(\\.[0-9]+)?" $q -}}
+{{- $unit := trimPrefix $num $q -}}
+{{- $n := float64 (default "0" $num) -}}
+{{- $bytes := 0.0 -}}
+{{- if .jvm -}}
+{{-   $f := dict "k" 1024.0 "m" 1048576.0 "g" 1073741824.0 "t" 1099511627776.0 -}}
+{{-   $bytes = mulf $n (get $f (lower $unit) | default 1.0) -}}
+{{- else -}}
+{{-   $f := dict "Ki" 1024.0 "Mi" 1048576.0 "Gi" 1073741824.0 "Ti" 1099511627776.0 "k" 1000.0 "M" 1000000.0 "G" 1000000000.0 "T" 1000000000000.0 -}}
+{{-   $bytes = mulf $n (get $f $unit | default 1.0) -}}
+{{- end -}}
+{{- ceil (divf $bytes 1048576.0) | int64 -}}
+{{- end -}}
+
+{{/*
+A Java component's resources, with the memory limit raised to the heap set
+through extraEnvs plus 1Gi whenever it would be lower, so that the limit is
+never under the heap. Takes "resources" and "heap" (the *_MAX_MEMORY value,
+empty when not set).
+*/}}
+{{- define "jitsi-meet.javaResources" -}}
+{{- $res := deepCopy (.resources | default dict) -}}
+{{- if and .heap $res.limits -}}
+{{-   if $res.limits.memory -}}
+{{-     $min := add (include "jitsi-meet.memoryMiB" (dict "q" .heap "jvm" true) | int64) 1024 -}}
+{{-     $limit := include "jitsi-meet.memoryMiB" (dict "q" $res.limits.memory "jvm" false) | int64 -}}
+{{-     if lt $limit $min -}}
+{{-       $_ := set $res.limits "memory" (printf "%dMi" $min) -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- toYaml $res -}}
+{{- end -}}
