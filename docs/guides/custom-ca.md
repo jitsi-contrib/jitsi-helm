@@ -46,8 +46,6 @@ Typical uses:
   calling internal HTTPS endpoints
 - jicofo: the translation service or the tracing endpoint
 - jibri: webhooks
-- jvb, jigasi, jibri: the autoscaler
-- web: a private ACME server (`LETSENCRYPT_ACME_SERVER`)
 
 ## Notes
 
