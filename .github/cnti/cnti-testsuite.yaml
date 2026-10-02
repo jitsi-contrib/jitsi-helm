@@ -7,6 +7,23 @@ common:
     # Every component's container is named jitsi-meet and all images share
     # one stable-* tag, so one entry covers the rolling update, downgrade
     # and rollback tests.
+    #
+    # These tags are NOT used by the nightly cnti.yml workflow: it runs only
+    # the cert tests, and none of the rolling_* or rollback tests is a cert
+    # test. They are used when these tests are run explicitly, e.g.
+    # "cnti-testsuite rolling_update" or the full workload suite.
+    #
+    # - rolling_*_test_tag: the image is set to this tag and the rollout
+    #   must complete. The suite does not compare versions; the names are
+    #   only labels.
+    # - rollback_from_tag: the image is set to this tag, then rolled back
+    #   with "kubectl rollout undo".
+    #
+    # None of them may be the chart's appVersion: setting the installed tag
+    # rolls out nothing, and the rollback test is skipped. The image is not
+    # reset between tests, so rolling_downgrade_test_tag differs from the
+    # others to force a real rollout. When appVersion changes, the releases
+    # just before it are the natural choice.
     - name: jitsi-meet
       rolling_update_test_tag: "stable-11146-2"
       rolling_downgrade_test_tag: "stable-11146"
