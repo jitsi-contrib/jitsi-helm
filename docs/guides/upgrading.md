@@ -6,10 +6,12 @@
 
 - `version` - the chart's own version, bumped on any chart change.
 - `appVersion` - the default image tag used for Jitsi's own components (web,
-  prosody, jvb, jicofo, jigasi, jibri) when their `image.tag` is not set.
+  prosody, jvb, jicofo, jigasi, transcriber, jibri) when their `image.tag` is
+  not set.
 
-Third-party components (coturn, etherpad, excalidraw, ...) and Skynet are pinned
-to their own `image.tag` in `values.yaml`, independently of `appVersion`.
+Third-party components (coturn, etherpad, excalidraw, ...), Skynet and the Opus
+transcriber proxy are pinned to their own `image.tag` in `values.yaml`,
+independently of `appVersion`.
 
 ## Before upgrading
 
@@ -119,11 +121,11 @@ of them, so a single LoadBalancer IP serves every JVB. See the
 - If you set `portRangeSize` greater than 1 **without** `useHostPort`, the value
   used to be ignored and you got a single JVB. It is now honoured, so you will
   get that many JVBs, pods and Service ports.
-- `jvb.replicaCount` greater than 1 while the JVB Service is enabled now
-  **fails** the render instead of deploying. All pods of a deployment are
+- `jvb.replicaCount` greater than 1 without `useHostPort` or `useHostNetwork`
+  now **fails** the render instead of deploying. All pods of a deployment are
   reachable on the same Service port, so traffic could arrive at the wrong JVB.
-  Use `portRangeSize`, or keep `replicaCount` with `useHostPort`, where each pod
-  is reachable on its own node IP.
+  Use `portRangeSize`, or keep `replicaCount` with `useHostPort` or
+  `useHostNetwork`, where each pod is reachable on its own node IP.
 - With a NodePort Service, `nodePort` is the base of a consecutive range. Keep
   it equal to `UDPPort` so the advertised and the reachable port match.
 
@@ -142,9 +144,11 @@ the default. Review all of the following before upgrading.
 
 ### Hardened by default
 
-All components now run as UID 1000 with a read-only root filesystem and dropped
-capabilities. See the [security guide](/docs/guides/security.md) for the full
-picture and how to relax it.
+The Jitsi components and coturn now run as UID 1000 with a read-only root
+filesystem and dropped capabilities. The third-party images (etherpad,
+excalidraw, Skynet, the Opus transcriber proxy) get only the image-agnostic part
+of it. See the [security guide](/docs/guides/security.md) for the full picture
+and how to relax it.
 
 - PVC-backed volumes (prosody, jibri, transcriber) are made writable through
   `fsGroup: 1000`. If your storage class ignores `fsGroup`, you may need
@@ -171,10 +175,11 @@ picture and how to relax it.
   [the web Service port](#breaking-change-in-the-web-service-port).
 - `web.httpsEnabled` was **removed**. Terminate TLS at your ingress, gateway or
   external load balancer.
-- coTURN listens on **3478** and **5349** inside the container. The Service maps
-  the public ports to those, so `coturn.service.ports.turn` and
+- coTURN listens on fixed ports inside the container. The Service maps the
+  public ports to those, so `coturn.service.ports.turn` and
   `coturn.service.ports.turns` now set only the _Service_ port; the container
-  ports no longer follow them.
+  ports no longer follow them. The container ports changed later, see
+  [the coTURN ports](#breaking-change-in-the-coturn-ports).
 
 ### Removed
 
@@ -182,7 +187,6 @@ picture and how to relax it.
   `websockets.colibri` was removed from the chart. JVB signalling uses SCTP data
   channels. An existing values file that still sets it is ignored rather than
   rejected.
-- `prosody.dataDir` and `web.httpsEnabled`, as noted above.
 - `jibri.livenessProbeOverride` and `jibri.readinessProbeOverride`. They were
   never listed in `values.yaml` and only ever shadowed `jibri.livenessProbe` /
   `jibri.readinessProbe`, which is where a probe belongs. Move any value you set
