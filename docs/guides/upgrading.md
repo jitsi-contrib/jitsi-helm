@@ -39,6 +39,43 @@ A config change rolls the affected pods automatically: the chart adds a checksum
 of each component's config to its pod template, so pods restart when their
 ConfigMap or Secret changes during the upgrade.
 
+## Breaking change in the default resources
+
+Every component now has default resource requests and a memory limit, where
+`resources` used to be empty. There is no CPU limit on purpose.
+
+| Component                        | CPU request | Memory request | Memory limit |
+| -------------------------------- | ----------- | -------------- | ------------ |
+| web, coturn                      | 100m        | 32Mi           | 1Gi          |
+| excalidraw                       | 100m        | 64Mi           | 1Gi          |
+| prosody                          | 100m        | 64Mi           | 2Gi          |
+| etherpad, opusTranscriberProxy   | 100m        | 128Mi          | 2Gi          |
+| jicofo, jvb, jigasi, transcriber | 100m        | 384Mi          | 4Gi          |
+| jibri                            | 100m        | 384Mi          | 8Gi          |
+| skynet                           | 100m        | 1Gi            | 8Gi          |
+
+Helm merges your values with these defaults key by key. If you set only part of
+`resources`, the missing keys now come from the defaults. `resources: {}` does
+not remove them, `resources: null` does.
+
+Check the following before upgrading:
+
+- **A raised Java heap.** The 4Gi limit fits the default 3 GiB heap of jicofo,
+  jvb, jigasi and transcriber. If you raised `JICOFO_MAX_MEMORY`,
+  `VIDEOBRIDGE_MAX_MEMORY` or `JIGASI_MAX_MEMORY`, raise `limits.memory` too, to
+  about the heap plus 1Gi. Otherwise the pod is OOM-killed under load, not at
+  upgrade time.
+- **A memory request above the new limit.** If you set `requests.memory` but no
+  `limits.memory`, and your request is above the default limit, Kubernetes
+  rejects the pod. Set `limits.memory` as well.
+- **A LimitRange in the namespace.** Its `max`, `min` or `maxLimitRequestRatio`
+  now applies to these values instead of filling in its own defaults. Set values
+  within its rules, or `resources: null`.
+- **A ResourceQuota on `limits.memory`.** The core components alone now count
+  11Gi per release. Each extra jvb adds 4Gi and each jibri 8Gi, so with
+  autoscaling or several jibris a quota can quietly stop new pods. Raise the
+  quota or lower the limits.
+
 ## Breaking change in the coTURN ports
 
 `coturn.service.ports.turn` now defaults to **443** (was 3478). Port 3478 is
