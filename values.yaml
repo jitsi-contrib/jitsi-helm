@@ -213,10 +213,7 @@ web:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  # Requests let the scheduler place the pod and keep it out of the BestEffort
-  # QoS class; the memory limit bounds what it can take from the node. No CPU
-  # limit, so the web server is never throttled. Override any value, or set
-  # `resources: null` to drop the defaults.
+  # No CPU limit on purpose. Set to null to remove the defaults.
   resources:
     requests:
       cpu: 100m
@@ -704,10 +701,7 @@ prosody:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  # Requests let the scheduler place the pod and keep it out of the BestEffort
-  # QoS class; the memory limit bounds what it can take from the node. No CPU
-  # limit, so prosody is never throttled. Override any value, or set
-  # `resources: null` to drop the defaults.
+  # No CPU limit on purpose. Set to null to remove the defaults.
   resources:
     requests:
       cpu: 100m
@@ -804,12 +798,9 @@ jicofo:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  # Requests let the scheduler place the pod and keep it out of the BestEffort
-  # QoS class; the memory limit bounds what it can take from the node. No CPU
-  # limit, so jicofo is never throttled. The image runs the JVM with a 3 GiB
-  # heap by default; the limit leaves 1Gi above it for the JVM's other memory.
-  # If you raise the heap with extraEnvs.JICOFO_MAX_MEMORY, raise the limit
-  # too. Override any value, or set `resources: null` to drop the defaults.
+  # No CPU limit on purpose. The memory limit fits the default 3 GiB heap;
+  # raise it if you raise JICOFO_MAX_MEMORY.
+  # Set to null to remove the defaults.
   resources:
     requests:
       cpu: 100m
@@ -1058,13 +1049,9 @@ jvb:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  # Requests let the scheduler place the pod and keep it out of the BestEffort
-  # QoS class; the memory limit bounds what it can take from the node. No CPU
-  # limit, so the bridge is never throttled. The image runs the JVM with a 3 GiB
-  # heap by default; the limit leaves 1Gi above it for the JVM's other memory.
-  # If you raise the heap with extraEnvs.VIDEOBRIDGE_MAX_MEMORY, raise the
-  # limit too. Override any value, or set `resources: null` to drop the
-  # defaults.
+  # No CPU limit on purpose. The memory limit fits the default 3 GiB heap;
+  # raise it if you raise VIDEOBRIDGE_MAX_MEMORY.
+  # Set to null to remove the defaults.
   resources:
     requests:
       cpu: 100m
