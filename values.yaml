@@ -703,9 +703,9 @@ prosody:
   resources:
     requests:
       cpu: 100m
-      memory: 32Mi
+      memory: 64Mi
     limits:
-      memory: 1Gi
+      memory: 2Gi
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
