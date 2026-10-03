@@ -1547,7 +1547,14 @@ skynet:
   # download fails.
   podSecurityContext:
     fsGroup: 1001
-  resources: {}
+  # No CPU limit on purpose. The memory limit fits the Whisper models up to
+  # large-v3 in int8; raise it for float32. Set to null to remove the defaults.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1Gi
+    limits:
+      memory: 8Gi
   # Hardening that holds regardless of the image. Unlike the jitsi components,
   # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot and
   # readOnlyRootFilesystem stay unset until a live test shows which paths it
