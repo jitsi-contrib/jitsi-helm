@@ -6,7 +6,9 @@ name: CNTi cert
 
 on:
   schedule:
-    - cron: "0 3 * * *"
+    # Off the full hour: GitHub delays or drops scheduled runs under load,
+    # which peaks at the start of each hour.
+    - cron: "37 3 * * *"
   workflow_dispatch:
 
 permissions:
