@@ -44,16 +44,17 @@ ConfigMap or Secret changes during the upgrade.
 Every component now has default resource requests and a memory limit, where
 `resources` used to be empty. There is no CPU limit on purpose.
 
-| Component                        | CPU request | Memory request | Memory limit |
-| -------------------------------- | ----------- | -------------- | ------------ |
-| web, coturn                      | 100m        | 32Mi           | 1Gi          |
-| prosody                          | 100m        | 64Mi           | 2Gi          |
-| opusTranscriberProxy             | 100m        | 128Mi          | 2Gi          |
-| excalidraw                       | 100m        | 256Mi          | 2Gi          |
-| jicofo, jvb, jigasi, transcriber | 100m        | 384Mi          | 4Gi          |
-| jibri                            | 100m        | 384Mi          | 8Gi          |
-| etherpad                         | 100m        | 512Mi          | 2Gi          |
-| skynet                           | 100m        | 1Gi            | 8Gi          |
+| Component                   | CPU request | Memory request | Memory limit |
+| --------------------------- | ----------- | -------------- | ------------ |
+| web, coturn                 | 100m        | 32Mi           | 1Gi          |
+| prosody                     | 100m        | 64Mi           | 2Gi          |
+| opusTranscriberProxy        | 100m        | 128Mi          | 2Gi          |
+| excalidraw                  | 100m        | 256Mi          | 2Gi          |
+| jicofo, jigasi, transcriber | 100m        | 384Mi          | 4Gi          |
+| etherpad                    | 100m        | 512Mi          | 2Gi          |
+| jvb                         | 100m        | 512Mi          | 4Gi          |
+| jibri                       | 100m        | 1Gi            | 8Gi          |
+| skynet                      | 100m        | 1Gi            | 8Gi          |
 
 Helm merges your values with these defaults key by key. If you set only part of
 `resources`, the missing keys now come from the defaults. `resources: {}` does
