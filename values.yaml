@@ -808,9 +808,8 @@ jicofo:
   # QoS class; the memory limit bounds what it can take from the node. No CPU
   # limit, so jicofo is never throttled. The image runs the JVM with a 3 GiB
   # heap by default; the limit leaves 1Gi above it for the JVM's other memory.
-  # If you raise the heap with extraEnvs.JICOFO_MAX_MEMORY, the limit is raised with
-  # it, to the heap plus 1Gi, whenever it would be lower. Override any value,
-  # or set `resources: null` to drop the defaults.
+  # If you raise the heap with extraEnvs.JICOFO_MAX_MEMORY, raise the limit
+  # too. Override any value, or set `resources: null` to drop the defaults.
   resources:
     requests:
       cpu: 100m
@@ -1063,9 +1062,9 @@ jvb:
   # QoS class; the memory limit bounds what it can take from the node. No CPU
   # limit, so the bridge is never throttled. The image runs the JVM with a 3 GiB
   # heap by default; the limit leaves 1Gi above it for the JVM's other memory.
-  # If you raise the heap with extraEnvs.VIDEOBRIDGE_MAX_MEMORY, the limit is raised with
-  # it, to the heap plus 1Gi, whenever it would be lower. Override any value,
-  # or set `resources: null` to drop the defaults.
+  # If you raise the heap with extraEnvs.VIDEOBRIDGE_MAX_MEMORY, raise the
+  # limit too. Override any value, or set `resources: null` to drop the
+  # defaults.
   resources:
     requests:
       cpu: 100m

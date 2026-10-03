@@ -232,7 +232,7 @@ spec:
                     done
           {{- end }}
           resources:
-            {{- include "jitsi-meet.javaResources" (dict "resources" $.Values.jvb.resources "heap" (index ($.Values.jvb.extraEnvs | default dict) "VIDEOBRIDGE_MAX_MEMORY")) | nindent 12 }}
+            {{- toYaml $.Values.jvb.resources | nindent 12 }}
           volumeMounts:
             - name: run
               mountPath: /run
