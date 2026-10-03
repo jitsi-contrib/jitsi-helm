@@ -47,11 +47,12 @@ Every component now has default resource requests and a memory limit, where
 | Component                        | CPU request | Memory request | Memory limit |
 | -------------------------------- | ----------- | -------------- | ------------ |
 | web, coturn                      | 100m        | 32Mi           | 1Gi          |
-| excalidraw                       | 100m        | 64Mi           | 1Gi          |
 | prosody                          | 100m        | 64Mi           | 2Gi          |
-| etherpad, opusTranscriberProxy   | 100m        | 128Mi          | 2Gi          |
+| opusTranscriberProxy             | 100m        | 128Mi          | 2Gi          |
+| excalidraw                       | 100m        | 256Mi          | 2Gi          |
 | jicofo, jvb, jigasi, transcriber | 100m        | 384Mi          | 4Gi          |
 | jibri                            | 100m        | 384Mi          | 8Gi          |
+| etherpad                         | 100m        | 512Mi          | 2Gi          |
 | skynet                           | 100m        | 1Gi            | 8Gi          |
 
 Helm merges your values with these defaults key by key. If you set only part of
