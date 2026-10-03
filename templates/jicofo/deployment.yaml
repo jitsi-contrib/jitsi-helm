@@ -127,7 +127,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
-            {{- toYaml .Values.jicofo.resources | nindent 12 }}
+            {{- include "jitsi-meet.javaResources" (dict "resources" .Values.jicofo.resources "heap" (index (.Values.jicofo.extraEnvs | default dict) "JICOFO_MAX_MEMORY")) | nindent 12 }}
           volumeMounts:
             - name: run
               mountPath: /run
