@@ -379,7 +379,13 @@ excalidraw:
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
-  resources: {}
+  # No CPU limit on purpose. Set to null to remove the defaults.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      memory: 1Gi
   # Hardening that holds regardless of the image. Unlike the jitsi components,
   # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
   # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
