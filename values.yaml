@@ -213,6 +213,10 @@ web:
   hostAliases: []
   labels: {}
   nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    fsGroup: 1000
   # No CPU limit on purpose. Set to null to remove the defaults.
   resources:
     requests:
@@ -220,10 +224,6 @@ web:
       memory: 32Mi
     limits:
       memory: 1Gi
-  podAnnotations: {}
-  podLabels: {}
-  podSecurityContext:
-    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -300,10 +300,10 @@ etherpad:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
+  resources: {}
   # Hardening that holds regardless of the image. Unlike the jitsi components,
   # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
   # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
@@ -372,10 +372,10 @@ excalidraw:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
+  resources: {}
   # Hardening that holds regardless of the image. Unlike the jitsi components,
   # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
   # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
@@ -555,11 +555,11 @@ coturn:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext:
     fsGroup: 1000
+  resources: {}
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -701,6 +701,10 @@ prosody:
   hostAliases: []
   labels: {}
   nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    fsGroup: 1000
   # No CPU limit on purpose. Set to null to remove the defaults.
   resources:
     requests:
@@ -708,10 +712,6 @@ prosody:
       memory: 32Mi
     limits:
       memory: 1Gi
-  podAnnotations: {}
-  podLabels: {}
-  podSecurityContext:
-    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -798,6 +798,10 @@ jicofo:
   hostAliases: []
   labels: {}
   nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    fsGroup: 1000
   # No CPU limit on purpose. The memory limit fits the default 3 GiB heap;
   # raise it if you raise JICOFO_MAX_MEMORY.
   # Set to null to remove the defaults.
@@ -807,10 +811,6 @@ jicofo:
       memory: 384Mi
     limits:
       memory: 4Gi
-  podAnnotations: {}
-  podLabels: {}
-  podSecurityContext:
-    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -1049,6 +1049,10 @@ jvb:
   hostAliases: []
   labels: {}
   nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    fsGroup: 1000
   # No CPU limit on purpose. The memory limit fits the default 3 GiB heap;
   # raise it if you raise VIDEOBRIDGE_MAX_MEMORY.
   # Set to null to remove the defaults.
@@ -1058,10 +1062,6 @@ jvb:
       memory: 384Mi
     limits:
       memory: 4Gi
-  podAnnotations: {}
-  podLabels: {}
-  podSecurityContext:
-    fsGroup: 1000
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -1180,11 +1180,11 @@ jigasi:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext:
     fsGroup: 1000
+  resources: {}
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -1283,10 +1283,10 @@ opusTranscriberProxy:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
+  resources: {}
   # Hardening that holds regardless of the image. Unlike the jitsi components,
   # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot,
   # readOnlyRootFilesystem and podSecurityContext.fsGroup stay unset until a
@@ -1405,11 +1405,11 @@ transcriber:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext:
     fsGroup: 1000
+  resources: {}
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -1507,7 +1507,6 @@ skynet:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   # The image runs as uid 1001, so the models volume has to be group-writable
@@ -1515,6 +1514,7 @@ skynet:
   # download fails.
   podSecurityContext:
     fsGroup: 1001
+  resources: {}
   # Hardening that holds regardless of the image. Unlike the jitsi components,
   # this is a third-party image, so runAsUser/runAsGroup/runAsNonRoot and
   # readOnlyRootFilesystem stay unset until a live test shows which paths it
@@ -1682,11 +1682,11 @@ jibri:
   hostAliases: []
   labels: {}
   nodeSelector: {}
-  resources: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext:
     fsGroup: 1000
+  resources: {}
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
