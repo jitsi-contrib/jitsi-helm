@@ -1,7 +1,10 @@
-# Installs the chart on a kind cluster every night, runs the CNTi Test
-# Suite's cert tests against it and publishes the result as the badge in
-# the README. The workflow does not write to this repository: the badge is
-# GitHub's own workflow badge. https://github.com/lfn-cnti/testsuite-action
+# Installs the chart on a kind cluster every night and runs the CNTi Test
+# Suite's cert tests against it. The CNTi badge in the README shows this
+# workflow's status.
+#
+# Maintained by the CNTi project. Background: issue #281. For problems
+# with the action or the test suite, open an issue at
+# https://github.com/lfn-cnti/testsuite-action/issues
 name: CNTi cert
 
 on:
