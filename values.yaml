@@ -557,7 +557,13 @@ coturn:
   podLabels: {}
   podSecurityContext:
     fsGroup: 1000
-  resources: {}
+  # No CPU limit on purpose. Set to null to remove the defaults.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 32Mi
+    limits:
+      memory: 1Gi
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
