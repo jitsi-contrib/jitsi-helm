@@ -15,7 +15,7 @@ version: 3.10.0
 # This is the *application* version.
 # If tags are not set explicitly in values.yaml then appVersion is used as
 # the default tag for Jitsi images.
-appVersion: stable-11248
+appVersion: stable-11248-1
 
 # Chart annotations for ArtifactHub
 annotations:
