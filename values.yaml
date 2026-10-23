@@ -335,7 +335,7 @@ excalidraw:
 
   image:
     repository: jitsi/excalidraw-backend
-    tag: 2026.3.0
+    tag: 2026.10.0
 
   service:
     type: ClusterIP
