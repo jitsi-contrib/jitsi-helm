@@ -1491,7 +1491,7 @@ skynet:
     # Skynet is released independently from Jitsi, so the tag is pinned here
     # rather than derived from Chart.AppVersion. Only CPU images (the "-cpu"
     # suffix) are published, so the bundled Skynet runs on CPU.
-    tag: 2026.4.1-cpu
+    tag: 2026.10.0-cpu
 
   service:
     type: ClusterIP
