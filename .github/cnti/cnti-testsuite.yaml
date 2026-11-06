@@ -1,6 +1,6 @@
 # CNTi Test Suite configuration for the Jitsi Meet chart: the value the
 # chart requires, and the image tags the version-change tests move between.
-# Nothing here changes a practice the cert tests judge.
+# Nothing here changes a practice the essential tests judge.
 config_version: "v2"
 common:
   container_names:
@@ -9,8 +9,8 @@ common:
     # and rollback tests.
     #
     # These tags are NOT used by the nightly cnti.yml workflow: it runs only
-    # the cert tests, and none of the rolling_* or rollback tests is a cert
-    # test. They are used when these tests are run explicitly, e.g.
+    # the essential tests, and none of the rolling_* or rollback tests is
+    # one of them. They are used when these tests are run explicitly, e.g.
     # "cnti-testsuite rolling_update" or the full workload suite.
     #
     # - rolling_*_test_tag: the image is set to this tag and the rollout
