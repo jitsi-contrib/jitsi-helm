@@ -1,0 +1,10 @@
+# The essential tests' results this chart knows and accepts, for the CNTi
+# job (.github/workflows/cnti.yml, expected_results). A test not listed is
+# expected to pass. When a result changes, the job says so in its summary
+# and as a warning. Update this file in the pull request that changes the
+# result.
+- test: cpu_limits
+  status: failed
+  reason: >-
+    By design since #285: the chart sets CPU and memory requests and a memory
+    limit, the values openDesk runs it with, and no CPU limit

@@ -1,11 +1,11 @@
 # Installs the chart on a kind cluster every night and runs the CNTi Test
-# Suite's cert tests against it. The CNTi badge in the README shows this
+# Suite's essential tests against it. The CNTi badge in the README shows this
 # workflow's status.
 #
 # Maintained by the CNTi project. Background: issue #281. For problems
 # with the action or the test suite, open an issue at
 # https://github.com/lfn-cnti/testsuite-action/issues
-name: CNTi cert
+name: CNTi essential
 
 on:
   schedule:
@@ -26,11 +26,14 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: lfn-cnti/testsuite-action@05a9860905f31c6813f735d25e5cefd7c62a1e5a # v1.1.0
+      - uses: lfn-cnti/testsuite-action@3c0e163cbbdde302cdd9abb9dbe8c2cbd6a72c71 # v1.4.0
         with:
-          version: v2.2.0
+          version: v2.4.1
           cnf_config: .github/cnti/cnti-testsuite.yaml
           tests: cert
+          # Known results (.github/cnti/expected.yaml): a test whose result
+          # changes is reported in the job summary and as a warning.
+          expected_results: .github/cnti/expected.yaml
 
       # Why did a component not come up? Pod state and events from the kind
       # cluster the action created; it lives until the job ends.
