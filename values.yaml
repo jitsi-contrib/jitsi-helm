@@ -1254,7 +1254,7 @@ opusTranscriberProxy:
     # here. Append a digest (tag: <commit>@sha256:<hash>) if you want the
     # image to be immutable.
     repository: jitsi/opus-transcriber-proxy
-    tag: 5e22564
+    tag: ee58d7a
 
   service:
     type: ClusterIP
